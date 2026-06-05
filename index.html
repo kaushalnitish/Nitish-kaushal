@@ -73,7 +73,36 @@
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
     }
+
+    div#top-promo-banner:nth-of-type(1) {
+      font-size: 12px;
+      line-height: 15.5px;
+    }
+
+    .is-mobile-app #top-promo-banner {
+      display: none !important;
+    }
   </style>
+  <script>
+    (function() {
+      // Robust detection of mobile app / webview wrappers
+      const ua = navigator.userAgent || navigator.vendor || window.opera;
+      const isWebview = (
+        /wv/i.test(ua) ||
+        (/Android/i.test(ua) && /Version\/\d/i.test(ua)) ||
+        (/iPhone|iPad|iPod/i.test(ua) && !/Safari/i.test(ua)) ||
+        window.ReactNativeWebView ||
+        window.AndroidBridge ||
+        window.flutter_inappwebview ||
+        /webview|micromessenger|crosswalk/i.test(ua) ||
+        window.matchMedia('(display-mode: standalone)').matches ||
+        window.navigator.standalone
+      );
+      if (isWebview) {
+        document.documentElement.classList.add('is-mobile-app');
+      }
+    })();
+  </script>
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans min-h-screen flex flex-col antialiased">
 
@@ -85,52 +114,68 @@
 
   <!-- MAIN HEADER -->
   <header class="bg-white border-b border-gray-100 sticky top-0 z-40 shadow-sm select-none">
-    <div class="max-w-6xl mx-auto px-4 py-2 md:py-4 flex flex-col gap-2 md:gap-3">
+    <div class="max-w-6xl mx-auto px-4 py-3 md:py-4 flex flex-col gap-2.5 md:gap-3">
       
-      <!-- Top Row of Header: Brand Title, Location Marker -->
-      <div class="flex items-center justify-between">
-        <div onclick="switchAppView('home')" class="flex items-center gap-2 md:gap-3 group cursor-pointer">
-          <div class="w-8 h-8 md:w-11 md:h-11 rounded-xl md:rounded-2xl bg-brand-50 flex items-center justify-center border border-brand-100 relative shadow-xs transition-transform duration-300 group-hover:scale-105">
-            <!-- A super clean friendly retail shopping cart vector -->
-            <svg class="w-4 h-4 md:w-6 md:h-6 text-brand-800" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-              <circle cx="9" cy="21" r="1.5" fill="currentColor"></circle>
-              <circle cx="20" cy="21" r="1.5" fill="#f58220"></circle>
-              <path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6" stroke-linecap="round" stroke-linejoin="round"></path>
-            </svg>
+      <!-- Combined Navigation & Actions Row -->
+      <div class="flex items-center justify-between py-1 border-b border-gray-50/70 pb-3 md:pb-4">
+        
+        <!-- Left Side: Mobile Logo (mobile only) & Custom Nav Links Group (desktop only) -->
+        <div class="flex items-center">
+          <!-- Mobile logo, hidden/removed desktop logo as requested -->
+          <div onclick="switchAppView('home')" class="md:hidden flex items-center gap-2 group cursor-pointer">
+            <div class="w-8 h-8 rounded-xl bg-brand-50 flex items-center justify-center border border-brand-100 relative shadow-xs transition-transform duration-300 group-hover:scale-105">
+              <svg class="w-4 h-4 text-brand-800" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                <circle cx="9" cy="21" r="1.5" fill="currentColor"></circle>
+                <circle cx="20" cy="21" r="1.5" fill="#f58220"></circle>
+                <path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>
+            </div>
           </div>
-          <div>
-            <h1 id="shop-title" class="font-display font-black text-sm md:text-2xl text-gray-900 tracking-tight leading-none">
-              <span class="text-gray-950">Aggarwal</span> <span class="text-brand-800">Wholesale</span>
-            </h1>
-            <p id="shop-tagline" class="hidden md:block text-[9px] md:text-xs text-gray-400 mt-1.5 font-bold tracking-tight">
-              Premium Confectionery & Sweet Bulk Supply
-            </p>
-          </div>
+
+          <!-- Desktop Navigation Menu: Left-aligned, generous gap-10 -->
+          <nav id="desktop-nav-bar" class="hidden md:flex items-center gap-10 font-sans text-[12px] leading-[14.5px] font-extrabold uppercase tracking-widest text-gray-450">
+            <button onclick="switchAppView('home')" id="desk-nav-home" class="hover:text-brand-900 transition flex items-center gap-1.5 cursor-pointer pb-1 border-b-2 border-transparent transition-all duration-200">
+              Home
+            </button>
+            <button onclick="switchAppView('about')" id="desk-nav-about" class="hover:text-brand-900 transition flex items-center gap-1.5 cursor-pointer pb-1 border-b-2 border-transparent transition-all duration-200">
+              About Us
+            </button>
+            <button onclick="scrollToProducts()" id="desk-nav-products" class="hover:text-brand-900 transition flex items-center gap-1.5 cursor-pointer pb-1 border-b-2 border-transparent transition-all duration-200">
+              Products
+            </button>
+            <button onclick="switchAppView('profile')" id="desk-nav-profile" class="hover:text-brand-900 transition flex items-center gap-1.5 cursor-pointer pb-1 border-b-2 border-transparent transition-all duration-200">
+              My Profile
+            </button>
+          </nav>
         </div>
 
-        <div class="flex items-center gap-3">
+        <!-- Right Side Header Actions: Located on the right with a large gap from Navigation -->
+        <div class="flex items-center gap-3.5 md:gap-5">
           <!-- Delivery Location Indicator -->
-          <div id="header-location-badge" class="flex items-center gap-1 bg-brand-50 text-brand-800 text-[10px] md:text-xs px-2.5 py-1 md:px-3 md:py-1.5 rounded-full font-semibold border border-brand-100">
-            <svg class="w-3 h-3 md:w-3.5 md:h-3.5 text-brand-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+          <div id="header-location-badge" class="flex items-center gap-1.5 bg-brand-50 text-brand-800 text-[10px] md:text-xs px-3 py-1.5 md:px-4 md:py-2 rounded-full font-bold border border-brand-100 shadow-3xs cursor-pointer hover:bg-brand-100/55 transition">
+            <svg class="w-3.5 h-3.5 text-brand-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
             </svg>
-            <span id="shop-location" class="inline">Chamba, HP</span>
+            <span id="shop-location" class="inline font-sans">Chamba, HP</span>
           </div>
 
-          <!-- Top-Right Cart Icon Option (Exactly like reference design) -->
-          <button id="header-cart-icon-btn" onclick="switchAppView('cart')" class="relative p-2 rounded-xl text-gray-700 hover:text-brand-900 hover:bg-gray-100 transition flex items-center justify-center cursor-pointer">
-            <svg class="w-6 h-6 text-brand-900" fill="none" stroke="currentColor" stroke-width="2.3" viewBox="0 0 24 24">
+          <!-- Dynamic Auth Badge (shows everywhere) -->
+          <div id="header-auth-badge" class="flex items-center gap-2 cursor-pointer select-none"></div>
+
+          <!-- Top-Right Cart Icon (Standard Premium ecommerce style) -->
+          <button id="header-cart-icon-btn" onclick="switchAppView('cart')" class="relative p-2.5 rounded-full border border-gray-150 bg-white hover:border-brand-700 text-gray-700 hover:text-brand-900 shadow-3xs hover:scale-105 active:scale-95 transition-all duration-200 flex items-center justify-center cursor-pointer outline-none">
+            <svg class="w-5 h-5 text-brand-900" fill="none" stroke="currentColor" stroke-width="2.3" viewBox="0 0 24 24">
               <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" stroke-linecap="round" stroke-linejoin="round"></path>
             </svg>
-            <span id="header-cart-badge" class="absolute -top-1 -right-1 bg-wholesale-yellow text-brand-950 font-black text-[10px] w-5 h-5 rounded-full flex items-center justify-center border-2 border-white leading-none">
+            <span id="header-cart-badge" class="absolute -top-1.5 -right-1.5 bg-wholesale-yellow text-brand-950 font-black text-[9px] w-5 h-5 rounded-full flex items-center justify-center border-2 border-white leading-none shadow-3xs">
               0
             </span>
           </button>
         </div>
       </div>
 
-      <!-- Second Row: Dynamic Catalog Search with GO button -->
+      <!-- Third Row: Dynamic Catalog Search with GO button -->
       <div id="header-search-row" class="flex gap-2">
         <div class="relative flex-grow">
           <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none">
@@ -141,7 +186,7 @@
           <input type="text" id="catalog-search" oninput="handleSearch()" class="w-full bg-gray-50 focus:bg-white text-xs md:text-sm text-gray-800 placeholder-gray-400 pl-9 pr-12 py-2 md:py-3 rounded-xl md:rounded-2xl border border-gray-150 focus:border-brand-700 transition-all outline-none font-medium" placeholder="Search products (chips, biscuits, candies...)">
           <!-- Clear input text -->
           <button id="clear-search" onclick="clearSearch()" class="hidden absolute inset-y-0 right-0 flex items-center pr-3.5">
-            <svg class="w-4 h-4 text-gray-400 hover:text-gray-600 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-4 h-4 text-gray-400 hover:text-gray-650 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
             </svg>
           </button>
@@ -211,6 +256,26 @@
   <!-- DEDICATED RESPONSIVE FULL-PAGE CHECKOUT VIEW PAGE -->
   <div id="checkout-page-container" class="hidden flex-grow w-full bg-gray-50/50 pb-[120px] pt-1 md:pt-2 min-h-screen">
     <!-- Load dynamically from JS renderCheckoutPage() -->
+  </div>
+
+  <!-- DEDICATED RESPONSIVE FULL-PAGE ORDERS HISTORY VIEW PAGE -->
+  <div id="orders-page-container" class="hidden flex-grow w-full bg-gray-50/50 pb-[120px] pt-1 md:pt-4 min-h-screen">
+    <!-- Load dynamically from JS renderOrdersView() -->
+  </div>
+
+  <!-- DEDICATED RESPONSIVE FULL-PAGE REWARDS VIEW PAGE -->
+  <div id="rewards-page-container" class="hidden flex-grow w-full bg-gray-50/50 pb-[120px] pt-1 md:pt-4 min-h-screen">
+    <!-- Load dynamically from JS renderRewardsView() -->
+  </div>
+
+  <!-- DEDICATED RESPONSIVE FULL-PAGE PROFILE VIEW PAGE -->
+  <div id="profile-page-container" class="hidden flex-grow w-full bg-gray-50/50 pb-[120px] pt-1 md:pt-4 min-h-screen">
+    <!-- Load dynamically from JS renderProfileView() -->
+  </div>
+
+  <!-- DEDICATED RESPONSIVE FULL-PAGE ABOUT US VIEW PAGE -->
+  <div id="about-page-container" class="hidden flex-grow w-full bg-gray-50/50 pb-[120px] pt-1 md:pt-4 min-h-screen">
+    <!-- Load dynamically from JS renderAboutPage() -->
   </div>
 
   <!-- STORE DETAILS FOOTER BLOCK -->
@@ -596,6 +661,39 @@
   </div>
 
 
+  <!-- DESKTOP B2B PORTAL CONTROL & LOYALTY PROFILE MODAL -->
+  <div id="desktop-profile-modal-shell" class="fixed inset-0 z-[9900] flex items-center justify-center overflow-x-hidden overflow-y-auto opacity-0 pointer-events-none transition-all duration-300 hidden">
+    <div class="absolute inset-0 bg-brand-950/60 modal-blur" onclick="window.toggleDesktopProfileModal(false)"></div>
+    
+    <div id="desktop-profile-modal-card" class="relative max-w-2xl w-full bg-white mx-4 rounded-3xl shadow-2xl p-6 md:p-8 flex flex-col transform scale-95 opacity-0 transition-all duration-300 pointer-events-auto border border-gray-100 max-h-[90vh] overflow-y-auto z-[9901]">
+      
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between border-b border-gray-100 pb-4 mb-4 select-none">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-brand-50 rounded-2xl flex items-center justify-center text-brand-800 border border-brand-100 shadow-3xs">
+            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+            </svg>
+          </div>
+          <div>
+            <h3 class="font-display font-black text-lg text-gray-950 tracking-tight leading-none mb-1">Wholesale Client Portal</h3>
+            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider leading-none">B2B Core Account & Loyalty Hub</p>
+          </div>
+        </div>
+        <button onclick="window.toggleDesktopProfileModal(false)" class="p-1 px-3 bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-900 rounded-xl transition font-extrabold text-xs select-none cursor-pointer">
+          ✕ Close
+        </button>
+      </div>
+
+      <!-- Dynamic content wrapper -->
+      <div id="desktop-profile-modal-content" class="flex flex-col gap-6">
+        <!-- Injected dynamically by window.renderDesktopProfileContent() -->
+      </div>
+
+    </div>
+  </div>
+
+
   <!-- CUSTOM CLEAR CART CONFIRMATION MODAL -->
   <div id="clear-cart-modal-shell" class="fixed inset-0 z-50 flex items-center justify-center overflow-x-hidden overflow-y-auto opacity-0 pointer-events-none transition-all duration-300 hidden">
     <div class="absolute inset-0 bg-brand-950/60 modal-blur"></div>
@@ -624,6 +722,298 @@
 
     </div>
   </div>
+
+
+  <!-- FIREBASE INTEGRATION ENGINE -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, onSnapshot, getDocFromServer } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      projectId: "long-airway-3fbwx",
+      appId: "1:198405259037:web:d1dd0ed54e5cfa049b2bf4",
+      apiKey: "AIzaSyD9hsNFSD9eH2js_XYdF_Ii8_MJHI1KyrQ",
+      authDomain: "long-airway-3fbwx.firebaseapp.com",
+      firestoreDatabaseId: "ai-studio-8f383a35-5bb8-4e74-88b0-633825811b2d",
+      storageBucket: "long-airway-3fbwx.firebasestorage.app",
+      messagingSenderId: "198405259037",
+      measurementId: ""
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
+    const auth = getAuth(app);
+
+    // Bind to window for traditional js functions
+    window.firebaseApp = app;
+    window.firebaseDb = db;
+    window.firebaseAuth = auth;
+
+    window.googleProvider = new GoogleAuthProvider();
+    window.signInWithPopup = signInWithPopup;
+    window.signOut = signOut;
+    window.onAuthStateChanged = onAuthStateChanged;
+
+    window.firestore = {
+      doc, getDoc, getDocs: null, setDoc, updateDoc, collection, onSnapshot
+    };
+
+    // Global connection check requested in SKILL.md
+    async function testConnection() {
+      try {
+        await getDocFromServer(doc(db, 'test', 'connection'));
+      } catch (error) {
+        if(error instanceof Error && error.message.includes('the client is offline')) {
+          console.error("Please check your Firebase configuration.");
+        }
+      }
+    }
+    testConnection();
+
+    // Secure Firestore Error handler specified in SKILL.md
+    window.handleFirestoreError = function(error, operationType, path) {
+      const errInfo = {
+        error: error instanceof Error ? error.message : String(error),
+        operationType: operationType,
+        path: path,
+        authInfo: {
+          userId: auth.currentUser ? auth.currentUser.uid : null,
+          email: auth.currentUser ? auth.currentUser.email : null,
+          emailVerified: auth.currentUser ? auth.currentUser.emailVerified : null,
+          isAnonymous: auth.currentUser ? auth.currentUser.isAnonymous : null,
+          tenantId: auth.currentUser ? auth.currentUser.tenantId : null,
+          providerInfo: auth.currentUser ? auth.currentUser.providerData.map(p => ({
+            providerId: p.providerId,
+            email: p.email
+          })) : []
+        }
+      };
+      console.error('Firestore Error: ', JSON.stringify(errInfo));
+      throw new Error(JSON.stringify(errInfo));
+    };
+
+    // Firebase Auth State Tracker
+    onAuthStateChanged(auth, async (user) => {
+      window.currentUser = user;
+      if (user) {
+        console.log("[FIREBASE] Authenticated user:", user.email, "uid:", user.uid);
+        const userDocRef = doc(db, 'users', user.uid);
+        try {
+          console.log("[FIREBASE] Fetching user profile document from Firestore...");
+          let snap;
+          try {
+            snap = await getDoc(userDocRef);
+            console.log("[FIREBASE] getDoc completed successfully. Document exists:", snap.exists());
+          } catch (getErr) {
+            console.error("[FIREBASE] getDoc failed with permission or other error:", getErr);
+            throw getErr;
+          }
+
+          if (!snap.exists()) {
+            const defaultProfile = {
+              userId: user.uid,
+              name: user.displayName || "Aggarwal Wholesale Client",
+              email: user.email || "no-recorded-email@b2b-wholesale.com",
+              phone: "",
+              photoURL: user.photoURL || "",
+              tier: "Bronze",
+              points: 0,
+              totalSpent: 0,
+              savedAddresses: [],
+              businessName: "",
+              deliveryPreferences: "",
+              createdAt: new Date().toISOString(),
+              updatedAt: new Date().toISOString()
+            };
+            console.log("[FIREBASE] Profile does not exist. Attempting to write defaultProfile:", JSON.stringify(defaultProfile));
+            try {
+              await setDoc(userDocRef, defaultProfile);
+              console.log("[FIREBASE] setDoc successfully completed.");
+              window.userProfile = defaultProfile;
+            } catch (setErr) {
+              console.error("[FIREBASE] setDoc failed with validation or permission error:", setErr);
+              throw setErr;
+            }
+          } else {
+            window.userProfile = snap.data();
+            console.log("[FIREBASE] Loaded existing userProfile:", JSON.stringify(window.userProfile));
+          }
+
+          // Live order binding
+          onSnapshot(collection(db, "users", user.uid, "orders"), (colSnap) => {
+            const orders = [];
+            colSnap.forEach(d => orders.push(d.data()));
+            orders.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+            window.userOrders = orders;
+            
+            // Render active tabs is current is open
+            const tabViewEl = document.getElementById('mobile-tab-view');
+            if (tabViewEl) {
+              if (window.currentMobileTab === 'orders') {
+                tabViewEl.innerHTML = renderMobileOrders();
+              } else if (window.currentMobileTab === 'profile') {
+                tabViewEl.innerHTML = renderMobileProfile();
+              }
+            }
+          }, (err) => {
+            window.handleFirestoreError(err, 'get', `users/${user.uid}/orders`);
+          });
+
+          // Live pointsHistory binding
+          onSnapshot(collection(db, "users", user.uid, "pointsHistory"), (colSnap) => {
+            const history = [];
+            colSnap.forEach(d => history.push(d.data()));
+            history.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+            window.userPointsHistory = history;
+            
+            const tabViewEl = document.getElementById('mobile-tab-view');
+            if (tabViewEl && window.currentMobileTab === 'profile') {
+              tabViewEl.innerHTML = renderMobileProfile();
+            }
+          }, (err) => {
+            window.handleFirestoreError(err, 'get', `users/${user.uid}/pointsHistory`);
+          });
+
+        } catch (err) {
+          console.error("[FIREBASE] Profile setup sync error:", err);
+        }
+      } else {
+        console.log("[FIREBASE] User signed out / anonymous guest");
+        window.userProfile = null;
+        window.userOrders = [];
+        window.userPointsHistory = [];
+      }
+
+      // Sync views & buttons
+      updateHeaderAuthBadge();
+      updateCheckoutAutofills();
+      if (typeof window.renderDesktopProfileContent === 'function') {
+        window.renderDesktopProfileContent();
+      }
+      const tabViewEl = document.getElementById('mobile-tab-view');
+      if (tabViewEl) {
+        if (window.currentMobileTab === 'profile') {
+          tabViewEl.innerHTML = renderMobileProfile();
+        } else if (window.currentMobileTab === 'orders') {
+          tabViewEl.innerHTML = renderMobileOrders();
+        }
+      }
+    });
+
+    window.triggerGoogleAuth = async function() {
+      try {
+        console.log("[FIREBASE] Sign in/up initiated");
+        const provider = new GoogleAuthProvider();
+        await signInWithPopup(auth, provider);
+      } catch (e) {
+        console.error("[FIREBASE] Auth popups block/failure:", e);
+        alert("Google Sign-In failed: " + e.message + "\nIf you are in an iframe sandbox, try opening this page in a new window using the top right open button.");
+      }
+    };
+
+    window.triggerLogoutAuth = async function() {
+      try {
+        console.log("[FIREBASE] Signing out user...");
+        await signOut(auth);
+      } catch (e) {
+        console.error("[FIREBASE] Log out failed:", e);
+      }
+    };
+
+    window.saveUserProfileDetails = async function(updatedFields) {
+      if (!window.currentUser) return false;
+      const docRef = doc(db, 'users', window.currentUser.uid);
+      try {
+        const payload = {
+          ...updatedFields,
+          updatedAt: new Date().toISOString()
+        };
+        await updateDoc(docRef, payload);
+        window.userProfile = {
+          ...window.userProfile,
+          ...payload
+        };
+        const tabViewEl = document.getElementById('mobile-tab-view');
+        if (tabViewEl && window.currentMobileTab === 'profile') {
+          tabViewEl.innerHTML = renderMobileProfile();
+        }
+        updateHeaderAuthBadge();
+        updateCheckoutAutofills();
+        return true;
+      } catch (e) {
+        window.handleFirestoreError(e, 'write', `users/${window.currentUser.uid}`);
+        return false;
+      }
+    };
+
+    window.saveUserAddressDetails = async function(address) {
+      if (!window.currentUser || !address) return;
+      let addresses = [...(window.userProfile && window.userProfile.savedAddresses ? window.userProfile.savedAddresses : [])];
+      if (!addresses.includes(address)) {
+        addresses.push(address);
+        await window.saveUserProfileDetails({ savedAddresses: addresses });
+      }
+    };
+
+    window.deleteUserAddressDetails = async function(address) {
+      if (!window.currentUser || !address) return;
+      let addresses = [...(window.userProfile && window.userProfile.savedAddresses ? window.userProfile.savedAddresses : [])].filter(a => a !== address);
+      await window.saveUserProfileDetails({ savedAddresses: addresses });
+    };
+
+    window.updateHeaderAuthBadge = function() {
+      const badgeEl = document.getElementById('header-auth-badge');
+      if (!badgeEl) return;
+      if (window.currentUser) {
+        const avatarUrl = window.currentUser.photoURL || 'https://www.gravatar.com/avatar/?d=mp';
+        
+        badgeEl.innerHTML = `
+          <button onclick="switchAppView('profile')" class="relative flex items-center justify-center w-9 h-9 rounded-full border border-gray-200 bg-white hover:border-[#11441c] hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer shadow-3xs outline-none" title="View Profile">
+            <img class="w-7.5 h-7.5 rounded-full object-cover" src="${avatarUrl}" referrerPolicy="no-referrer">
+          </button>
+        `;
+        badgeEl.classList.remove('hidden');
+        badgeEl.classList.add('flex');
+      } else {
+        badgeEl.innerHTML = `
+          <button onclick="window.triggerGoogleAuth()" class="flex items-center justify-center w-9 h-9 rounded-full border border-gray-200 bg-white hover:border-[#11441c] hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer shadow-3xs text-gray-500 hover:text-brand-900 outline-none" title="Sign In">
+            <svg class="w-4.5 h-4.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.3" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"></path>
+            </svg>
+          </button>
+        `;
+        badgeEl.classList.remove('hidden');
+        badgeEl.classList.add('flex');
+      }
+    };
+
+    window.updateCheckoutAutofills = function() {
+      const nameEl = document.getElementById('cust-name');
+      const phoneEl = document.getElementById('cust-phone');
+      const addressEl = document.getElementById('cust-address');
+      
+      if (window.currentUser && window.userProfile) {
+        if (nameEl && !nameEl.value) {
+          nameEl.value = window.userProfile.name || '';
+        }
+        if (phoneEl && !phoneEl.value) {
+          phoneEl.value = window.userProfile.phone || '';
+        }
+        if (addressEl && !addressEl.value && window.userProfile.savedAddresses && window.userProfile.savedAddresses.length > 0) {
+          addressEl.value = window.userProfile.savedAddresses[0] || '';
+        }
+      }
+    };
+
+    window.autofillCheckoutAddress = function(addrText) {
+      const addressEl = document.getElementById('cust-address');
+      if (addressEl) {
+        addressEl.value = addrText;
+      }
+    };
+
+  </script>
 
 
   <!-- CORE CLIENT DATA CONFIG ENGINE AND INTRINSIC JS SERVICES -->
@@ -1098,12 +1488,43 @@
       return JSON.parse(stored);
     }
 
-    function addOrderToHistory(customerName, totalAmount, cartItems) {
+    // Helper functions to get current checkout fields
+    function customerPhoneInputVal() {
+      const el = document.getElementById('cust-phone');
+      return el ? el.value.trim() : '';
+    }
+    function customerAddressInputVal() {
+      const el = document.getElementById('cust-address');
+      return el ? el.value.trim() : '';
+    }
+    function customerNotesInputVal() {
+      const el = document.getElementById('cust-notes');
+      return el ? el.value.trim() : '';
+    }
+
+    // LOYALTY SYSTEM POINTS GENERATOR
+    function getLoyaltyPointsData() {
+      if (window.currentUser && window.userProfile) {
+        return {
+          totalSpent: window.userProfile.totalSpent || 0,
+          points: window.userProfile.points || 0
+        };
+      }
+      const orders = getSavedOrders();
+      const totalSpent = orders.reduce((sum, o) => sum + Number(o.total || 0), 0);
+      const points = Math.floor(totalSpent / 100);
+      return { totalSpent, points };
+    }
+
+    async function addOrderToHistory(customerName, totalAmount, cartItems) {
+      // 1. Local storage fallback
       const orders = getSavedOrders();
       const summaryLine = cartItems.map(item => `${item.name} (x${item.qty})`).join(', ');
-      
+      const invoiceIdNum = Math.floor(10000 + Math.random() * 90000);
+      const invoiceId = "AW-" + invoiceIdNum;
+
       const newOrder = {
-        invoiceId: "AW-" + Math.floor(10000 + Math.random() * 90000),
+        invoiceId: invoiceId,
         date: "Today, " + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         status: "Processing",
         itemsCount: cartItems.reduce((acc, curr) => acc + curr.qty, 0),
@@ -1113,14 +1534,126 @@
       
       orders.unshift(newOrder);
       safeLocalStorage.setItem('ab_b2b_orders', JSON.stringify(orders));
+
+      // 2. Firebase Cloud Sync
+      if (window.currentUser && window.firebaseDb && window.firestore) {
+        const db = window.firebaseDb;
+        const { doc, setDoc, updateDoc } = window.firestore;
+        const uid = window.currentUser.uid;
+
+        try {
+          // A. Save order document
+          const orderDocRef = doc(db, 'users', uid, 'orders', invoiceId);
+          const orderPayload = {
+            orderId: invoiceId,
+            userId: uid,
+            customerName: customerName,
+            customerPhone: customerPhoneInputVal(),
+            customerAddress: customerAddressInputVal(),
+            customerNotes: customerNotesInputVal(),
+            items: cartItems.map(item => ({
+              id: item.id || 0,
+              name: item.name,
+              price: item.price,
+              qty: item.qty,
+              image: item.image || ""
+            })),
+            total: totalAmount,
+            createdAt: new Date().toISOString()
+          };
+          await setDoc(orderDocRef, orderPayload);
+
+          // B. Write loyalty pointsTransaction
+          const ptsEarned = Math.floor(totalAmount / 100);
+          if (ptsEarned > 0) {
+            const transactionId = "PH-" + Math.floor(100000 + Math.random() * 900000);
+            const ptsDocRef = doc(db, 'users', uid, 'pointsHistory', transactionId);
+            await setDoc(ptsDocRef, {
+              transactionId,
+              userId: uid,
+              type: "earn",
+              points: ptsEarned,
+              amount: totalAmount,
+              reason: `Bulk order invoice ${invoiceId}`,
+              createdAt: new Date().toISOString()
+            });
+          }
+
+          // C. Update user profile stats & loyalty tier
+          const userDocRef = doc(db, 'users', uid);
+          const oldPoints = Number(window.userProfile ? window.userProfile.points : 0);
+          const oldTotalSpent = Number(window.userProfile ? window.userProfile.totalSpent : 0);
+          const newTotalSpent = oldTotalSpent + totalAmount;
+          const newPoints = oldPoints + ptsEarned;
+
+          let newTier = "Bronze";
+          if (newTotalSpent >= 100000) newTier = "Platinum";
+          else if (newTotalSpent >= 30000) newTier = "Gold";
+          else if (newTotalSpent >= 10000) newTier = "Silver";
+
+          let updatedAddresses = [...(window.userProfile && window.userProfile.savedAddresses ? window.userProfile.savedAddresses : [])];
+          const curAddr = customerAddressInputVal();
+          if (curAddr && !updatedAddresses.includes(curAddr)) {
+            updatedAddresses.push(curAddr);
+          }
+
+          const curPhoneInput = customerPhoneInputVal();
+
+          const profileUpdates = {
+            points: newPoints,
+            totalSpent: newTotalSpent,
+            tier: newTier,
+            savedAddresses: updatedAddresses,
+            updatedAt: new Date().toISOString()
+          };
+          if (curPhoneInput && !(window.userProfile && window.userProfile.phone)) {
+            profileUpdates.phone = curPhoneInput;
+          }
+
+          await updateDoc(userDocRef, profileUpdates);
+          console.log("[FIREBASE] Sync order ledger and loyalty tracking successfully completed!");
+        } catch (e) {
+          window.handleFirestoreError(e, 'write', `users/${uid}/orders/${invoiceId}`);
+        }
+      }
     }
 
+    window.reorderFirebaseItems = function(orderId) {
+      if (!window.userOrders) return;
+      const ord = window.userOrders.find(o => o.orderId === orderId);
+      if (!ord || !ord.items) return;
+      cart = [];
+      ord.items.forEach(item => {
+        cart.push({
+          id: item.id,
+          name: item.name,
+          price: item.price,
+          qty: item.qty,
+          image: item.image || ""
+        });
+      });
+      saveCartState();
+      refreshCartSystemCounters();
+      renderCatalogGrid();
+      switchMobileTab('home');
+      toggleCartDrawer(true);
+    };
+
     function repeatOrder(invoiceId) {
+      // 1. Try Firebase cloud orders reorder
+      if (window.userOrders) {
+        const cloudOrd = window.userOrders.find(o => o.orderId === invoiceId);
+        if (cloudOrd && cloudOrd.items) {
+          window.reorderFirebaseItems(invoiceId);
+          return;
+        }
+      }
+
+      // Fallback: Guest local order
       const orders = getSavedOrders();
       const found = orders.find(o => o.invoiceId === invoiceId);
       if (!found) return;
       
-      // Seed popular products corresponding to previous items to cart
       CONFIG.products.slice(0, 2).forEach(p => {
         const cartItemIdx = cart.findIndex(item => item.id === p.id);
         if (cartItemIdx > -1) {
@@ -1139,20 +1672,24 @@
       refreshCartSystemCounters();
       renderCatalogGrid();
       
-      // Auto transition back to home catalog and open basket draw
       switchMobileTab('home');
       toggleCartDrawer(true);
     }
 
+    // DESKTOP PRODUCTS SECTION SMOOTH SCROLLER
+    window.scrollToProducts = function() {
+      switchAppView('home');
+      setTimeout(() => {
+        const el = document.getElementById('home-categories-section');
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 100);
+    };
+
     // MOBILE APP-STYLE TAB ACTIONS
-    function switchMobileTab(tab) {
+    window.switchMobileTab = function(tab) {
       currentMobileTab = tab;
-      
-      // Revert full page views if clicking navigation tabs
-      if (currentAppView !== 'home') {
-        switchAppView('home');
-        return;
-      }
       
       const mainEl = document.querySelector('main');
       const tabViewEl = document.getElementById('mobile-tab-view');
@@ -1173,29 +1710,23 @@
       });
 
       if (tab === 'home') {
-        if (mainEl) mainEl.classList.remove('hidden');
-        if (footerEl) footerEl.classList.remove('hidden');
+        switchAppView('home', false);
         if (tabViewEl) {
           tabViewEl.classList.add('hidden');
           tabViewEl.innerHTML = '';
         }
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      } else {
-        if (mainEl) mainEl.classList.add('hidden');
-        if (footerEl) footerEl.classList.add('hidden');
+      } else if (tab === 'categories') {
+        switchAppView('home', false);
         if (tabViewEl) {
           tabViewEl.classList.remove('hidden');
-          if (tab === 'categories') {
-            tabViewEl.innerHTML = renderMobileCategories();
-          } else if (tab === 'orders') {
-            tabViewEl.innerHTML = renderMobileOrders();
-          } else if (tab === 'profile') {
-            tabViewEl.innerHTML = renderMobileProfile();
-          }
+          tabViewEl.innerHTML = renderMobileCategories();
         }
-        window.scrollTo({ top: 0, behavior: 'auto' });
+      } else if (tab === 'orders') {
+        switchAppView('orders', false);
+      } else if (tab === 'profile') {
+        switchAppView('profile', false);
       }
-    }
+    };
 
     function selectCategoryFromNav(cat) {
       currentCategory = cat;
@@ -1252,52 +1783,156 @@
       `;
     }
 
+    // User loyalty progress loader helper
+    function getLoyaltyProgressHTML() {
+      if (!window.userProfile) return '';
+      const spent = window.userProfile.totalSpent || 0;
+      let nextTier = '';
+      let needed = 0;
+      let pct = 0;
+      if (spent < 10000) {
+        nextTier = 'Silver';
+        needed = 10000 - spent;
+        pct = Math.min(100, (spent / 10000) * 100);
+      } else if (spent < 30000) {
+        nextTier = 'Gold';
+        needed = 30000 - spent;
+        pct = Math.min(100, ((spent - 10000) / 20000) * 100);
+      } else if (spent < 100000) {
+        nextTier = 'Platinum';
+        needed = 100000 - spent;
+        pct = Math.min(100, ((spent - 30000) / 70000) * 100);
+      } else {
+        return `
+          <div class="mt-2.5 text-[10px] font-bold text-amber-200">
+            👑 Platinum Tier reached! Enjoy custom wholesale discounts & free cargo dispatches!
+          </div>
+        `;
+      }
+      return `
+        <div class="mt-3">
+          <div class="flex justify-between text-[10px] text-amber-100 font-bold mb-1">
+            <span>Next Tier: ${nextTier}</span>
+            <span>Spend ₹${needed.toLocaleString()} more</span>
+          </div>
+          <div class="w-full bg-white/20 h-1.5 rounded-full overflow-hidden">
+            <div class="bg-yellow-400 h-full rounded-full" style="width: ${pct}%"></div>
+          </div>
+        </div>
+      `;
+    }
+
     function renderMobileOrders() {
-      const orders = getSavedOrders();
+      if (!window.currentUser) {
+        // Guest list of local cache
+        const localOrders = getSavedOrders();
+        let ordersHtml = '';
+        if (localOrders.length === 0) {
+          ordersHtml = `
+            <div class="flex flex-col items-center justify-center text-center py-12 px-4 bg-white border border-gray-150 rounded-2xl shadow-3xs mt-3">
+              <span class="text-xs text-gray-400 italic">No direct offline registers logged.</span>
+            </div>
+          `;
+        } else {
+          ordersHtml = localOrders.map(ord => `
+            <div class="bg-white border border-gray-150 rounded-xl p-4 shadow-3xs mb-3">
+              <div class="flex items-center justify-between border-b border-gray-100 pb-2 mb-2">
+                <div>
+                  <span class="text-xs font-bold text-gray-900">Inv #${ord.invoiceId}</span>
+                  <span class="text-[10px] text-gray-400 block mt-0.5">${ord.date}</span>
+                </div>
+                <span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full border bg-emerald-50 text-emerald-700 border-emerald-150">
+                  ${ord.status}
+                </span>
+              </div>
+              <div class="text-[11px] text-gray-500 mb-3 font-semibold line-clamp-2 leading-relaxed">
+                ${ord.itemsText}
+              </div>
+              <div class="flex items-center justify-between border-t border-gray-100 pt-2 font-sans shrink-0">
+                <div>
+                  <span class="text-[9px] text-gray-400 block uppercase tracking-wider font-extrabold leading-none">Total Value</span>
+                  <span class="text-xs font-extrabold text-gray-950">₹${ord.total}</span>
+                </div>
+                <button onclick="repeatOrder('${ord.invoiceId}')" class="bg-brand-50 hover:bg-brand-100 text-brand-900 text-[11px] font-bold px-2.5 py-1.5 rounded-lg border border-brand-100 transition cursor-pointer select-none">
+                  Reorder
+                </button>
+              </div>
+            </div>
+          `).join('');
+        }
+
+        return `
+          <div class="flex flex-col gap-4 font-sans select-none animate-fade-in">
+            <div class="flex flex-col gap-1 px-1">
+              <h2 class="text-base font-bold text-gray-950 font-display">B2B Order History</h2>
+              <p class="text-xs text-gray-400 font-medium">Track your historical bulk confectionery dispatches</p>
+            </div>
+            
+            <!-- Google Login pitch for Cloud sync -->
+            <div class="bg-emerald-50/60 border border-emerald-100 rounded-2xl p-4 flex flex-col gap-3 shadow-3xs">
+              <div>
+                <h4 class="text-xs font-bold text-emerald-950">💡 Sync Orders to the Cloud!</h4>
+                <p class="text-[11px] text-emerald-700 mt-1 leading-relaxed">Sign in with Google to protect your orders, unlock automatic WhatsApp invoice tracking, and link cargo routes directly with your business email.</p>
+              </div>
+              <button onclick="window.triggerGoogleAuth()" class="w-full bg-[#11441c] hover:bg-brand-900 text-white font-extrabold text-xs py-2.5 rounded-xl transition flex items-center justify-center gap-2">
+                Sign In with Google
+              </button>
+            </div>
+
+            <div class="flex flex-col mt-2">
+              <h4 class="text-xs font-bold text-gray-550 uppercase tracking-wider mb-2">Local Device Cargo History</h4>
+              ${ordersHtml}
+            </div>
+          </div>
+        `;
+      }
+
+      // User logged in order list
+      const orders = window.userOrders || [];
       if (orders.length === 0) {
         return `
-          <div class="flex flex-col items-center justify-center text-center py-16 px-4">
-            <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mb-3 text-gray-400">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-              </svg>
+          <div class="flex flex-col gap-4 font-sans select-none animate-fade-in">
+            <div class="flex flex-col gap-1 px-1">
+              <h2 class="text-base font-bold text-gray-950 font-display">B2B Order History</h2>
+              <p class="text-xs text-gray-400 font-medium">Track your Cloud Sync B2B Wholesale dispatches</p>
             </div>
-            <h4 class="text-sm font-bold text-gray-900">No Orders Logged Yet</h4>
-            <p class="text-xs text-gray-400 mt-1 max-w-xs mx-auto">Your order list is empty. Place bulk cart reserves to log live invoices here.</p>
+            <div class="flex flex-col items-center justify-center text-center py-16 px-4 bg-white border border-gray-150 rounded-2xl shadow-3xs">
+              <div class="w-12 h-12 bg-brand-50 rounded-full flex items-center justify-center mb-3 text-brand-850">
+                <svg class="w-6 h-6 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                </svg>
+              </div>
+              <h4 class="text-xs font-bold text-gray-905">No Orders Logged to Cloud</h4>
+              <p class="text-[11px] text-gray-400 mt-1 max-w-xs mx-auto leading-relaxed font-semibold">Ready to checkout? Build a confectionery cart and complete delivery to register your first digital cloudsheet ledger.</p>
+            </div>
           </div>
         `;
       }
 
       const ordersHtml = orders.map(ord => {
-        let statusClass = '';
-        if (ord.status === 'Delivered') {
-          statusClass = 'bg-emerald-50 text-emerald-700 border-emerald-150';
-        } else if (ord.status === 'In Transit') {
-          statusClass = 'bg-blue-50 text-blue-700 border-blue-150';
-        } else {
-          statusClass = 'bg-amber-50 text-amber-700 border-amber-150';
-        }
+        const ordDate = new Date(ord.createdAt).toLocaleDateString([], { day: 'numeric', month: 'short', year: 'numeric' }) + ", " + new Date(ord.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        const itemsSummaryText = ord.items ? ord.items.map(item => `${item.name} (x${item.qty})`).join(', ') : 'Wholesale products';
 
         return `
-          <div class="bg-white border border-gray-150 rounded-xl p-4 shadow-xs mb-3">
+          <div class="bg-white border border-gray-150 rounded-xl p-4 shadow-3xs mb-3">
             <div class="flex items-center justify-between border-b border-gray-100 pb-2 mb-2">
               <div>
-                <span class="text-xs font-bold text-gray-900">Inv #${ord.invoiceId}</span>
-                <span class="text-[10px] text-gray-400 block mt-0.5">${ord.date}</span>
+                <span class="text-xs font-bold text-gray-950">Inv #${ord.orderId}</span>
+                <span class="text-[9px] text-gray-450 block mt-0.5">${ordDate}</span>
               </div>
-              <span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full border ${statusClass}">
-                ${ord.status}
+              <span class="text-[9px] font-extrabold px-2.5 py-0.5 rounded-full border bg-emerald-50 text-emerald-700 border-emerald-150 uppercase tracking-wide shrink-0">
+                Delivered
               </span>
             </div>
-            <div class="text-xs text-gray-500 mb-3 font-medium line-clamp-2 leading-relaxed font-semibold">
-              ${ord.itemsText}
+            <div class="text-[11px] text-gray-500 mb-3 font-semibold line-clamp-2 leading-relaxed">
+              ${itemsSummaryText}
             </div>
             <div class="flex items-center justify-between border-t border-gray-100 pt-2 shrink-0">
               <div>
-                <span class="text-[10px] text-gray-400 block font-semibold uppercase tracking-wider leading-none">Total Amount</span>
-                <span class="text-sm font-extrabold text-gray-950">₹${ord.total}</span>
+                <span class="text-[9px] text-gray-400 block uppercase tracking-wider font-extrabold leading-none">Total Value</span>
+                <span class="text-xs font-extrabold text-brand-905">₹${ord.total}</span>
               </div>
-              <button onclick="repeatOrder('${ord.invoiceId}')" class="bg-brand-50 hover:bg-brand-100 text-brand-900 text-xs font-bold px-3 py-1.5 rounded-lg border border-brand-100 transition cursor-pointer select-none">
+              <button onclick="window.reorderFirebaseItems('${ord.orderId}')" class="bg-brand-900 hover:bg-brand-850 text-white text-[10px] font-extrabold px-3 py-1.5 rounded-lg transition shadow-3xs cursor-pointer select-none uppercase tracking-wide">
                 Reorder
               </button>
             </div>
@@ -1306,10 +1941,10 @@
       }).join('');
 
       return `
-        <div class="flex flex-col gap-4">
+        <div class="flex flex-col gap-4 font-sans select-none animate-fade-in">
           <div class="flex flex-col gap-1 px-1">
             <h2 class="text-base font-bold text-gray-950 font-display">B2B Order History</h2>
-            <p class="text-xs text-gray-400 font-medium">Track your previous direct cargo dispatches and processing ledgers</p>
+            <p class="text-xs text-gray-400 font-medium">Track your cloud-synchronized confectionery dispatches & invoices</p>
           </div>
           <div class="flex flex-col">
             ${ordersHtml}
@@ -1319,68 +1954,1344 @@
     }
 
     function renderMobileProfile() {
-      return `
-        <div class="flex flex-col gap-4">
-          <!-- Owner Shop profile -->
-          <div class="bg-brand-900 text-white rounded-2xl p-5 shadow-md flex items-center gap-4 relative overflow-hidden">
-            <div class="absolute right-0 top-0 translate-x-1/4 -translate-y-1/4 w-32 h-32 bg-white/5 rounded-full"></div>
-            <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center font-bold text-lg text-wholesale-yellow shrink-0">
-              AS
+      if (!window.currentUser) {
+        return `
+          <div class="flex flex-col gap-5 px-4 py-8 items-center text-center font-sans max-w-sm mx-auto animate-fade-in">
+            <div class="w-16 h-16 bg-brand-50 rounded-2xl flex items-center justify-center text-brand-800 shadow-sm border border-brand-100">
+              <svg class="w-8 h-8 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+              </svg>
             </div>
             <div>
-              <h3 class="text-base font-bold text-white tracking-tight leading-none mb-1">Aggarwal Store</h3>
-              <p class="text-xs text-brand-100 font-medium">Retailer Account Code: #CON-4919</p>
-              <span class="inline-block mt-2 text-[10px] bg-wholesale-yellow/25 text-wholesale-yellow font-bold px-2 py-0.5 rounded border border-wholesale-yellow/20">WHOLESALE SLAB A</span>
+              <h2 class="font-display font-black text-xl text-gray-950 tracking-tight">Wholesale Account Portal</h2>
+              <p class="text-xs text-gray-400 mt-1.5 px-2 font-medium leading-relaxed font-semibold">
+                Connect your direct B2B buyer account securely to earn exclusive confectionery loyalty points, track historic cargo loads, select from saved warehouse addresses, and reorder with 1-click.
+              </p>
+            </div>
+            
+            <button onclick="window.triggerGoogleAuth()" class="w-full bg-white hover:bg-gray-50 text-gray-700 font-extrabold text-xs py-3 rounded-2xl border border-gray-200 flex items-center justify-center gap-2 shadow-xs transition hover:shadow-sm">
+              <svg class="w-4.5 h-4.5 shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+              </svg>
+              <span>Sign In with Google</span>
+            </button>
+          </div>
+        `;
+      }
+
+      // User logged in view
+      const email = window.userProfile ? (window.userProfile.email || '') : '';
+      const name = window.userProfile ? (window.userProfile.name || 'B2B Client') : 'B2B Client';
+      const phone = window.userProfile ? (window.userProfile.phone || '') : '';
+      const avatarUrl = window.currentUser.photoURL || 'https://www.gravatar.com/avatar/?d=mp';
+      const tier = window.userProfile ? (window.userProfile.tier || 'Bronze') : 'Bronze';
+      const points = window.userProfile ? (window.userProfile.points || 0) : 0;
+      const totalSpent = window.userProfile ? (window.userProfile.totalSpent || 0) : 0;
+      const savedAddresses = window.userProfile && window.userProfile.savedAddresses ? window.userProfile.savedAddresses : [];
+
+      let tierBadgeColor = 'bg-yellow-50 text-yellow-800 border-yellow-150';
+      if (tier === 'Silver') tierBadgeColor = 'bg-gray-50 text-gray-700 border-gray-150';
+      else if (tier === 'Gold') tierBadgeColor = 'bg-amber-50 text-amber-800 border-amber-150';
+      else if (tier === 'Platinum') tierBadgeColor = 'bg-indigo-50 text-indigo-800 border-indigo-150';
+
+      const isEditing = window.profileEditingState === true;
+
+      let detailsHTML = '';
+      if (isEditing) {
+        detailsHTML = `
+          <div class="p-4 flex flex-col gap-3 font-sans">
+            <div>
+              <label class="block text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Company / Shop Name</label>
+              <input type="text" id="edit-name" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-xs font-semibold outline-none focus:border-brand-700 font-sans" value="${name}">
+            </div>
+            <div>
+              <label class="block text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">WhatsApp Mobile Line</label>
+              <input type="tel" id="edit-phone" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-xs font-semibold outline-none focus:border-brand-700 font-sans" value="${phone}" placeholder="10-digit number">
+            </div>
+            <div>
+              <label class="block text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Contact Email</label>
+              <input type="email" id="edit-email" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-xs font-semibold outline-none focus:border-brand-700 font-sans" value="${email}">
+            </div>
+            <div class="flex gap-2.5 pt-2">
+              <button onclick="window.submitProfileUpdateDetails()" class="flex-grow bg-[#11441c] hover:bg-brand-900 text-white font-bold text-xs py-2.5 rounded-xl transition select-none cursor-pointer text-center font-sans">Save Profile</button>
+              <button onclick="window.toggleProfileEditing(false)" class="bg-gray-105 hover:bg-gray-200 text-gray-600 font-bold text-xs px-4 py-2.5 rounded-xl transition select-none cursor-pointer font-sans">Cancel</button>
             </div>
           </div>
-
-          <!-- Quick B2B Metrics -->
-          <div class="grid grid-cols-2 gap-3">
-            <div class="bg-white border border-gray-150 p-3 rounded-xl shadow-xs">
-              <span class="text-[10px] text-gray-400 block font-bold uppercase tracking-wider">Credit Limit</span>
-              <span class="text-base font-black text-gray-900 mt-1 block">₹15,000</span>
-              <span class="text-[9px] text-emerald-600 font-semibold bg-emerald-50 px-1 py-0.2 rounded mt-1.5 inline-block">100% Eligible</span>
-            </div>
-            <div class="bg-white border border-gray-150 p-3 rounded-xl shadow-xs">
-              <span class="text-[10px] text-gray-400 block font-bold uppercase tracking-wider">Ledger Balance</span>
-              <span class="text-base font-black text-gray-900 mt-1 block">₹0.00</span>
-              <span class="text-[9px] text-gray-400 font-semibold bg-gray-100 px-1.5 py-0.2 rounded mt-1.5 inline-block">No Overdues</span>
-            </div>
-          </div>
-
-          <!-- Shop details list -->
-          <div class="bg-white border border-gray-150 rounded-xl divide-y divide-gray-100 overflow-hidden shadow-xs">
-            <div class="p-3.5 flex items-center justify-between">
+        `;
+      } else {
+        detailsHTML = `
+          <div class="p-4 flex flex-col gap-3.5 font-sans">
+            <div class="flex items-center justify-between">
               <div>
-                <span class="text-[10px] text-gray-400 block font-semibold uppercase tracking-wider">Verified B2B GSTIN</span>
-                <span class="text-xs font-bold text-gray-800 mt-0.5 block">02AAGFA1885C1Z4</span>
+                <span class="text-[9px] text-gray-400 block font-semibold uppercase tracking-wider">Company / Shop Name</span>
+                <span class="text-xs font-bold text-gray-800 block mt-0.5">${name}</span>
               </div>
-              <span class="text-[10px] bg-emerald-50 text-emerald-700 font-bold px-2 py-0.5 rounded border border-emerald-150">ACTIVE</span>
+              <button onclick="window.toggleProfileEditing(true)" class="text-[10px] text-brand-800 hover:text-brand-950 font-bold underline cursor-pointer select-none">Edit Profile</button>
             </div>
-            <div class="p-3.5">
-              <span class="text-[10px] text-gray-400 block font-semibold uppercase tracking-wider">Default Cargo Address</span>
-              <span class="text-xs font-bold text-gray-800 mt-0.5 block leading-relaxed font-semibold">Aggarwal Candy Bazar, Chamba, Himachal Pradesh, 176310</span>
+            <div>
+              <span class="text-[9px] text-gray-400 block font-semibold uppercase tracking-wider">WhatsApp Contact</span>
+              <span class="text-xs font-bold text-gray-800 block mt-0.5">${phone ? '+91 ' + phone : '<span class="text-gray-350 italic">None registered</span>'}</span>
             </div>
-            <div class="p-3.5">
-              <span class="text-[10px] text-gray-400 block font-semibold uppercase tracking-wider">Dedicated Territory Executive</span>
-              <span class="text-xs font-bold text-gray-800 mt-0.5 block">Mohit Kumar (+91 94180-22123)</span>
-              <p class="text-[10px] text-gray-400 mt-0.5 leading-none">Visits shop every Wednesday at 10 AM</p>
+            <div>
+              <span class="text-[9px] text-gray-400 block font-semibold uppercase tracking-wider">Registered Email</span>
+              <span class="text-xs font-bold text-gray-800 block mt-0.5">${email}</span>
+            </div>
+          </div>
+        `;
+      }
+
+      // Formulate Saved Address manager HTML
+      let addressBookHTML = '';
+      if (savedAddresses.length === 0) {
+        addressBookHTML = `
+          <p class="text-[11px] text-gray-400 italic p-3 font-semibold">No default warehouse or cargo addresses saved yet.</p>
+        `;
+      } else {
+        addressBookHTML = savedAddresses.map((addr, idx) => `
+          <div class="flex items-start justify-between p-3 gap-2 border-b border-gray-50 last:border-0 hover:bg-gray-50/50 transition font-sans">
+            <div class="flex gap-2 min-w-0">
+              <span class="flex items-center justify-center w-5 h-5 rounded-full bg-brand-50 text-[10px] font-bold text-brand-800 shrink-0 mt-0.5">${idx+1}</span>
+              <p class="text-xs text-gray-700 font-medium leading-relaxed font-semibold break-words min-w-0">${addr}</p>
+            </div>
+            <button onclick="window.deleteUserAddressDetails(\`${addr.replace(/'/g, "\\'")}\`)" class="p-1 text-gray-350 hover:text-red-600 transition shrink-0 select-none cursor-pointer">
+              <svg class="w-4.5 h-4.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-4v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+            </button>
+          </div>
+        `).join('');
+      }
+
+      // Formulate point mutations checklist
+      let pointsLogsHTML = '';
+      if (!window.userPointsHistory || window.userPointsHistory.length === 0) {
+        pointsLogsHTML = `
+          <p class="text-[11px] text-gray-400 italic p-3 font-semibold">No loyalty transactions recorded yet.</p>
+        `;
+      } else {
+        pointsLogsHTML = window.userPointsHistory.slice(0, 5).map(trx => {
+          const sign = trx.type === 'earn' ? '+' : '-';
+          const pointsColor = trx.type === 'earn' ? 'text-emerald-600 font-black' : 'text-red-00 font-black';
+          const amtText = trx.amount ? ` • (₹${trx.amount} transaction)` : '';
+          const logDate = new Date(trx.createdAt).toLocaleDateString([], { day: 'numeric', month: 'short' });
+          return `
+            <div class="flex items-center justify-between p-3 border-b border-gray-50 last:border-0 font-sans">
+              <div>
+                <span class="text-xs font-bold text-gray-800 block">${trx.reason || 'Wholesale action'}</span>
+                <span class="text-[9px] text-gray-400 block font-semibold mt-0.5">${logDate}${amtText}</span>
+              </div>
+              <span class="text-xs ${pointsColor}">${sign}${trx.points} pts</span>
+            </div>
+          `;
+        }).join('');
+      }
+
+      return `
+        <div class="flex flex-col gap-4 font-sans select-none pb-8 animate-fade-in font-sans">
+          <!-- Premium User Identity card -->
+          <div class="bg-brand-900 text-white rounded-2xl p-5 shadow-sm flex items-center gap-4 relative overflow-hidden font-sans">
+            <div class="absolute right-0 top-0 translate-x-1/4 -translate-y-1/4 w-32 h-32 bg-white/5 rounded-full"></div>
+            <img class="w-12 h-12 rounded-xl object-cover shrink-0 border border-white/20" src="${avatarUrl}" referrerPolicy="no-referrer">
+            <div class="min-w-0 flex-grow">
+              <h3 class="text-sm font-extrabold text-white tracking-tight leading-none mb-1.5 truncate font-sans">${name}</h3>
+              <p class="text-[10px] text-brand-100 font-semibold font-sans">B2B Core Client: #CLI-${window.currentUser.uid.substring(0, 6).toUpperCase()}</p>
+              <span class="inline-block mt-2.5 text-[10px] font-extrabold px-2 py-0.5 rounded border uppercase ${tierBadgeColor} tracking-wide font-sans">
+                ${tier} Client Tier
+              </span>
+            </div>
+            <button onclick="window.triggerLogoutAuth()" class="shrink-0 p-2 rounded-xl hover:bg-white/10 text-brand-100 hover:text-white transition cursor-pointer select-none" title="Logout">
+              <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
+              </svg>
+            </button>
+          </div>
+
+          <!-- DUAL CUSTOM LOYALTY POINTS ACCRUAL PANEL -->
+          <div class="bg-gradient-to-br from-[#ea580c] to-[#f58220] text-white rounded-2xl p-5 shadow-sm relative overflow-hidden font-sans">
+            <div class="absolute right-0 bottom-0 translate-x-1/6 translate-y-1/6 w-24 h-24 bg-white/10 rounded-full"></div>
+            <div class="flex items-center justify-between z-10 relative">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center font-bold text-xl shrink-0 font-sans">
+                  <svg class="w-6 h-6 text-yellow-350 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                  </svg>
+                </div>
+                <div>
+                  <span class="text-[10px] text-amber-100 uppercase tracking-widest font-extrabold block leading-none font-sans">B2B Loyalty Rewards</span>
+                  <span class="text-xs text-brand-100 font-semibold leading-relaxed mt-0.5 block font-sans">Available Wholesale Points</span>
+                  <div class="flex items-baseline gap-1 mt-0.5">
+                    <span class="text-2xl font-black text-white leading-none font-sans">${points}</span>
+                    <span class="text-[10px] text-amber-100 font-extrabold uppercase tracking-wide font-sans">Points</span>
+                  </div>
+                </div>
+              </div>
+              <div class="text-right shrink-0">
+                <span class="text-[10px] bg-white/20 text-white font-extrabold px-2.5 py-1 rounded-xl border border-white/20 inline-block leading-none font-sans">₹${totalSpent.toLocaleString()} Spent</span>
+                <p class="text-[9px] text-orange-100 mt-1.5 font-semibold font-sans">Earn 1 pt per ₹100 spend</p>
+              </div>
+            </div>
+            ${getLoyaltyProgressHTML()}
+          </div>
+
+          <!-- B2B Account Settings and Profile -->
+          <div class="flex flex-col gap-1 px-1">
+            <h4 class="text-[10px] font-extrabold text-gray-400 uppercase tracking-wider block">Account Credentials & Contact</h4>
+          </div>
+          <div class="bg-white border border-gray-150 rounded-2xl overflow-hidden shadow-2xs divide-y divide-gray-100">
+            ${detailsHTML}
+          </div>
+
+          <!-- Saved Logistics Warehouse Addresses Section -->
+          <div class="flex flex-col gap-1 px-1 mt-2">
+            <h4 class="text-[10px] font-extrabold text-gray-400 uppercase tracking-wider block">Saved Warehouse Destinations</h4>
+          </div>
+          <div class="bg-white border border-gray-150 rounded-2xl overflow-hidden shadow-2xs flex flex-col">
+            <div class="divide-y divide-gray-100 max-h-[180px] overflow-y-auto">
+              ${addressBookHTML}
+            </div>
+            
+            <!-- Address entry tool -->
+            <div class="p-3 bg-gray-50 border-t border-gray-100 font-sans">
+              <label class="block text-[9px] text-gray-400 font-bold uppercase tracking-wider mb-1 font-sans">Add New Cargo Destination</label>
+              <div class="flex gap-2">
+                <textarea id="new-cargo-address" rows="1" class="flex-grow bg-white border border-gray-200 rounded-xl px-3 py-2 text-xs font-semibold outline-none focus:border-brand-700 resize-none font-sans" placeholder="Enter landmark, market description, PIN..."></textarea>
+                <button onclick="window.submitAddCargoAddress()" class="bg-[#11441c] hover:bg-brand-900 text-white font-bold text-xs px-3.5 rounded-xl transition cursor-pointer select-none font-sans">Add</button>
+              </div>
             </div>
           </div>
 
-          <!-- Support Hotline Trigger -->
-          <div class="bg-emerald-50 border border-emerald-100 rounded-xl p-4 flex items-center justify-between shadow-xs">
-            <div>
-              <h4 class="text-xs font-semibold text-emerald-950">Wholesale Support Terminal</h4>
-              <p class="text-[11px] text-emerald-700 mt-1">Need help with rates, bulk truckloads or credit?</p>
+          <!-- Points History logs -->
+          <div class="flex flex-col gap-1 px-1 mt-2">
+            <h4 class="text-[10px] font-extrabold text-gray-400 uppercase tracking-wider block">Recent Points Transactions</h4>
+          </div>
+          <div class="bg-white border border-gray-150 rounded-2xl overflow-hidden shadow-2xs divide-y divide-gray-100">
+            ${pointsLogsHTML}
+          </div>
+
+        </div>
+      `;
+    }
+
+    // Support trigger callbacks for seamless mobile dashboard updates
+    window.profileEditingState = false;
+    window.toggleProfileEditing = function(state) {
+      window.profileEditingState = state;
+      const tabViewEl = document.getElementById('mobile-tab-view');
+      if (tabViewEl && window.currentMobileTab === 'profile') {
+        tabViewEl.innerHTML = renderMobileProfile();
+      }
+    };
+
+    window.submitProfileUpdateDetails = async function() {
+      const name = document.getElementById('edit-name').value.trim();
+      const phone = document.getElementById('edit-phone').value.trim();
+      const email = document.getElementById('edit-email').value.trim();
+      if (!name) {
+        alert("Shop/Company Designation Name is required.");
+        return;
+      }
+      const success = await window.saveUserProfileDetails({ name, phone, email });
+      if (success) {
+        window.toggleProfileEditing(false);
+      }
+    };
+
+    window.submitAddCargoAddress = async function() {
+      const addrNode = document.getElementById('new-cargo-address');
+      const address = addrNode ? addrNode.value.trim() : '';
+      if (!address) return;
+      await window.saveUserAddressDetails(address);
+      addrNode.value = '';
+      const tabViewEl = document.getElementById('mobile-tab-view');
+      if (tabViewEl && window.currentMobileTab === 'profile') {
+        tabViewEl.innerHTML = renderMobileProfile();
+      }
+    };
+
+    window.desktopProfileEditingState = false;
+
+    window.toggleDesktopProfileModal = function(state) {
+      const container = document.getElementById('desktop-profile-modal-shell');
+      const card = document.getElementById('desktop-profile-modal-card');
+      if (!container || !card) return;
+
+      if (state) {
+        window.desktopProfileEditingState = false;
+        window.renderDesktopProfileContent();
+        container.classList.remove('hidden');
+        void container.offsetWidth; // Force reflow
+        container.classList.remove('pointer-events-none', 'opacity-0');
+        container.classList.add('opacity-100');
+        card.classList.add('scale-100', 'opacity-100');
+        card.classList.remove('scale-95', 'opacity-0');
+      } else {
+        container.classList.add('pointer-events-none', 'opacity-0');
+        container.classList.remove('opacity-100');
+        card.classList.remove('scale-100', 'opacity-100');
+        card.classList.add('scale-95', 'opacity-0');
+        setTimeout(() => {
+          if (!container.classList.contains('pointer-events-none')) return;
+          container.classList.add('hidden');
+        }, 300);
+      }
+    };
+
+    window.toggleDesktopProfileEditing = function(state) {
+      window.desktopProfileEditingState = state;
+      window.renderDesktopProfileContent();
+    };
+
+    window.submitDesktopProfileUpdate = async function() {
+      const nameInput = document.getElementById('desktop-edit-name');
+      const phoneInput = document.getElementById('desktop-edit-phone');
+      const emailInput = document.getElementById('desktop-edit-email');
+      if (!nameInput) return;
+      
+      const name = nameInput.value.trim();
+      const phone = phoneInput ? phoneInput.value.trim() : '';
+      const email = emailInput ? emailInput.value.trim() : '';
+      if (!name) {
+        alert("Shop Designation is required.");
+        return;
+      }
+      const success = await window.saveUserProfileDetails({ name, phone, email });
+      if (success) {
+        window.desktopProfileEditingState = false;
+        window.renderDesktopProfileContent();
+      }
+    };
+
+    window.submitDesktopAddAddress = async function() {
+      const inputEl = document.getElementById('desktop-new-cargo-address');
+      if (!inputEl) return;
+      const address = inputEl.value.trim();
+      if (!address) return;
+      await window.saveUserAddressDetails(address);
+      inputEl.value = '';
+      window.renderDesktopProfileContent();
+    };
+
+    window.deleteDesktopSavedAddress = async function(address) {
+      await window.deleteUserAddressDetails(address);
+      window.renderDesktopProfileContent();
+    };
+
+    // --- INTEGRATED ACCOUNT MANAGEMENT RENDERING ENGINES ---
+    window.renderProfileView = function() {
+      const container = document.getElementById('profile-page-container');
+      if (!container) return;
+
+      if (!window.currentUser) {
+        container.innerHTML = `
+          <div class="max-w-md mx-auto px-6 py-16 text-center font-sans animate-fade-in bg-white rounded-3xl border border-gray-100 shadow-2xl my-10">
+            <div class="w-20 h-20 bg-brand-50 rounded-3xl flex items-center justify-center text-[#11441c] mx-auto mb-6 border border-brand-100 shadow-3xs">
+              <svg class="w-10 h-10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+              </svg>
             </div>
-            <a href="tel:+919418022123" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-3 py-2 rounded-lg shadow-sm transition">
-              Call Rep
-            </a>
+            <h2 class="font-display font-black text-2xl text-gray-950 tracking-tight">Wholesale Portal</h2>
+            <p class="text-xs text-gray-400 mt-2 px-2 font-medium leading-relaxed mb-8">
+              Connect your B2B account securely to earn loyalty cashbacks, register dispatch addresses, custom-fit delivery slots, and review order histories.
+            </p>
+            <button onclick="window.triggerGoogleAuth()" class="w-full bg-[#11441c] hover:bg-brand-900 text-white font-extrabold text-xs py-3.5 rounded-2xl flex items-center justify-center gap-2.5 transition shadow-md hover:shadow-lg cursor-pointer">
+              <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+              </svg>
+              <span>Continue with Google</span>
+            </button>
+          </div>
+        `;
+        return;
+      }
+
+      const email = window.userProfile ? (window.userProfile.email || '') : '';
+      const name = window.userProfile ? (window.userProfile.name || 'Aggarwal B2B Partner') : 'Aggarwal B2B Partner';
+      const phone = window.userProfile ? (window.userProfile.phone || '') : '';
+      const businessName = window.userProfile ? (window.userProfile.businessName || '') : '';
+      const avatarUrl = window.currentUser.photoURL || 'https://www.gravatar.com/avatar/?d=mp';
+      const tier = window.userProfile ? (window.userProfile.tier || 'Bronze') : 'Bronze';
+      const points = window.userProfile ? (window.userProfile.points || 0) : 0;
+      const totalSpent = window.userProfile ? (window.userProfile.totalSpent || 0) : 0;
+      const savedAddresses = window.userProfile && window.userProfile.savedAddresses ? window.userProfile.savedAddresses : [];
+      const deliveryPreferences = window.userProfile ? (window.userProfile.deliveryPreferences || '') : '';
+
+      let tierBadgeColor = 'bg-yellow-50 text-yellow-800 border-yellow-150';
+      if (tier === 'Silver') tierBadgeColor = 'bg-gray-50 text-gray-700 border-gray-150';
+      else if (tier === 'Gold') tierBadgeColor = 'bg-amber-50 text-amber-800 border-amber-150';
+      else if (tier === 'Platinum') tierBadgeColor = 'bg-indigo-50 text-indigo-800 border-indigo-150';
+
+      const isEditing = window.profileEditingState === true;
+
+      container.innerHTML = `
+        <div class="max-w-4xl mx-auto px-4 py-6 font-sans">
+          <!-- Back button / Page title -->
+          <div class="mb-6 select-none flex items-center justify-between border-b border-gray-100 pb-3">
+            <div class="flex items-center gap-3">
+              <button onclick="switchAppView('home')" class="p-2 -ml-2 rounded-xl text-brand-950 hover:bg-gray-100 transition inline-flex items-center justify-center cursor-pointer">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                </svg>
+              </button>
+              <h2 class="font-display font-black text-xl text-gray-950 tracking-tight leading-none">My Account Profile</h2>
+            </div>
+            <span class="border border-brand-200 bg-brand-50 text-brand-950 text-[10px] font-black uppercase px-2.5 py-1 rounded-full tracking-wide">B2B Authorized Portal</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Left Sidebar Profile Card -->
+            <div class="flex flex-col gap-5">
+              <div class="bg-white rounded-3xl border border-gray-150 p-6 shadow-3xs flex flex-col items-center text-center">
+                <div class="relative group mb-4">
+                  <img class="w-24 h-24 rounded-full object-cover border-4 border-brand-50 shadow-sm" src="${avatarUrl}" referrerPolicy="no-referrer">
+                  <div class="absolute inset-0 bg-black/40 rounded-full opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white text-[10px] font-bold cursor-pointer">
+                    Verified
+                  </div>
+                </div>
+                <h3 class="text-base font-bold text-gray-950 truncate max-w-full">${name}</h3>
+                <p class="text-[11px] text-gray-400 mt-0.5">${email}</p>
+                <div class="inline-flex items-center gap-1 border ${tierBadgeColor} text-[10px] uppercase font-black px-3 py-1 rounded-full mt-3.5 tracking-wider">
+                  ⭐ ${tier} Member
+                </div>
+
+                <!-- Stats component -->
+                <div class="w-full grid grid-cols-2 gap-3 mt-6 pt-6 border-t border-gray-100">
+                  <div class="text-left bg-gray-50 p-3 rounded-2xl border border-gray-100">
+                    <span class="text-[10px] text-gray-400 font-bold uppercase block">Loyalty Balance</span>
+                    <span class="text-base font-black text-[#11441c] block mt-0.5">${points} <span class="text-[10px] font-normal text-gray-400">PTS</span></span>
+                  </div>
+                  <div class="text-left bg-gray-50 p-3 rounded-2xl border border-gray-100">
+                    <span class="text-[10px] text-gray-400 font-bold uppercase block">Wholesale Spent</span>
+                    <span class="text-base font-black text-gray-800 block mt-0.5">₹${Number(totalSpent).toLocaleString()}</span>
+                  </div>
+                </div>
+
+                <button onclick="switchAppView('rewards')" class="w-full bg-[#11441c] hover:bg-brand-900 text-white font-extrabold text-[10px] py-2.5 rounded-xl uppercase tracking-wider mt-5 transition shadow-3xs hover:shadow-2xs cursor-pointer">
+                  Redeem Rewards Vouchers
+                </button>
+              </div>
+
+              <!-- Quick Navigation list -->
+              <div class="bg-white rounded-3xl border border-gray-150 p-4 shadow-3xs flex flex-col gap-1">
+                <button onclick="switchAppView('orders')" class="w-full flex items-center justify-between p-2.5 rounded-xl text-xs font-bold text-gray-700 hover:bg-gray-50 hover:text-brand-900 text-left transition cursor-pointer">
+                  <span class="flex items-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg> My Bulk Orders</span>
+                  <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
+                </button>
+                <button onclick="switchAppView('rewards')" class="w-full flex items-center justify-between p-2.5 rounded-xl text-xs font-bold text-gray-700 hover:bg-gray-50 hover:text-brand-900 text-left transition cursor-pointer">
+                  <span class="flex items-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Rewards Program</span>
+                  <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- Right Column Settings Form -->
+            <div class="md:col-span-2 flex flex-col gap-6">
+              <!-- Personal details Card -->
+              <div class="bg-white rounded-3xl border border-gray-150 p-6 shadow-3xs">
+                <div class="flex items-center justify-between border-b border-gray-100 pb-3 mb-5 select-none">
+                  <h4 class="font-display font-bold text-sm text-gray-950 uppercase tracking-tight">Dealer Core Profile Info</h4>
+                  ${!isEditing ? `<button onclick="window.toggleLocalProfileEditing(true)" class="text-xs text-brand-800 hover:text-brand-950 font-bold underline cursor-pointer">Edit Profile</button>` : ''}
+                </div>
+
+                ${isEditing ? `
+                  <div class="flex flex-col gap-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label class="block text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Company / Shop Name</label>
+                        <input type="text" id="full-profile-name" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold outline-none focus:border-brand-700" value="${name}">
+                      </div>
+                      <div>
+                        <label class="block text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Owner / Full Name</label>
+                        <input type="text" id="full-profile-business-name" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold outline-none focus:border-brand-700 font-sans" value="${businessName}" placeholder="Enter owner name">
+                      </div>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label class="block text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">WhatsApp Line</label>
+                        <input type="tel" id="full-profile-phone" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold outline-none focus:border-brand-700 placeholder-gray-400 font-sans" value="${phone}" placeholder="10-digit mobile phone">
+                      </div>
+                      <div>
+                        <label class="block text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Contact Email (Sign-In synced)</label>
+                        <input type="email" id="full-profile-email" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold outline-none focus:border-brand-700 font-sans" value="${email}" disabled>
+                      </div>
+                    </div>
+                    <div>
+                      <label class="block text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">B2B Delivery Preferences / Forklift Instructions</label>
+                      <textarea id="full-profile-preferences" rows="2" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-2 text-xs font-semibold outline-none focus:border-brand-700 placeholder-gray-400 mt-0.5 leading-relaxed resize-none font-sans" placeholder="E.g., Forklift entry slot #3. Drop sweets pallet by 10 AM. Gate code 9897.">${deliveryPreferences}</textarea>
+                    </div>
+
+                    <div class="flex gap-2.5 pt-2">
+                      <button onclick="window.submitFullProfileUpdate()" class="bg-[#11441c] hover:bg-brand-900 text-white font-extrabold text-xs px-5 py-2.5 rounded-xl transition cursor-pointer font-sans">Save Changes</button>
+                      <button onclick="window.toggleLocalProfileEditing(false)" class="bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold text-xs px-4 py-2.5 rounded-xl transition cursor-pointer font-sans">Cancel</button>
+                    </div>
+                  </div>
+                ` : `
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 leading-relaxed">
+                    <div>
+                      <span class="text-[10px] text-gray-400 block font-bold uppercase tracking-wide">Company or Shop Name</span>
+                      <span class="text-xs font-bold text-gray-800 block mt-1">${name}</span>
+                    </div>
+                    <div>
+                      <span class="text-[10px] text-gray-400 block font-bold uppercase tracking-wide">Authorized Representative / Owner</span>
+                      <span class="text-xs font-bold text-gray-800 block mt-1">${businessName ? businessName : '<span class="text-gray-350 italic">None set</span>'}</span>
+                    </div>
+                    <div>
+                      <span class="text-[10px] text-gray-400 block font-bold uppercase tracking-wide">Active WhatsApp Mobile</span>
+                      <span class="text-xs font-bold text-gray-800 block mt-1">${phone ? '+91 ' + phone : '<span class="text-gray-350 italic">None registered</span>'}</span>
+                    </div>
+                    <div>
+                      <span class="text-[10px] text-gray-400 block font-bold uppercase tracking-wide">Primary Merchant Email</span>
+                      <span class="text-xs font-bold text-gray-800 block mt-1">${email}</span>
+                    </div>
+                    <div class="sm:col-span-2">
+                      <span class="text-[10px] text-gray-400 block font-bold uppercase tracking-wide">Special Warehouse Instructions & Preferences</span>
+                      <span class="text-xs font-medium text-gray-600 block mt-1 bg-gray-50 p-3 rounded-2xl border border-gray-105 leading-relaxed">
+                        ${deliveryPreferences ? deliveryPreferences : '<span class="text-gray-350 italic">No custom delivery preferences saved. Click Edit Profile to specify tailgate unloading, gate access codes, or timing locks.</span>'}
+                      </span>
+                    </div>
+                  </div>
+                `}
+              </div>
+
+              <!-- Saved addresses Card -->
+              <div class="bg-white rounded-3xl border border-gray-150 p-6 shadow-3xs">
+                <div class="flex items-center justify-between border-b border-gray-100 pb-3 mb-4 select-none">
+                  <h4 class="font-display font-bold text-sm text-gray-950 uppercase tracking-tight">Cargo Destination Address Directory</h4>
+                  <span class="text-[10px] text-gray-400 font-bold uppercase">${savedAddresses.length} / 20 Registered</span>
+                </div>
+
+                <!-- Live address listings -->
+                <div class="flex flex-col gap-2 max-h-[250px] overflow-y-auto mb-4">
+                  ${savedAddresses.length === 0 ? `
+                    <p class="text-xs text-gray-400 italic py-4">No custom delivery addresses or warehouse addresses added yet.</p>
+                  ` : savedAddresses.map((addr, idx) => `
+                    <div class="flex items-start justify-between p-3 gap-2 bg-gray-50/50 hover:bg-gray-50 border border-gray-100 rounded-2xl transition">
+                      <div class="flex gap-2 min-w-0">
+                        <span class="flex items-center justify-center w-5 h-5 rounded-full bg-brand-50 text-[10px] font-bold text-brand-800 shrink-0 mt-0.5">${idx+1}</span>
+                        <p class="text-xs text-gray-700 font-bold leading-relaxed break-words min-w-0">${addr}</p>
+                      </div>
+                      <button onclick="window.deleteFullProfileAddress(\`${addr.replace(/'/g, "\\'")}\`)" class="p-1 text-gray-350 hover:text-red-600 transition shrink-0 cursor-pointer select-none" title="Delete address">
+                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-4v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                      </button>
+                    </div>
+                  `).join('')}
+                </div>
+
+                <!-- Add Address inline form -->
+                <div class="flex gap-2.5">
+                  <input type="text" id="full-profile-new-address" class="flex-grow bg-gray-50 border border-gray-200 focus:bg-white focus:border-brand-700 rounded-xl px-3.5 py-2.5 text-xs font-semibold outline-none" placeholder="Enter warehouse/destination address (street, city, state, zip)... font-sans">
+                  <button onclick="window.submitFullProfileAddAddress()" class="bg-[#11441c] hover:bg-brand-900 text-white font-extrabold text-xs px-5 py-2.5 rounded-xl transition cursor-pointer shrink-0 font-sans">Add Address</button>
+                </div>
+              </div>
+
+              <!-- General System Settings Card -->
+              <div class="bg-white rounded-3xl border border-gray-150 p-6 shadow-3xs">
+                <div class="border-b border-gray-100 pb-3 mb-4 select-none">
+                  <h4 class="font-display font-bold text-sm text-gray-950 uppercase tracking-tight">Account Settings & Cargo Notifications</h4>
+                </div>
+                <div class="flex flex-col gap-4 select-none">
+                  <label class="flex items-center justify-between cursor-pointer">
+                    <div>
+                      <span class="text-xs font-extrabold text-gray-800 block">WhatsApp Dispatches Alerts</span>
+                      <span class="text-[10px] text-gray-400 block mt-0.5">Push tracking details on cargo loaders via WhatsApp</span>
+                    </div>
+                    <input type="checkbox" checked class="w-4.5 h-4.5 accent-brand-800 rounded">
+                  </label>
+                  <label class="flex items-center justify-between cursor-pointer border-t border-gray-50 pt-3">
+                    <div>
+                      <span class="text-xs font-extrabold text-gray-800 block">Weekly Wholesale Rate Sheet</span>
+                      <span class="text-[10px] text-gray-400 block mt-0.5">Subscribe to weekly sweet confectionery bulk rate change logs</span>
+                    </div>
+                    <input type="checkbox" checked class="w-4.5 h-4.5 accent-brand-800 rounded">
+                  </label>
+                </div>
+
+                <div class="flex items-center justify-between border-t border-gray-100 pt-5 mt-5">
+                  <span class="text-[10px] text-gray-400 font-medium">B2B Core System v1.5 • Active Live Secure Token</span>
+                  <button onclick="window.triggerLogoutAuth()" class="bg-red-50 hover:bg-red-100 text-red-650 hover:text-red-700 text-xs font-extrabold px-5 py-2.5 rounded-xl transition cursor-pointer select-none font-sans">
+                    Logout of Account
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    };
+
+    window.toggleLocalProfileEditing = function(state) {
+      window.profileEditingState = !!state;
+      window.renderProfileView();
+    };
+
+    window.submitFullProfileUpdate = async function() {
+      const name = document.getElementById('full-profile-name').value.trim();
+      const businessName = document.getElementById('full-profile-business-name').value.trim();
+      const phone = document.getElementById('full-profile-phone').value.trim();
+      const deliveryPreferences = document.getElementById('full-profile-preferences').value.trim();
+
+      if (!name) {
+        alert("Shop Name or Designation is required.");
+        return;
+      }
+
+      const success = await window.saveUserProfileDetails({ name, businessName, phone, deliveryPreferences });
+      if (success) {
+        window.toggleLocalProfileEditing(false);
+        // Refresh the header display instantly!
+        updateHeaderAuthBadge();
+      }
+    };
+
+    window.submitFullProfileAddAddress = async function() {
+      const inputEl = document.getElementById('full-profile-new-address');
+      if (!inputEl) return;
+      const address = inputEl.value.trim();
+      if (!address) return;
+      await window.saveUserAddressDetails(address);
+      inputEl.value = '';
+      window.renderProfileView();
+    };
+
+    window.deleteFullProfileAddress = async function(address) {
+      await window.deleteUserAddressDetails(address);
+      window.renderProfileView();
+    };
+
+    window.renderAboutPage = function() {
+      const container = document.getElementById('about-page-container');
+      if (!container) return;
+
+      container.innerHTML = `
+        <div class="max-w-4xl mx-auto px-4 py-8 md:py-12 font-sans animate-fade-in">
+          <div class="relative rounded-3xl overflow-hidden bg-brand-900 text-white p-8 md:p-12 shadow-xl mb-8 border border-white/10">
+            <div class="absolute inset-0 z-0 bg-cover bg-center opacity-25" style="background-image: url('https://images.unsplash.com/photo-1604719312566-8912e9227c6a?auto=format&fit=crop&q=80&w=1200');"></div>
+            <div class="absolute inset-0 bg-gradient-to-t from-brand-950 via-brand-900/90 to-transparent z-10"></div>
+            
+            <div class="relative z-20">
+              <span class="text-xs font-bold tracking-widest bg-yellow-400 text-brand-950 px-2.5 py-1 rounded uppercase mb-4 inline-block">Established Since 1994</span>
+              <h1 class="text-3xl md:text-5xl font-black tracking-tight leading-tight mb-4 font-display">Aggarwal Wholesale Store</h1>
+              <p class="text-sm md:text-lg text-brand-100 max-w-2xl leading-relaxed">
+                Chamba's premier B2B supplier of confectionaries, drinks, premium sweets, and everyday family-store requirements. Serving over 15,000+ Kiryana stores and distribution routes with maximum trade margins.
+              </p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+            <div class="bg-white p-6 rounded-2xl border border-gray-150 shadow-3xs flex flex-col gap-3">
+              <div class="w-12 h-12 bg-brand-50 rounded-xl flex items-center justify-center text-brand-800">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                </svg>
+              </div>
+              <h3 class="font-bold text-gray-900 text-base">Direct Factory Supply</h3>
+              <p class="text-xs text-gray-500 leading-relaxed">
+                By purchasing direct from leading factories and confectionery hubs, we eliminate agents to pass 100% additional trade margins straight to you.
+              </p>
+            </div>
+
+            <div class="bg-white p-6 rounded-2xl border border-gray-150 shadow-3xs flex flex-col gap-3">
+              <div class="w-12 h-12 bg-brand-50 rounded-xl flex items-center justify-center text-brand-800">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5a3 3 0 10-3 3h3zm0-3a1 1 0 011 1v1H9V3a1 1 0 011-1h2z"></path>
+                </svg>
+              </div>
+              <h3 class="font-bold text-gray-900 text-base">B2B Loyalty Points</h3>
+              <p class="text-xs text-gray-500 leading-relaxed">
+                Every commercial order places direct rewards points into your client profile. Redeem points directly for cashback coupons or premium stock upgrades.
+              </p>
+            </div>
+
+            <div class="bg-white p-6 rounded-2xl border border-gray-150 shadow-3xs flex flex-col gap-3">
+              <div class="w-12 h-12 bg-brand-50 rounded-xl flex items-center justify-center text-brand-800">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                </svg>
+              </div>
+              <h3 class="font-bold text-gray-900 text-base">Fast Cargo Dispatch</h3>
+              <p class="text-xs text-gray-500 leading-relaxed">
+                Dedicated shipping routes covering Chamba and regions of Himachal Pradesh. Standard routes are dispatched within 24 hours of confirmation.
+              </p>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-3xl p-8 border border-gray-150 shadow-3xs">
+            <h2 class="font-display font-black text-2xl text-gray-950 tracking-tight mb-4">Our B2B Commitment</h2>
+            <div class="prose prose-sm text-gray-600 space-y-4 font-sans">
+              <p class="text-xs leading-relaxed">
+                At Aggarwal Wholesale Store, we build more than supplier connections; we foster lasting business growth. Our digital B2B portal empowers micro-entrepreneurs, local retailers, and retail networks to plan inventory with high visibility, upfront pricing, precise item specs, and direct cashback.
+              </p>
+              <p class="text-xs leading-relaxed">
+                We believe in simplifying the supply chain. With our strict quality checks, curated catalog of confectionery, chocolate drops, standard candies, chips, bakery inputs, and beverages, you can buy with total assurance and build a better brand for your storefront.
+              </p>
+            </div>
+            
+            <div class="mt-8 pt-6 border-t border-gray-100 flex flex-wrap gap-4 items-center justify-between">
+              <div>
+                <p class="text-[10px] uppercase font-extrabold text-gray-400 tracking-wider">Direct Support Helpline</p>
+                <p class="text-base font-black text-[#11441c] font-display">+91 (189) 244-0199</p>
+              </div>
+              <button onclick="switchAppView('home')" class="bg-[#11441c] hover:bg-brand-900 text-white font-extrabold text-xs px-6 py-3 rounded-xl transition cursor-pointer font-sans shadow-3xs">
+                Browse Bulk Catalog
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+    };
+
+    window.renderRewardsView = function() {
+      const container = document.getElementById('rewards-page-container');
+      if (!container) return;
+
+      if (!window.currentUser) {
+        container.innerHTML = `
+          <div class="max-w-md mx-auto px-6 py-16 text-center font-sans animate-fade-in bg-white rounded-3xl border border-gray-100 shadow-2xl my-10">
+            <div class="w-20 h-20 bg-brand-50 rounded-3xl flex items-center justify-center text-[#11441c] mx-auto mb-6 border border-brand-100 shadow-3xs">
+              <svg class="w-10 h-10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h2 class="font-display font-black text-2xl text-gray-950 tracking-tight">Wholesale Partner Rewards</h2>
+            <p class="text-xs text-gray-400 mt-2 px-2 font-medium leading-relaxed mb-8">
+              Log in with your Google account to credit confectionery purchases, track your wholesale partner balance, and cash in points for discount vouchers.
+            </p>
+            <button onclick="window.triggerGoogleAuth()" class="w-full bg-[#11441c] hover:bg-brand-900 text-white font-extrabold text-xs py-3.5 rounded-2xl flex items-center justify-center gap-2.5 transition shadow-md hover:shadow-lg cursor-pointer font-sans">
+              <span>Sign In with Google</span>
+            </button>
+          </div>
+        `;
+        return;
+      }
+
+      const points = window.userProfile ? (window.userProfile.points || 0) : 0;
+      const tier = window.userProfile ? (window.userProfile.tier || 'Bronze') : 'Bronze';
+      const historyItems = window.userPointsHistory || [];
+
+      // Determine next tier threshold details
+      let currentThreshold = 1000;
+      let nextTier = "Silver";
+      let progressPercent = Math.min(100, Math.floor((points / currentThreshold) * 100));
+      let benefitsText = "Standard 1% cashback on confectionery orders.";
+
+      if (tier === 'Bronze') {
+        currentThreshold = 1000;
+        nextTier = "Silver";
+        progressPercent = Math.min(100, Math.floor((points / 1000) * 100));
+        benefitsText = "Bronze level: standard 1% B2B purchase point credit. (Up to 1,000 pts)";
+      } else if (tier === 'Silver') {
+        currentThreshold = 3000;
+        nextTier = "Gold";
+        progressPercent = Math.min(100, Math.floor(((points - 1000) / 2000) * 100));
+        benefitsText = "Silver level: 2% cashback points + higher warehouse dispatch cargo queue priority!";
+      } else if (tier === 'Gold') {
+        currentThreshold = 10000;
+        nextTier = "Platinum";
+        progressPercent = Math.min(100, Math.floor(((points - 3000) / 7000) * 100));
+        benefitsText = "Gold level: 3.5% confectionery points credit + dedicated Support manager hotline.";
+      } else if (tier === 'Platinum') {
+        currentThreshold = 10000;
+        nextTier = "Top Tier Achieved";
+        progressPercent = 100;
+        benefitsText = "Platinum VIP wholesale level: 5% maximum rebate + direct custom quotes on bulk cargo shipments!";
+      }
+
+      // Render the loyalty card, meter and ledger
+      container.innerHTML = `
+        <div class="max-w-4xl mx-auto px-4 py-6 font-sans">
+          <!-- Back button / Page title -->
+          <div class="mb-6 select-none flex items-center justify-between border-b border-gray-100 pb-3">
+            <div class="flex items-center gap-3">
+              <button onclick="switchAppView('home')" class="p-2 -ml-2 rounded-xl text-brand-950 hover:bg-gray-100 transition inline-flex items-center justify-center cursor-pointer">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                </svg>
+              </button>
+              <h2 class="font-display font-black text-xl text-gray-950 tracking-tight leading-none">Wholesale Rewards Club</h2>
+            </div>
+            <span class="bg-[#11441c] text-white text-[9px] font-extrabold uppercase px-2.5 py-1 rounded-full tracking-wide">Loyalty Partner</span>
+          </div>
+
+          <!-- Hero Balance Card -->
+          <div class="bg-gradient-to-br from-[#11441c] to-brand-950 text-white rounded-3xl p-6 md:p-8 shadow-md mb-6 relative overflow-hidden">
+            <div class="absolute right-0 bottom-0 translate-x-12 translate-y-12 opacity-10 shrink-0 text-white select-none">
+              <!-- Giant logo circle overlay -->
+              <svg class="w-64 h-64" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.25z"/></svg>
+            </div>
+
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 relative z-10">
+              <div>
+                <span class="text-[10px] text-yellow-300 uppercase tracking-widest font-bold">Active Confectionery Balance</span>
+                <span class="text-4xl md:text-5xl font-black block mt-2 font-sans tracking-tight">${points} <span class="text-base font-semibold text-brand-200">PTS</span></span>
+                <p class="text-xs text-brand-100/90 mt-3 max-w-md leading-relaxed">
+                  ${benefitsText} Points are earned matching rate ratios for every rupee spent, redeemable instantly below on business-critical wholesales!
+                </p>
+              </div>
+
+              <!-- Tier box helper -->
+              <div class="bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 p-4 shrink-0 min-w-[200px] text-center">
+                <span class="text-[10px] text-yellow-300 uppercase tracking-wider font-bold">Current Dealer Tier</span>
+                <span class="text-xl font-black block text-white uppercase mt-1 tracking-tight">⭐ ${tier}</span>
+                
+                <!-- Progress bar -->
+                ${tier !== 'Platinum' ? `
+                  <div class="w-full bg-white/20 h-2 rounded-full mt-3 overflow-hidden">
+                    <div class="bg-yellow-300 h-full rounded-full" style="width: ${progressPercent}%"></div>
+                  </div>
+                  <div class="flex justify-between items-center text-[9px] text-brand-200 mt-1 font-bold select-none">
+                    <span>${points} Pts</span>
+                    <span>Next: ${nextTier} (${currentThreshold} Pts)</span>
+                  </div>
+                ` : `
+                  <div class="text-[9px] text-yellow-300 mt-3.5 font-bold uppercase tracking-wider">🌟 Elite Tier Cap Achieved</div>
+                `}
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Left Side Points Redeem Voucher Options -->
+            <div class="md:col-span-2 flex flex-col gap-5">
+              <div class="bg-white rounded-3xl border border-gray-150 p-6 shadow-3xs">
+                <div class="border-b border-gray-100 pb-3 mb-5 select-none">
+                  <h4 class="font-display font-bold text-sm text-gray-950 uppercase tracking-tight">Point Redeem Voucher Center</h4>
+                  <p class="text-[10px] text-gray-400 mt-1 font-medium leading-relaxed">Cash in accumulated sweet bulk confectionery loyalty points on direct wholesale discount coupons!</p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <!-- Voucher Card 1 -->
+                  <div class="bg-gradient-to-br from-white to-gray-50 border border-gray-200 rounded-3xl p-5 shadow-3xs flex flex-col justify-between">
+                    <div>
+                      <span class="bg-orange-50 text-orange-700 text-[10px] font-black uppercase px-2 py-0.5 rounded-md tracking-wider font-sans">Wholesale Value</span>
+                      <h5 class="text-xl font-black text-gray-950 mt-2">₹250 Bulk Voucher</h5>
+                      <p class="text-[10.5px] text-gray-400 mt-1 leading-relaxed">Redeemable towards any sweet assortment or crisp items bulk carriage invoice.</p>
+                    </div>
+                    <div class="mt-5 border-t border-gray-100 pt-4 flex items-center justify-between">
+                      <span class="text-xs font-black text-brand-900">500 PTS</span>
+                      <button onclick="window.redeemB2BPoints(500, 250, 'REDEEM250')" class="bg-[#11441c] hover:bg-brand-900 text-white font-extrabold text-[10px] px-3.5 py-2 rounded-xl transition uppercase tracking-wide cursor-pointer select-none font-sans">Redeem</button>
+                    </div>
+                  </div>
+
+                  <!-- Voucher Card 2 -->
+                  <div class="bg-gradient-to-br from-white to-gray-50 border border-gray-200 rounded-3xl p-5 shadow-3xs flex flex-col justify-between font-sans">
+                    <div>
+                      <span class="bg-orange-50 text-orange-700 text-[10px] font-black uppercase px-2 py-0.5 rounded-md tracking-wider font-sans">Cargo Carriage Value</span>
+                      <h5 class="text-xl font-black text-gray-950 mt-2">₹650 Carrier Voucher</h5>
+                      <p class="text-[10.5px] text-gray-400 mt-1 leading-relaxed">Deducts bulk freight delivery charges or logistics fees at checkout.</p>
+                    </div>
+                    <div class="mt-5 border-t border-gray-100 pt-4 flex items-center justify-between">
+                      <span class="text-xs font-black text-brand-900 font-sans">1,200 PTS</span>
+                      <button onclick="window.redeemB2BPoints(1200, 650, 'REDEEM650')" class="bg-[#11441c] hover:bg-brand-900 text-white font-extrabold text-[10px] px-3.5 py-2 rounded-xl transition uppercase tracking-wide cursor-pointer select-none font-sans">Redeem</button>
+                    </div>
+                  </div>
+
+                  <!-- Voucher Card 3 -->
+                  <div class="bg-gradient-to-br from-white to-gray-50 border border-gray-200 rounded-3xl p-5 shadow-3xs flex flex-col justify-between sm:col-span-2 font-sans">
+                    <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
+                      <div>
+                        <span class="bg-brand-50 text-[#11441c] text-[10px] font-black uppercase px-2 py-0.5 rounded-md tracking-wider">Elite Dealer Value</span>
+                        <h5 class="text-xl font-black text-gray-950 mt-2">₹1,500 VIP Confectionery Voucher</h5>
+                        <p class="text-[10.5px] text-gray-400 mt-1 leading-relaxed max-w-sm">Deducts premium value directly from wholesale pallets. Exclusively available to top recurring store accounts.</p>
+                      </div>
+                      <div class="sm:text-right flex sm:flex-col justify-between sm:justify-start items-center sm:items-end gap-2 shrink-0">
+                        <span class="text-sm font-black text-brand-900">2,500 PTS</span>
+                        <button onclick="window.redeemB2BPoints(2500, 1500, 'REDEEM1500')" class="bg-[#11441c] hover:bg-brand-900 text-white font-extrabold text-[10px] px-4 py-2.5 rounded-xl transition uppercase tracking-wider cursor-pointer select-none font-sans">Redeem VIP</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Column Ledger pointsHistory List -->
+            <div class="bg-white rounded-3xl border border-gray-150 p-6 shadow-3xs">
+              <div class="border-b border-gray-100 pb-3 mb-4 select-none">
+                <h4 class="font-display font-bold text-sm text-gray-950 uppercase tracking-tight">Points Transaction Ledger</h4>
+              </div>
+
+              <div class="flex flex-col gap-3.5 max-h-[350px] overflow-y-auto font-sans">
+                ${historyItems.length === 0 ? `
+                  <p class="text-xs text-gray-400 italic py-6 text-center select-none">No loyalty transaction history recorded yet on your business profile ledger.</p>
+                ` : historyItems.map(item => {
+                  const dateStr = item.createdAt ? new Date(item.createdAt).toLocaleDateString(undefined, {month: 'short', day: 'numeric'}) : '';
+                  const typeEarn = item.type === 'earn';
+                  
+                  return `
+                    <div class="flex items-start justify-between border-b border-gray-50 pb-3 last:border-0 last:pb-0">
+                      <div class="min-w-0 pr-2 leading-tight">
+                        <span class="text-xs font-bold text-gray-900 block truncate max-w-full" title="${item.reason || ''}">${item.reason || 'Confectionery purchase credit'}</span>
+                        <span class="text-[9px] text-gray-400 font-bold block mt-0.5">${dateStr} • ID: ${item.transactionId}</span>
+                      </div>
+                      <span class="${typeEarn ? 'bg-green-50 text-green-700' : 'bg-orange-50 text-orange-700'} text-[10px] font-black px-2 py-0.5 rounded-lg shrink-0 select-none uppercase mt-0.5">
+                        ${typeEarn ? '+' : '-'}${item.points} PTS
+                      </span>
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    };
+
+    window.redeemB2BPoints = async function(pointsCost, couponValue, couponCode) {
+      if (!window.currentUser) {
+        alert("Please login first to redeem rewards.");
+        return;
+      }
+      const currentPts = Number(window.userProfile ? window.userProfile.points : 0);
+      if (currentPts < pointsCost) {
+        alert("Incorrect action: Insufficient points Balance!");
+        return;
+      }
+      
+      const uid = window.currentUser.uid;
+      const transactionId = "PH-" + Math.floor(100000 + Math.random() * 900000);
+      const ptsDocRef = doc(db, 'users', uid, 'pointsHistory', transactionId);
+      
+      try {
+        await setDoc(ptsDocRef, {
+          transactionId,
+          userId: uid,
+          type: "redeem",
+          points: pointsCost,
+          amount: couponValue,
+          reason: `Redeemed ${couponCode} Bulk discount coupon`,
+          createdAt: new Date().toISOString()
+        });
+        
+        const userDocRef = doc(db, 'users', uid);
+        const newPoints = currentPts - pointsCost;
+        await updateDoc(userDocRef, {
+          points: newPoints,
+          updatedAt: new Date().toISOString()
+        });
+        
+        if (window.userProfile) {
+          window.userProfile.points = newPoints;
+        }
+        
+        // Auto apply coupon inside cart!!
+        window.appliedCoupon = couponCode;
+        window.appliedCouponValue = couponValue;
+        alert(`🎉 Success! Redeemed ${pointsCost} Points for a ₹${couponValue} Coupon! Code: ${couponCode}. It has been automatically applied to your cart.`);
+        
+        updateHeaderAuthBadge();
+        refreshCartSystemCounters();
+        renderRewardsView();
+      } catch (err) {
+        window.handleFirestoreError(err, 'write', `users/${uid}/pointsHistory/${transactionId}`);
+      }
+    };
+
+    window.renderOrdersView = function() {
+      const container = document.getElementById('orders-page-container');
+      if (!container) return;
+
+      if (!window.currentUser) {
+        container.innerHTML = `
+          <div class="max-w-md mx-auto px-6 py-16 text-center font-sans animate-fade-in bg-white rounded-3xl border border-gray-100 shadow-2xl my-10">
+            <div class="w-20 h-20 bg-brand-50 rounded-3xl flex items-center justify-center text-[#11441c] mx-auto mb-6 border border-brand-100 shadow-3xs">
+              <svg class="w-10 h-10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+            </div>
+            <h2 class="font-display font-black text-2xl text-gray-950 tracking-tight">Your Bulk Order Ledger</h2>
+            <p class="text-xs text-gray-400 mt-2 px-2 font-medium leading-relaxed mb-8">
+              Verify your active and historic bulk confectioneries orders securely. Register cargo destinations, check invoice loads and trigger quick reorders.
+            </p>
+            <button onclick="window.triggerGoogleAuth()" class="w-full bg-[#11441c] hover:bg-brand-900 text-white font-extrabold text-xs py-3.5 rounded-2xl flex items-center justify-center gap-2.5 transition shadow-md hover:shadow-lg cursor-pointer font-sans">
+              <span>Continue with Google</span>
+            </button>
+          </div>
+        `;
+        return;
+      }
+
+      const orders = window.userOrders || [];
+
+      // Categorize orders (e.g. Active Orders placed in the last 48 hours vs Order History older)
+      const now = new Date();
+      const fortyEightHoursInMs = 48 * 60 * 60 * 1000;
+      
+      const activeOrders = orders.filter(ord => {
+        const orderDate = new Date(ord.createdAt);
+        return (now - orderDate) < fortyEightHoursInMs;
+      });
+      
+      const historyOrders = orders.filter(ord => {
+        const orderDate = new Date(ord.createdAt);
+        return (now - orderDate) >= fortyEightHoursInMs;
+      });
+
+      container.innerHTML = `
+        <div class="max-w-4xl mx-auto px-4 py-6 font-sans">
+          <!-- Back button / Page title -->
+          <div class="mb-6 select-none flex items-center justify-between border-b border-gray-100 pb-3">
+            <div class="flex items-center gap-3">
+              <button onclick="switchAppView('home')" class="p-2 -ml-2 rounded-xl text-brand-950 hover:bg-gray-100 transition inline-flex items-center justify-center cursor-pointer">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                </svg>
+              </button>
+              <h2 class="font-display font-black text-xl text-gray-950 tracking-tight leading-none">B2B Order Histories</h2>
+            </div>
+            <span class="border border-gray-200 bg-gray-50 text-gray-700 text-[10px] font-bold px-2.5 py-1 rounded-full font-sans"> Ledger Sync Online </span>
+          </div>
+
+          <!-- Active Orders Section -->
+          <div class="mb-8">
+            <div class="flex items-center gap-2 mb-4 font-sans">
+              <h3 class="font-display font-black text-sm text-gray-950 uppercase tracking-tight">Active Dispatches</h3>
+              <span class="w-2.5 h-2.5 bg-green-500 rounded-full animate-ping shrink-0 select-none"></span>
+              <span class="bg-green-50 text-green-700 text-[9px] font-black px-2 py-0.5 rounded-full select-none uppercase tracking-wide leading-none">${activeOrders.length} New Placed</span>
+            </div>
+
+            ${activeOrders.length === 0 ? `
+              <div class="bg-gray-50/50 rounded-3xl p-6 text-center border border-dashed border-gray-200 py-10 select-none font-sans">
+                <p class="text-xs text-gray-400 italic">No active dispatches or pending cargo in transit currently. Any bulk order you complete will populate here in active dispatch tracking for 48 hours.</p>
+                <button onclick="switchAppView('home')" class="mt-4 bg-[#11441c] hover:bg-brand-900 text-white font-extrabold text-[10px] px-4 py-2 rounded-full uppercase tracking-wider transition cursor-pointer select-none">Go to Bulk Catalog</button>
+              </div>
+            ` : activeOrders.map(ord => renderSingleOrderCard(ord, true)).join('')}
+          </div>
+
+          <!-- Order History Section -->
+          <div>
+            <h3 class="font-display font-black text-sm text-gray-950 uppercase tracking-tight mb-4 select-none font-sans">Order Invoice Archives</h3>
+            ${historyOrders.length === 0 && activeOrders.length === 0 ? `
+              <div class="bg-white rounded-3xl p-10 text-center border border-gray-150 py-12 select-none font-sans">
+                <p class="text-xs text-gray-400 italic leading-relaxed">No historic wholesale dispatches logged. Start your store partnerships with your first cargo request.</p>
+              </div>
+            ` : historyOrders.length === 0 ? `
+              <div class="bg-gray-50/20 p-5 rounded-2xl border border-dashed border-gray-150 text-center text-xs text-gray-400 italic select-none font-sans">No archived dispatches older than 48 hours yet.</div>
+            ` : historyOrders.map(ord => renderSingleOrderCard(ord, false)).join('')}
+          </div>
+        </div>
+      `;
+    };
+
+    function renderSingleOrderCard(ord, isActive) {
+      const dateStr = ord.createdAt ? new Date(ord.createdAt).toLocaleString(undefined, {month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit'}) : '';
+      const totalAmount = ord.total || 0;
+      
+      let statusLabel = "Archived Dispatch";
+      let statusColor = "bg-gray-50 text-gray-500 border-gray-100";
+      if (isActive) {
+        statusLabel = "Cargo Packing";
+        statusColor = "bg-yellow-50 text-yellow-700 border-yellow-105";
+        if (totalAmount > 10000) {
+          statusLabel = "Cargo Loading";
+        }
+        const orderAgeInMs = new Date() - new Date(ord.createdAt);
+        if (orderAgeInMs > 12 * 60 * 60 * 1000) {
+          statusLabel = "Cargo In Transit";
+          statusColor = "bg-blue-50 text-blue-700 border-blue-105";
+        }
+      } else {
+        statusLabel = "Cargo Delivered";
+        statusColor = "bg-green-50 text-green-700 border-green-105";
+      }
+
+      return `
+        <div class="bg-white rounded-3xl border border-gray-150 p-5 md:p-6 shadow-3xs mb-5 last:mb-0 transition-all hover:border-gray-300 font-sans">
+          <!-- Order ID Row -->
+          <div class="flex flex-col sm:flex-row justify-between sm:items-center border-b border-gray-100 pb-4 mb-4 gap-3 select-none">
+            <div class="flex flex-col gap-1 leading-tight">
+              <span class="text-[10px] text-gray-450 font-black uppercase tracking-wider">Invoice / Dispatch ID</span>
+              <span class="text-xs font-black text-gray-900 tracking-tight">${ord.orderId}</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="text-xs font-bold text-gray-455">${dateStr}</span>
+              <span class="border text-[10px] uppercase font-black px-3 py-1 rounded-full ${statusColor} tracking-widest leading-none">${statusLabel}</span>
+            </div>
+          </div>
+
+          <!-- Items Row -->
+          <div class="flex flex-col gap-3.5 mb-5 max-h-[220px] overflow-y-auto">
+            ${ord.items ? ord.items.map(it => `
+              <div class="flex items-center gap-3.5 leading-tight font-sans">
+                <div class="w-9 h-9 rounded-lg bg-gray-50 border border-gray-100 shrink-0 flex items-center justify-center p-0.5">
+                  <img class="w-full h-full object-contain" src="${it.image || 'https://images.unsplash.com/photo-1581798459219-318e76aecc7b?w=200'}" onerror="this.src='https://images.unsplash.com/photo-1581798459219-318e76aecc7b?w=200'">
+                </div>
+                <div class="min-w-0 flex-grow pr-2">
+                  <span class="text-xs font-bold text-gray-800 block truncate" title="${it.name}">${it.name}</span>
+                  <span class="text-[10px] text-gray-400 font-bold block mt-0.5">₹${it.price} • ${it.qty} Wholesale Packs</span>
+                </div>
+                <span class="text-xs font-black text-gray-900 shrink-0">₹${it.price * it.qty}</span>
+              </div>
+            `).join('') : ''}
+          </div>
+
+          <!-- Summary and Reorder bottom row -->
+          <div class="border-t border-gray-100 pt-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="text-left w-full sm:w-auto leading-tight">
+              <span class="text-[10px] text-gray-400 font-bold uppercase block">Shipping Address:</span>
+              <span class="text-xs font-medium text-gray-650 block mt-0.5 max-w-sm truncate" title="${ord.customerAddress || 'Direct Factory Pickup'}">${ord.customerAddress || 'Direct Factory Pickup'}</span>
+            </div>
+
+            <div class="flex items-center justify-between sm:justify-end gap-5 w-full sm:w-auto shrink-0 select-none">
+              <div class="text-right leading-none shrink-0">
+                <span class="text-[10px] text-gray-400 font-medium block">Invoice Total</span>
+                <span class="text-base font-black text-gray-950 block mt-1.5 font-sans">₹${totalAmount.toLocaleString()}</span>
+              </div>
+              <button onclick="window.reorderFirebaseItems('${ord.orderId}')" class="bg-[#11441c] hover:bg-brand-900 text-white font-extrabold text-[10px] px-4.5 py-2.5 rounded-xl transition uppercase tracking-wider shadow-3xs cursor-pointer select-none font-sans">
+                1-Click Reorder
+              </button>
+            </div>
           </div>
         </div>
       `;
     }
+
+    window.renderDesktopProfileContent = function() {
+      const contentEl = document.getElementById('desktop-profile-modal-content');
+      if (!contentEl) return;
+      if (!window.currentUser) {
+        contentEl.innerHTML = `
+          <div class="flex flex-col items-center justify-center text-center py-12 px-4 max-w-sm mx-auto font-sans leading-relaxed">
+            <div class="w-16 h-16 bg-brand-50 rounded-2xl flex items-center justify-center text-brand-800 shadow-sm border border-brand-100 mb-4">
+              <svg class="w-8 h-8 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+              </svg>
+            </div>
+            <h3 class="font-display font-black text-xl text-gray-950 tracking-tight">Wholesale Account Portal</h3>
+            <p class="text-xs text-gray-400 mt-2 font-medium leading-relaxed font-semibold">
+              Connect your B2B buyer account securely to earn exclusive confectionery loyalty points, track cargo loads, select from saved addresses, and reorder with 1-click.
+            </p>
+            <button onclick="window.triggerGoogleAuth()" class="w-full bg-white hover:bg-gray-50 text-gray-700 font-extrabold text-xs py-3 rounded-2xl border border-gray-200 flex items-center justify-center gap-2 shadow-xs transition hover:shadow-sm mt-6 cursor-pointer">
+              <svg class="w-4.5 h-4.5 shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+              </svg>
+              <span>Sign In with Google</span>
+            </button>
+          </div>
+        `;
+        return;
+      }
+
+      // User logged in view
+      const email = window.userProfile ? (window.userProfile.email || '') : '';
+      const name = window.userProfile ? (window.userProfile.name || 'B2B Client') : 'B2B Client';
+      const phone = window.userProfile ? (window.userProfile.phone || '') : '';
+      const avatarUrl = window.currentUser.photoURL || 'https://www.gravatar.com/avatar/?d=mp';
+      const tier = window.userProfile ? (window.userProfile.tier || 'Bronze') : 'Bronze';
+      const points = window.userProfile ? (window.userProfile.points || 0) : 0;
+      const totalSpent = window.userProfile ? (window.userProfile.totalSpent || 0) : 0;
+      const savedAddresses = window.userProfile && window.userProfile.savedAddresses ? window.userProfile.savedAddresses : [];
+
+      let tierBadgeColor = 'bg-yellow-50 text-yellow-850 border-yellow-150';
+      if (tier === 'Silver') tierBadgeColor = 'bg-gray-50 text-gray-700 border-gray-150';
+      else if (tier === 'Gold') tierBadgeColor = 'bg-amber-50 text-amber-805 border-amber-150';
+      else if (tier === 'Platinum') tierBadgeColor = 'bg-indigo-50 text-indigo-805 border-indigo-150';
+
+      let spentNeededText = '';
+      let loyaltyProgressBarHTML = '';
+      if (totalSpent < 10000) {
+        const needed = 10000 - totalSpent;
+        const pct = Math.min(100, (totalSpent / 10000) * 100);
+        spentNeededText = `Spend ₹${needed.toLocaleString()} more for Silver Tier`;
+        loyaltyProgressBarHTML = `
+          <div class="w-full bg-white/20 h-1.5 rounded-full overflow-hidden mt-1 select-none">
+            <div class="bg-yellow-400 h-full rounded-full transition-all duration-300" style="width: ${pct}%"></div>
+          </div>
+        `;
+      } else if (totalSpent < 30000) {
+        const needed = 30000 - totalSpent;
+        const pct = Math.min(100, ((totalSpent - 10000) / 20000) * 100);
+        spentNeededText = `Spend ₹${needed.toLocaleString()} more for Gold Tier`;
+        loyaltyProgressBarHTML = `
+          <div class="w-full bg-white/20 h-1.5 rounded-full overflow-hidden mt-1 select-none">
+            <div class="bg-yellow-400 h-full rounded-full transition-all duration-300" style="width: ${pct}%"></div>
+          </div>
+        `;
+      } else if (totalSpent < 100000) {
+        const needed = 100000 - totalSpent;
+        const pct = Math.min(100, ((totalSpent - 30000) / 70000) * 100);
+        spentNeededText = `Spend ₹${needed.toLocaleString()} more for Platinum Tier`;
+        loyaltyProgressBarHTML = `
+          <div class="w-full bg-white/20 h-1.5 rounded-full overflow-hidden mt-1 select-none">
+            <div class="bg-yellow-400 h-full rounded-full transition-all duration-300" style="width: ${pct}%"></div>
+          </div>
+        `;
+      } else {
+        spentNeededText = '👑 Platinum Tier reached! Enjoy custom wholesale discounts!';
+      }
+
+      const isEditing = window.desktopProfileEditingState === true;
+      let detailsHTML = '';
+      if (isEditing) {
+        detailsHTML = `
+          <div class="flex flex-col gap-2.5 font-sans text-left mt-1.5">
+            <div>
+              <label class="block text-[9px] text-gray-400 font-bold uppercase tracking-wider mb-1">Company / Shop Designation</label>
+              <input type="text" id="desktop-edit-name" class="w-full bg-gray-50 border border-gray-200 focus:border-brand-700 rounded-xl px-3 py-2 text-xs font-semibold outline-none" value="${name}">
+            </div>
+            <div>
+              <label class="block text-[9px] text-gray-400 font-bold uppercase tracking-wider mb-1">WhatsApp Contact Line</label>
+              <input type="tel" id="desktop-edit-phone" class="w-full bg-gray-50 border border-gray-200 focus:border-brand-700 rounded-xl px-3 py-2 text-xs font-semibold outline-none" value="${phone}" placeholder="10-digit number">
+            </div>
+            <div>
+              <label class="block text-[9px] text-gray-400 font-bold uppercase tracking-wider mb-1">Registered Contact Email</label>
+              <input type="email" id="desktop-edit-email" class="w-full bg-gray-50 border border-gray-200 focus:border-brand-700 rounded-xl px-3 py-2 text-xs font-semibold outline-none" value="${email}">
+            </div>
+            <div class="flex gap-2 pt-1">
+              <button onclick="window.submitDesktopProfileUpdate()" class="flex-grow bg-[#11441c] hover:bg-brand-900 text-white font-bold text-xs py-2 rounded-xl transition cursor-pointer select-none font-sans">Save</button>
+              <button onclick="window.toggleDesktopProfileEditing(false)" class="bg-gray-150 hover:bg-gray-200 text-gray-650 font-bold text-xs px-4.5 py-2 rounded-xl transition cursor-pointer select-none font-sans">Cancel</button>
+            </div>
+          </div>
+        `;
+      } else {
+        detailsHTML = `
+          <div class="flex flex-col gap-4 font-sans text-left mt-2 select-none">
+            <div class="flex items-center justify-between">
+              <div>
+                <span class="text-[9px] text-gray-400 block font-semibold uppercase tracking-wider leading-none">Company Designation Name</span>
+                <span class="text-xs font-black text-gray-800 block mt-1 leading-none">${name}</span>
+              </div>
+              <button onclick="window.toggleDesktopProfileEditing(true)" class="text-[10px] text-brand-850 hover:text-brand-950 font-bold underline cursor-pointer select-none font-sans">Edit</button>
+            </div>
+            <div>
+              <span class="text-[9px] text-gray-400 block font-semibold uppercase tracking-wider leading-none">WhatsApp Line</span>
+              <span class="text-xs font-bold text-gray-800 block mt-1 leading-none font-sans">${phone ? '+91 ' + phone : '<span class="text-gray-350 italic font-sans">None registered</span>'}</span>
+            </div>
+            <div>
+              <span class="text-[9px] text-gray-400 block font-semibold uppercase tracking-wider leading-none">Registered Email</span>
+              <span class="text-xs font-bold text-gray-800 block mt-1 leading-none font-mono text-gray-650">${email}</span>
+            </div>
+          </div>
+        `;
+      }
+
+      let addressBookHTML = '';
+      if (savedAddresses.length === 0) {
+        addressBookHTML = `
+          <p class="text-[11px] text-gray-455 italic p-4 text-center font-sans">No cargo warehouse directions added yet.</p>
+        `;
+      } else {
+        addressBookHTML = savedAddresses.map((addr, idx) => `
+          <div class="flex items-start justify-between p-2.5 gap-2 border-b border-gray-50 last:border-0 hover:bg-gray-50/50 transition font-sans">
+            <div class="flex gap-2 min-w-0 font-sans">
+              <span class="flex items-center justify-center w-4 h-4 rounded-full bg-brand-50 text-[10px] font-bold text-brand-800 shrink-0 mt-0.5 font-sans">${idx+1}</span>
+              <p class="text-[11px] text-gray-700 font-semibold leading-relaxed break-words min-w-0 text-left font-sans">${addr}</p>
+            </div>
+            <button onclick="window.deleteDesktopSavedAddress(\`${addr.replace(/'/g, "\\'")}\`)" class="text-gray-350 hover:text-red-655 transition shrink-0 select-none cursor-pointer text-xs font-bold p-0.5 font-sans">
+              ✕
+            </button>
+          </div>
+        `).join('');
+      }
+
+      let pointsLogsHTML = '';
+      if (!window.userPointsHistory || window.userPointsHistory.length === 0) {
+        pointsLogsHTML = `
+          <p class="text-[11px] text-gray-455 italic p-4 text-center font-sans">No recent points transactions recorded.</p>
+        `;
+      } else {
+        pointsLogsHTML = window.userPointsHistory.slice(0, 3).map(trx => {
+          const sign = trx.type === 'earn' ? '+' : '-';
+          const pointsColor = trx.type === 'earn' ? 'text-emerald-600 font-extrabold' : 'text-red-600 font-extrabold';
+          const amtText = trx.amount ? ` (₹${trx.amount})` : '';
+          const logDate = new Date(trx.createdAt).toLocaleDateString([], { day: 'numeric', month: 'short' });
+          return `
+            <div class="flex items-center justify-between p-2 text-[11px] border-b border-gray-50 last:border-0 font-sans">
+              <div class="text-left min-w-0 font-sans">
+                <span class="font-extrabold text-gray-800 block truncate max-w-[170px] font-sans">${trx.reason || 'Wholesale action'}</span>
+                <span class="text-[9px] text-gray-400 mt-0.5 block font-sans">${logDate}${amtText}</span>
+              </div>
+              <span class="${pointsColor} shrink-0 font-sans">${sign}${trx.points} pts</span>
+            </div>
+          `;
+        }).join('');
+      }
+
+      contentEl.innerHTML = `
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 leading-relaxed font-sans text-gray-900 select-none">
+          
+          <!-- Left: Banner/Points cards & User stats info -->
+          <div class="flex flex-col gap-4">
+            
+            <!-- Identity block with gold theme -->
+            <div class="bg-[#11441c] text-white rounded-2xl p-4.5 flex items-center gap-3.5 relative overflow-hidden shadow-3xs">
+              <div class="absolute right-0 top-0 translate-x-1/4 -translate-y-1/4 w-20 h-20 bg-white/5 rounded-full"></div>
+              <img class="w-11 h-11 rounded-xl object-cover shrink-0 border border-white/20" src="${avatarUrl}" referrerPolicy="no-referrer">
+              <div class="min-w-0 flex-grow text-left">
+                <h4 class="text-xs font-black text-wholesale-yellow tracking-tight leading-none mb-1.5 uppercase">${tier} Tier Client</h4>
+                <p class="text-[10px] text-brand-100 font-semibold leading-none truncate">Core Code: #B2B-CLI-${window.currentUser.uid.substring(0, 5).toUpperCase()}</p>
+              </div>
+              <button onclick="window.triggerLogoutAuth(); window.toggleDesktopProfileModal(false);" class="shrink-0 bg-white/10 hover:bg-white/20 text-brand-100 hover:text-white px-2.5 py-1.5 rounded-lg text-[10px] font-bold transition cursor-pointer select-none uppercase tracking-wide">
+                Logout
+              </button>
+            </div>
+
+            <!-- Loyalty Ledger card panel -->
+            <div class="bg-gradient-to-br from-[#ea580c] to-[#f58220] text-white rounded-2xl p-4.5 shadow-3xs relative overflow-hidden flex flex-col justify-between">
+              <div class="flex justify-between items-start text-left">
+                <div>
+                  <span class="text-[9px] text-amber-100 uppercase tracking-widest font-black block leading-none">Confectionery Rewards</span>
+                  <div class="flex items-baseline gap-1 mt-1">
+                    <span class="text-2xl font-black text-white leading-none">${points}</span>
+                    <span class="text-[9px] text-amber-100 font-extrabold uppercase tracking-wide">Points</span>
+                  </div>
+                </div>
+                <div class="text-right shrink-0">
+                  <span class="text-[10px] bg-white/20 text-white font-extrabold px-2 py-0.5 rounded-lg border border-white/15 leading-none">₹${totalSpent.toLocaleString()} Spent</span>
+                </div>
+              </div>
+              <div class="mt-4 pt-2 border-t border-white/10 text-left">
+                <span class="block text-[9px] text-amber-100 font-bold">${spentNeededText}</span>
+                ${loyaltyProgressBarHTML}
+              </div>
+            </div>
+
+            <!-- Credentials Box card -->
+            <div class="bg-white border border-gray-150 rounded-2xl p-4 flex flex-col justify-between shadow-3xs">
+              <span class="block text-[10px] text-gray-450 font-black uppercase tracking-wider mb-1 text-left">Verified B2B Credentials</span>
+              ${detailsHTML}
+            </div>
+
+          </div>
+
+          <!-- Right: Saved Warehouse Destinations & History Transactions -->
+          <div class="flex flex-col gap-4 font-sans">
+            
+            <!-- Address destinations list panel -->
+            <div class="bg-white border border-gray-150 rounded-2xl p-4 flex flex-col shadow-3xs text-left">
+              <span class="block text-[10px] text-gray-400 font-black uppercase tracking-wider mb-2">Saved Cargo Destinations</span>
+              <div class="border border-gray-100 rounded-xl max-h-[140px] overflow-y-auto divide-y divide-gray-50 flex flex-col min-h-[85px] bg-white">
+                ${addressBookHTML}
+              </div>
+              
+              <!-- Quick inline destination entry tool -->
+              <div class="flex gap-2 mt-2.5">
+                <textarea id="desktop-new-cargo-address" rows="1" class="flex-grow bg-gray-50 border border-gray-250 focus:border-brand-700 rounded-xl text-[11px] px-3 py-2 font-semibold outline-none resize-none" placeholder="Enter landmark, market branch, PIN..."></textarea>
+                <button onclick="window.submitDesktopAddAddress()" class="bg-[#11441c] hover:bg-brand-900 text-white font-bold text-xs px-3.5 rounded-xl transition cursor-pointer select-none">Add</button>
+              </div>
+            </div>
+
+            <!-- Points Transaction Log lists -->
+            <div class="bg-white border border-gray-150 rounded-2xl p-4 flex flex-col shadow-3xs text-left">
+              <span class="block text-[10px] text-gray-400 font-black uppercase tracking-wider mb-2 font-sans">Recent Loyalty Transactions</span>
+              <div class="border border-gray-100 rounded-xl divide-y divide-gray-50 max-h-[140px] overflow-y-auto bg-white">
+                ${pointsLogsHTML}
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      `;
+    };
 
     // DOM CONTENT INQUISITOR PORTALS
     function initializeApp() {
@@ -1420,10 +3331,17 @@
 
     // BIND CONFIG AND BRAND IDENTITY VALUES TO HEADER/FOOTER
     function bootstrapIdentityUI() {
-      document.getElementById('shop-title').innerText = CONFIG.shopName;
-      document.getElementById('shop-tagline').innerText = CONFIG.tagline;
-      document.getElementById('shop-location').innerText = CONFIG.location;
-      document.getElementById('footer-copyright').innerText = `© 2026 ${CONFIG.shopName}. All rights reserved.`;
+      const shopTitleEl = document.getElementById('shop-title');
+      if (shopTitleEl) shopTitleEl.innerText = CONFIG.shopName;
+      
+      const shopTaglineEl = document.getElementById('shop-tagline');
+      if (shopTaglineEl) shopTaglineEl.innerText = CONFIG.tagline;
+      
+      const shopLocationEl = document.getElementById('shop-location');
+      if (shopLocationEl) shopLocationEl.innerText = CONFIG.location;
+      
+      const footerCopyEl = document.getElementById('footer-copyright');
+      if (footerCopyEl) footerCopyEl.innerText = `© 2026 ${CONFIG.shopName}. All rights reserved.`;
       
       const waFloatLink = `https://wa.me/${CONFIG.whatsappNumber}`;
       const waFloatBtn = document.getElementById('whatsapp-float-btn');
@@ -1465,7 +3383,7 @@
     // RENDERS LARGE PREMIUM PROMOTION CARDS DYNAMICALLY
     function renderOfferBannersUI() {
       const container = document.getElementById('banner-section');
-      container.className = "w-full rounded-2xl overflow-hidden shadow-sm relative border border-gray-100 min-h-[140px] md:min-h-[220px] flex items-center mb-2";
+      container.className = "w-full rounded-2xl overflow-hidden shadow-sm relative border border-gray-100 min-h-[160px] md:min-h-[260px] flex items-center mb-2";
       
       // We will render a highly aesthetic, premium, full-width wholesale banner matching KiranaMarket style
       container.innerHTML = `
@@ -1474,14 +3392,17 @@
         <div class="absolute inset-0 bg-gradient-to-r from-brand-950/95 via-brand-900/80 to-transparent z-10"></div>
         
         <!-- Content overlaid securely over background -->
-        <div class="relative z-20 px-6 py-6 md:px-10 md:py-10 max-w-lg text-white">
-          <span class="inline-block text-[8px] md:text-[9px] font-extrabold tracking-widest bg-yellow-400 text-brand-950 px-2.5 py-1 rounded uppercase mb-2">
+        <div class="relative z-20 px-6 py-8 md:px-12 md:py-12 max-w-2xl text-white">
+          <span class="inline-block text-[8px] md:text-[9px] font-extrabold tracking-widest bg-yellow-400 text-brand-950 px-2.5 py-1 rounded uppercase mb-3">
             DIRECT DISTRIBUTOR PRICES
           </span>
-          <h2 class="font-display font-normal text-xl md:text-3xl tracking-tight leading-none mb-1 md:mb-2">
-            Premium Quality. <br>Wholesale Prices.
+          <h2 class="font-display font-black text-2xl md:text-5xl tracking-tight leading-none mb-2 md:mb-3">
+            Aggarwal Wholesale Store
           </h2>
-          <p class="text-[10px] md:text-xs text-gray-100 leading-[15px] not-italic no-underline font-semibold opacity-90 max-w-sm">
+          <p class="text-[11px] md:text-xl text-wholesale-yellow tracking-wide font-extrabold uppercase mb-2">
+            Premium Quality Wholesale Prices
+          </p>
+          <p class="text-[9px] md:text-xs text-brand-100 leading-[15px] not-italic no-underline font-medium opacity-90 max-w-md">
             Chamba's trusted source for daily essentials, top-tier confectionery, and branded household goods. Direct delivery routes with highest retailer margins.
           </p>
         </div>
@@ -3657,6 +5578,9 @@
       const footerEl = document.querySelector('footer');
       const cartContainer = document.getElementById('cart-page-container');
       const checkoutContainer = document.getElementById('checkout-page-container');
+      const ordersContainer = document.getElementById('orders-page-container');
+      const rewardsContainer = document.getElementById('rewards-page-container');
+      const profileContainer = document.getElementById('profile-page-container');
       
       // Top header and footer elements to conditionally hide/show
       const searchRow = document.getElementById('header-search-row');
@@ -3679,10 +5603,17 @@
       toggleCartDrawer(false);
       toggleCheckoutModal(false);
 
+      // Hide all dedicated containers first
+      if (cartContainer) cartContainer.classList.add('hidden');
+      if (checkoutContainer) checkoutContainer.classList.add('hidden');
+      if (ordersContainer) ordersContainer.classList.add('hidden');
+      if (rewardsContainer) rewardsContainer.classList.add('hidden');
+      if (profileContainer) profileContainer.classList.add('hidden');
+      const aboutContainer = document.getElementById('about-page-container');
+      if (aboutContainer) aboutContainer.classList.add('hidden');
+
       if (view === 'home') {
         checkoutOpenState = false;
-        if (cartContainer) cartContainer.classList.add('hidden');
-        if (checkoutContainer) checkoutContainer.classList.add('hidden');
         if (mainEl) mainEl.classList.remove('hidden');
         
         // Show home page specific parts
@@ -3690,46 +5621,123 @@
         if (locationBadge) locationBadge.classList.remove('hidden');
         if (footerTrustBadges) footerTrustBadges.classList.remove('hidden');
         
-        switchMobileTab(currentMobileTab);
-        if (footerEl) footerEl.classList.remove('hidden');
-      } 
-      else if (view === 'cart') {
-        checkoutOpenState = false;
-        if (mainEl) mainEl.classList.add('hidden');
-        if (tabViewEl) tabViewEl.classList.add('hidden');
-        if (checkoutContainer) checkoutContainer.classList.add('hidden');
-        if (footerEl) footerEl.classList.remove('hidden');
-        
-        // Hide home page specific parts for clean focused cart view
-        if (searchRow) searchRow.classList.add('hidden');
-        if (locationBadge) locationBadge.classList.add('hidden');
-        if (footerTrustBadges) footerTrustBadges.classList.add('hidden');
-        
-        if (cartContainer) {
-          cartContainer.classList.remove('hidden');
-          renderCartPage();
+        const navIds = ['home', 'categories', 'orders', 'profile'];
+        navIds.forEach(id => {
+          const btn = document.getElementById(`mob-nav-${id}`);
+          if (btn) {
+            if (id === currentMobileTab) {
+              btn.classList.add('text-brand-900', 'font-bold');
+              btn.classList.remove('text-gray-400', 'font-medium');
+            } else {
+              btn.classList.remove('text-brand-900', 'font-bold');
+              btn.classList.add('text-gray-400', 'font-medium');
+            }
+          }
+        });
+
+        if (currentMobileTab === 'categories') {
+          if (tabViewEl) {
+            tabViewEl.classList.remove('hidden');
+            tabViewEl.innerHTML = renderMobileCategories();
+          }
+        } else {
+          if (tabViewEl) {
+            tabViewEl.classList.add('hidden');
+            tabViewEl.innerHTML = '';
+          }
         }
+        if (footerEl) footerEl.classList.remove('hidden');
       } 
-      else if (view === 'checkout') {
-        checkoutOpenState = true; 
+      else {
         if (mainEl) mainEl.classList.add('hidden');
         if (tabViewEl) tabViewEl.classList.add('hidden');
-        if (cartContainer) cartContainer.classList.add('hidden');
-        if (footerEl) footerEl.classList.remove('hidden');
         
-        // Hide home page specific parts for clean focused checkout view
         if (searchRow) searchRow.classList.add('hidden');
         if (locationBadge) locationBadge.classList.add('hidden');
         if (footerTrustBadges) footerTrustBadges.classList.add('hidden');
-        
-        if (checkoutContainer) {
-          checkoutContainer.classList.remove('hidden');
-          renderCheckoutPage();
+        if (footerEl) footerEl.classList.remove('hidden');
+
+        if (view === 'cart') {
+          checkoutOpenState = false;
+          if (cartContainer) {
+            cartContainer.classList.remove('hidden');
+            renderCartPage();
+          }
+        } 
+        else if (view === 'checkout') {
+          checkoutOpenState = true; 
+          if (checkoutContainer) {
+            checkoutContainer.classList.remove('hidden');
+            renderCheckoutPage();
+          }
+        }
+        else if (view === 'orders') {
+          checkoutOpenState = false;
+          if (ordersContainer) {
+            ordersContainer.classList.remove('hidden');
+            renderOrdersView();
+          }
+          window.updateMobileNavHighlight('orders');
+        }
+        else if (view === 'rewards') {
+          checkoutOpenState = false;
+          if (rewardsContainer) {
+            rewardsContainer.classList.remove('hidden');
+            renderRewardsView();
+          }
+          window.updateMobileNavHighlight('profile');
+        }
+        else if (view === 'profile') {
+          checkoutOpenState = false;
+          if (profileContainer) {
+            profileContainer.classList.remove('hidden');
+            renderProfileView();
+          }
+          window.updateMobileNavHighlight('profile');
+        }
+        else if (view === 'about') {
+          checkoutOpenState = false;
+          if (aboutContainer) {
+            aboutContainer.classList.remove('hidden');
+            renderAboutPage();
+          }
         }
       }
 
+      // Sync active state links on desktop nav bar
+      const desktopViews = ['home', 'about', 'products', 'profile'];
+      desktopViews.forEach(v => {
+        const btn = document.getElementById(`desk-nav-${v}`);
+        if (btn) {
+          if (v === view) {
+            btn.classList.add('text-[#11441c]', 'border-[#11441c]');
+            btn.classList.remove('text-gray-450', 'border-transparent');
+          } else {
+            btn.classList.remove('text-[#11441c]', 'border-[#11441c]');
+            btn.classList.add('text-gray-450', 'border-transparent');
+          }
+        }
+      });
+
       refreshCartSystemCounters();
     }
+
+    // Helper to keep mobile bottom tab highlights in complete sync
+    window.updateMobileNavHighlight = function(activeTab) {
+      const navIds = ['home', 'categories', 'orders', 'profile'];
+      navIds.forEach(id => {
+        const btn = document.getElementById(`mob-nav-${id}`);
+        if (btn) {
+          if (id === activeTab) {
+            btn.classList.add('text-brand-900', 'font-bold');
+            btn.classList.remove('text-gray-400', 'font-medium');
+          } else {
+            btn.classList.remove('text-brand-900', 'font-bold');
+            btn.classList.add('text-gray-400', 'font-medium');
+          }
+        }
+      });
+    };
 
     function renderCartPage() {
       const container = document.getElementById('cart-page-container');
@@ -4149,8 +6157,43 @@
         `;
       });
 
+      let savedAddressesHTML = '';
+      if (window.currentUser && window.userProfile && window.userProfile.savedAddresses && window.userProfile.savedAddresses.length > 0) {
+        savedAddressesHTML = `
+          <div class="mt-2 text-xs font-sans">
+            <span class="block text-[10px] uppercase font-black text-brand-900 mb-1.5 font-sans">Pick a Saved cargo destination:</span>
+            <div class="flex flex-wrap gap-1.5 select-none">
+              ${window.userProfile.savedAddresses.map(addr => `
+                <button type="button" onclick="window.autofillCheckoutAddress(\`${addr.replace(/"/g, '&quot;')}\`)" class="bg-brand-50 hover:bg-brand-100 text-brand-900 font-bold px-2.5 py-1.5 rounded-lg border border-brand-100 text-[10px] text-left transition truncate max-w-[240px] cursor-pointer">
+                  📍 ${addr}
+                </button>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }
+
+      let authCheckoutPitch = '';
+      if (!window.currentUser) {
+        authCheckoutPitch = `
+          <div class="bg-amber-50/60 border border-amber-150 rounded-2xl p-4 flex flex-col md:flex-row items-center justify-between gap-3 text-xs mb-4 select-none">
+            <div class="text-left font-sans">
+              <h5 class="font-extrabold text-amber-955">💡 Checkout faster & earn confectionery reward points!</h5>
+              <p class="text-gray-650 font-semibold mt-0.5">Sign in once with Google to auto-load your details & default dispatch parameters.</p>
+            </div>
+            <button type="button" onclick="window.triggerGoogleAuth()" class="bg-[#11441c] hover:bg-brand-900 text-white font-extrabold text-[10px] px-4 py-2.5 rounded-xl transition uppercase tracking-wider shrink-0 shadow-3xs cursor-pointer select-none">
+              Sign In
+            </button>
+          </div>
+        `;
+      }
+
+      const defName = window.userProfile ? (window.userProfile.name || '') : '';
+      const defPhone = window.userProfile ? (window.userProfile.phone || '') : '';
+      const defAddress = window.userProfile && window.userProfile.savedAddresses && window.userProfile.savedAddresses.length > 0 ? (window.userProfile.savedAddresses[0] || '') : '';
+
       container.innerHTML = `
-        <div class="max-w-6xl mx-auto px-4 py-2 md:py-4 font-sans">
+        <div class="max-w-6xl mx-auto px-4 py-2 md:py-4 font-sans leading-relaxed animate-fade-in">
           
           <div class="mb-4 select-none">
             <nav class="flex text-[10px] uppercase tracking-wider text-gray-400 mb-1.5 font-bold">
@@ -4171,6 +6214,8 @@
             <p class="text-xs text-gray-500 mt-1.5 font-medium">Transmit physical cargo carriage parameters and merchant validation details.</p>
           </div>
 
+          ${authCheckoutPitch}
+
           <form id="delivery-submission-form" onsubmit="handleDeliveryFormSubmit(event)" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             
             <div class="lg:col-span-2 flex flex-col gap-6">
@@ -4183,7 +6228,7 @@
 
                 <div>
                   <label class="block text-xs font-bold uppercase tracking-wider text-brand-900 mb-1.5 select-none">Designation Name / Kiryana Shop Title *</label>
-                  <input type="text" id="cust-name" required class="w-full bg-gray-50 hover:bg-white focus:bg-white border border-gray-200 focus:border-brand-700 focus:ring-4 focus:ring-brand-100 rounded-xl px-4 py-2.5 text-xs md:text-sm font-semibold transition outline-none text-gray-800 placeholder-gray-400" placeholder="E.g., Aggarwal Candy Store, Vijay Kumar">
+                  <input type="text" id="cust-name" required class="w-full bg-gray-50 hover:bg-white focus:bg-white border border-gray-200 focus:border-brand-700 focus:ring-4 focus:ring-brand-100 rounded-xl px-4 py-2.5 text-xs md:text-sm font-semibold transition outline-none text-gray-800 placeholder-gray-400" placeholder="E.g., Aggarwal Candy Store, Vijay Kumar" value="${defName}">
                   <p class="text-[9px] text-gray-400 mt-1.5 select-none">Registered designation for shipping ledger invoicing.</p>
                 </div>
 
@@ -4191,7 +6236,7 @@
                   <label class="block text-xs font-bold uppercase tracking-wider text-brand-900 mb-1.5 select-none">WhatsApp Contact Number *</label>
                   <div class="relative">
                     <span class="absolute left-4 top-2.5 text-xs md:text-sm font-extrabold text-gray-400 font-sans">+91</span>
-                    <input type="tel" id="cust-phone" required pattern="[0-9]{10}" class="w-full bg-gray-50 hover:bg-white focus:bg-white border border-gray-200 focus:border-brand-700 focus:ring-4 focus:ring-brand-100 rounded-xl pl-12 pr-4 py-2.5 text-xs md:text-sm font-semibold transition outline-none font-sans text-gray-800 placeholder-gray-400" placeholder="9876543210">
+                    <input type="tel" id="cust-phone" required pattern="[0-9]{10}" class="w-full bg-gray-50 hover:bg-white focus:bg-white border border-gray-200 focus:border-brand-700 focus:ring-4 focus:ring-brand-100 rounded-xl pl-12 pr-4 py-2.5 text-xs md:text-sm font-semibold transition outline-none font-sans text-gray-800 placeholder-gray-400" placeholder="9876543210" value="${defPhone}">
                   </div>
                   <p class="text-[9px] text-gray-400 mt-1.5 select-none">10-digit WhatsApp line for instant cargo route sync & invoice dispatch.</p>
                 </div>
@@ -4205,7 +6250,8 @@
 
                 <div>
                   <label class="block text-xs font-bold uppercase tracking-wider text-brand-900 mb-1.5 select-none">Physical Destination Address *</label>
-                  <textarea id="cust-address" required rows="3" class="w-full bg-gray-50 hover:bg-white focus:bg-white border border-gray-200 focus:border-brand-700 focus:ring-4 focus:ring-brand-100 rounded-xl px-4 py-2.5 text-xs md:text-sm font-semibold transition outline-none text-gray-800 placeholder-gray-400 resize-none" placeholder="Enter complete billing address, landmarks, locality or Chamba market division..."></textarea>
+                  <textarea id="cust-address" required rows="3" class="w-full bg-gray-50 hover:bg-white focus:bg-white border border-gray-200 focus:border-brand-700 focus:ring-4 focus:ring-brand-100 rounded-xl px-4 py-2.5 text-xs md:text-sm font-semibold transition outline-none text-gray-800 placeholder-gray-400 resize-none animate-fade-in" placeholder="Enter complete billing address, landmarks, locality or Chamba market division...">${defAddress}</textarea>
+                  ${savedAddressesHTML}
                 </div>
 
                 <div>
