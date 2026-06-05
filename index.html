@@ -1490,17 +1490,7 @@
 
     // DYNAMIC RE-INDEX AND DISPLAY FOR CAROUSEL LABELS AS CIRCLE IMAGES WITH BOTTOM TITLES
     function renderCarouselCategories() {
-      alert("renderCarouselCategories started");
-      console.log("Categories:", CATEGORIES);
-      alert("Categories length = " + CATEGORIES.length);
-      console.log("Categories Length:", CATEGORIES?.length);
-      console.log("[DEBUG] Executing renderCarouselCategories. Categories config:", CONFIG.categories, "Total products:", CONFIG.products.length);
-      
       const container = document.getElementById('categories-carousel');
-      if (document.getElementById('dbg-carousel-render')) {
-        document.getElementById('dbg-carousel-render').innerText = `Done (${CONFIG.categories.length + 1})`;
-        document.getElementById('dbg-carousel-render').className = "text-green-500 font-bold";
-      }
       container.innerHTML = "";
 
       const distinctCategories = ["All", ...CONFIG.categories];
@@ -1721,19 +1711,10 @@
 
     // MAIN PRODUCT RENDERS CATALOG SYSTEM WITH ADD-TO-CART INCREMENTORS
     function renderCatalogGrid() {
-      alert("renderCatalogGrid started");
-      console.log("Products:", PRODUCTS);
-      console.log("Products Length:", PRODUCTS?.length);
-      console.log("[DEBUG] Executing renderCatalogGrid. Current Category:", currentCategory, "Lookup Keywords:", lookupKeywords, "Total products:", CONFIG.products.length);
-      
       const grid = document.getElementById('products-catalog-grid');
       const fallback = document.getElementById('no-item-fallback');
       
       let items = CONFIG.products;
-      if (document.getElementById('dbg-grid-render')) {
-        document.getElementById('dbg-grid-render').innerText = `Done (${items.length} items)`;
-        document.getElementById('dbg-grid-render').className = "text-green-500 font-bold";
-      }
       grid.innerHTML = "";
 
       // Filter state logic
@@ -1759,8 +1740,6 @@
 
       grid.style.display = 'flex';
       fallback.style.display = 'none';
-
-      alert("Products length = " + PRODUCTS.length);
 
       // IF IN ALL CATEGORY WITH NO ACTIVE FILTER: SHOW BEAUTIFUL HOMEPAGE SECTIONS MATCHING KIRANAMARKET STYLE
       if (currentCategory === "All" && lookupKeywords.length === 0) {
