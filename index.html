@@ -232,7 +232,7 @@
     </section>
 
     <!-- MAIN PRODUCT SPECIFICATIONS GRID -->
-    <section class="mb-4 md:mb-14" id="catalog-section-container">
+    <section class="mb-4 md:mb-14 px-3.5 md:px-0" id="catalog-section-container">
       <div id="products-catalog-grid" class="flex flex-col gap-4 md:gap-8">
         <!-- Dynamic Product cards or structured sections -->
       </div>
@@ -3397,7 +3397,7 @@
     // RENDERS LARGE PREMIUM PROMOTION CARDS DYNAMICALLY
     function renderOfferBannersUI() {
       const container = document.getElementById('banner-section');
-      container.className = "w-full rounded-2xl overflow-hidden shadow-sm relative border border-gray-100 min-h-[160px] md:min-h-[260px] flex items-center mb-2";
+      container.className = "w-full rounded-2xl overflow-hidden shadow-sm relative border border-gray-100 min-h-[140px] md:min-h-[220px] flex items-center mb-2 bg-brand-900 bg-gradient-to-br from-brand-950 to-brand-900";
       
       // We will render a highly aesthetic, premium, full-width wholesale banner matching KiranaMarket style
       container.innerHTML = `
@@ -3527,7 +3527,7 @@
       const qty = cartItem ? cartItem.qty : 0;
 
       const card = document.createElement('div');
-      card.className = "bg-white border border-[#ECECEC] rounded-[18px] p-3 flex flex-col justify-between shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 group cursor-pointer overflow-hidden relative w-full h-[360px] md:h-[385px] select-none";
+      card.className = "bg-white border border-[#ECECEC] rounded-[18px] p-3 flex flex-col justify-between shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 group cursor-pointer overflow-hidden relative w-full h-[375px] md:h-[385px] select-none";
       
       card.onclick = (e) => {
         // Guard to prevent triggering product detail when user clicks on quantity selectors
@@ -3598,12 +3598,12 @@
       }
 
       card.innerHTML = `
-        <div class="relative w-full aspect-square h-[135px] max-h-[135px] bg-white rounded-xl overflow-hidden flex items-center justify-center p-2 border border-blue-50/40 select-none mx-auto shrink-0 mb-2">
+        <div class="relative w-full aspect-square bg-white rounded-xl overflow-hidden flex items-center justify-center p-2 border border-blue-50/40 select-none mx-auto shrink-0 mb-2">
           <!-- Absolute High-Converting Badge Sticker -->
           <span class="absolute top-1.5 left-1.5 z-10 text-[8.5px] font-black uppercase tracking-wider px-2 py-0.5 rounded-md ${badgeStyle} shadow-3xs leading-none">
             ${badgeName}
           </span>
-          <img class="max-w-full max-h-full object-contain group-hover:scale-105 transition-transform duration-500 block mx-auto pt-2" 
+          <img class="w-full h-full object-contain aspect-square group-hover:scale-105 transition-transform duration-500 block mx-auto pt-2 pb-1" 
                src="${cardImgSrc}" 
                loading="eager" 
                alt="${product.name}"
@@ -3651,6 +3651,19 @@
       const grid = document.getElementById('products-catalog-grid');
       const fallback = document.getElementById('no-item-fallback');
       
+      const bannerSec = document.getElementById('banner-section');
+      const categorySec = document.getElementById('home-categories-section');
+      const isFiltered = (currentCategory !== "All") || (lookupKeywords.length > 0);
+      
+      if (bannerSec) {
+        if (isFiltered) bannerSec.classList.add('hidden');
+        else bannerSec.classList.remove('hidden');
+      }
+      if (categorySec) {
+        if (isFiltered) categorySec.classList.add('hidden');
+        else categorySec.classList.remove('hidden');
+      }
+
       let items = CONFIG.products;
       grid.innerHTML = "";
 
@@ -4593,80 +4606,93 @@
     }
 
     function getPackshotImage(product) {
-      if (!product) return generateBrandedPlaceholder("Product Item");
-      
-      const name = (product.name || "").toLowerCase();
-      
-      // Exact matching for specific brands requested by the user
-      // or standard products inside the custom catalog grid to prevent broken ImgBB files
-      if (name.includes("maggi")) {
-        return generateMaggiSVG();
-      } else if (name.includes("oreo")) {
-        return generateOreoSVG();
-      } else if (name.includes("good day") || name.includes("goodday")) {
-        return generateGoodDaySVG();
-      } else if (name.includes("parle-g") || name.includes("parle g")) {
-        return generateParleGSVG();
-      } else if (name.includes("kitkat") || name.includes("kit kat")) {
-        return generateKitKatSVG();
-      } else if (name.includes("munch")) {
-        return generateMunchSVG();
-      } else if (name.includes("perk")) {
-        return generatePerkSVG();
-      } else if (name.includes("dairy milk") || name.includes("dairymilk")) {
-        return generateDairyMilkSVG();
-      } else if (name.includes("melody")) {
-        return generateMelodySVG();
-      } else if (name.includes("alpenliebe")) {
-        return generateAlpenliebeSVG();
-      } else if (name.includes("kurkure")) {
-        return generateKurkureSVG();
-      } else if (name.includes("lay's") || name.includes("lays")) {
-        return generateLaysSVG();
-      } else if (name.includes("uncle chips") || name.includes("uncle")) {
-        return generateUncleChipsSVG();
-      } else if (name.includes("haldiram") && (name.includes("bhujia") || name.includes("sev"))) {
-        return generateHaldiramsSVG();
-      } else if (name.includes("bingo")) {
-        return generateBingoSVG();
-      } else if (name.includes("snickers")) {
-        return generateSnickersSVG();
-      } else if (name.includes("pulse")) {
-        return generatePulseSVG();
-      } else if (name.includes("yippee")) {
-        return generateYippeeSVG();
-      } else if (name.includes("ching")) {
-        return generateChingsSVG();
-      } else if (name.includes("coca-cola") || name.includes("cocacola")) {
-        return generateCocaColaSVG();
-      } else if (name.includes("sprite")) {
-        return generateSpriteSVG();
-      } else if (name.includes("pepsi")) {
-        return generatePepsiSVG();
-      } else if (name.includes("bread")) {
-        return generateBreadSVG();
-      } else if (name.includes("rusk")) {
-        return generateRuskSVG();
-      } else if (name.includes("cupcake")) {
-        return generateCupcakeSVG();
-      } else if (name.includes("almonds")) {
-        return generateAlmondsSVG();
-      } else if (name.includes("cashew")) {
-        return generateCashewsSVG();
-      } else if (name.includes("raisin")) {
-        return generateRaisinsSVG();
-      } else if (name.includes("pen")) {
-        return generatePensSVG();
-      } else if (name.includes("pencil")) {
-        return generatePencilsSVG();
-      } else if (name.includes("scale") || name.includes("sharpener") || name.includes("nataraj")) {
-        return generateScaleSVG();
-      } else if (name.includes("haldiram")) {
-        return generateHaldiramsSVG();
+      function getRawSrc() {
+        if (!product) return generateBrandedPlaceholder("Product Item");
+        
+        const name = (product.name || "").toLowerCase();
+        
+        // Exact matching for specific brands requested by the user
+        // or standard products inside the custom catalog grid to prevent broken ImgBB files
+        if (name.includes("maggi")) {
+          return generateMaggiSVG();
+        } else if (name.includes("oreo")) {
+          return generateOreoSVG();
+        } else if (name.includes("good day") || name.includes("goodday")) {
+          return generateGoodDaySVG();
+        } else if (name.includes("parle-g") || name.includes("parle g")) {
+          return generateParleGSVG();
+        } else if (name.includes("kitkat") || name.includes("kit kat")) {
+          return generateKitKatSVG();
+        } else if (name.includes("munch")) {
+          return generateMunchSVG();
+        } else if (name.includes("perk")) {
+          return generatePerkSVG();
+        } else if (name.includes("dairy milk") || name.includes("dairymilk")) {
+          return generateDairyMilkSVG();
+        } else if (name.includes("melody")) {
+          return generateMelodySVG();
+        } else if (name.includes("alpenliebe")) {
+          return generateAlpenliebeSVG();
+        } else if (name.includes("kurkure")) {
+          return generateKurkureSVG();
+        } else if (name.includes("lay's") || name.includes("lays")) {
+          return generateLaysSVG();
+        } else if (name.includes("uncle chips") || name.includes("uncle")) {
+          return generateUncleChipsSVG();
+        } else if (name.includes("haldiram") && (name.includes("bhujia") || name.includes("sev"))) {
+          return generateHaldiramsSVG();
+        } else if (name.includes("bingo")) {
+          return generateBingoSVG();
+        } else if (name.includes("snickers")) {
+          return generateSnickersSVG();
+        } else if (name.includes("pulse")) {
+          return generatePulseSVG();
+        } else if (name.includes("yippee")) {
+          return generateYippeeSVG();
+        } else if (name.includes("ching")) {
+          return generateChingsSVG();
+        } else if (name.includes("coca-cola") || name.includes("cocacola")) {
+          return generateCocaColaSVG();
+        } else if (name.includes("sprite")) {
+          return generateSpriteSVG();
+        } else if (name.includes("pepsi")) {
+          return generatePepsiSVG();
+        } else if (name.includes("bread")) {
+          return generateBreadSVG();
+        } else if (name.includes("rusk")) {
+          return generateRuskSVG();
+        } else if (name.includes("cupcake")) {
+          return generateCupcakeSVG();
+        } else if (name.includes("almonds")) {
+          return generateAlmondsSVG();
+        } else if (name.includes("cashew")) {
+          return generateCashewsSVG();
+        } else if (name.includes("raisin")) {
+          return generateRaisinsSVG();
+        } else if (name.includes("pen")) {
+          return generatePensSVG();
+        } else if (name.includes("pencil")) {
+          return generatePencilsSVG();
+        } else if (name.includes("scale") || name.includes("sharpener") || name.includes("nataraj")) {
+          return generateScaleSVG();
+        } else if (name.includes("haldiram")) {
+          return generateHaldiramsSVG();
+        }
+        
+        // Failover path to custom styled brand placeholder
+        return product.image && !product.image.includes("ibb.co") ? product.image : generateBrandedPlaceholder(product.name, product.category);
       }
-      
-      // Failover path to custom styled brand placeholder
-      return product.image && !product.image.includes("ibb.co") ? product.image : generateBrandedPlaceholder(product.name, product.category);
+
+      let src = getRawSrc();
+      if (src && src.startsWith("data:image/svg+xml;utf8,")) {
+        const svgContent = decodeURIComponent(src.substring("data:image/svg+xml;utf8,".length));
+        try {
+          src = "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(svgContent)));
+        } catch (e) {
+          src = "data:image/svg+xml," + encodeURIComponent(svgContent);
+        }
+      }
+      return src;
     }
 
     // IMAGE FALLBACK HANDLER
@@ -4720,7 +4746,7 @@
     function imageOnError(img) {
       img.onerror = null;
       const productName = img.alt || "Product Item";
-      img.src = generateBrandedPlaceholder(productName);
+      img.src = getPackshotImage({ name: productName });
     }
 
     // PRODUCT DETAILS MODAL SERVICES
