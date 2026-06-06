@@ -14,6 +14,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
+      darkMode: 'class',
       theme: {
         extend: {
           fontFamily: {
@@ -74,14 +75,7 @@
       -webkit-backdrop-filter: blur(16px);
     }
 
-    div#top-promo-banner:nth-of-type(1) {
-      font-size: 12px;
-      line-height: 15.5px;
-    }
 
-    .is-mobile-app #top-promo-banner {
-      display: none !important;
-    }
 
     /* iPhone notch & bottom bar safe-area support */
     @supports (padding-bottom: env(safe-area-inset-bottom)) {
@@ -95,6 +89,170 @@
       main, #mobile-tab-view {
         padding-bottom: calc(130px + env(safe-area-inset-bottom)) !important;
       }
+    }
+
+    /* Premium Dark Mode support styling rules */
+    html.dark, html.dark body {
+      background-color: #0b0f19 !important; /* Premium dark shade (midnight indigo/slate) */
+      color: #e2e8f0 !important;
+    }
+    html.dark .bg-white {
+      background-color: #111827 !important; /* Crisp dark card slate */
+    }
+    html.dark .bg-gray-50 {
+      background-color: #1a2235 !important; /* Elevated nested panel backing so there is clear card separation! */
+    }
+    html.dark .bg-gray-50\/50, html.dark #mobile-tab-view {
+      background-color: #151c2e !important; /* Nested address lists background elevation */
+    }
+    html.dark .bg-gray-50\/75 {
+      background-color: #161e2e !important; /* Special instructions backing */
+    }
+    html.dark .bg-gray-100 {
+      background-color: #1e293b !important; /* Distinct light dark block */
+    }
+    html.dark .border-gray-50 {
+      border-color: #242f47 !important;
+    }
+    html.dark .border-gray-100 {
+      border-color: #2d3748 !important; /* High contrast, beautiful premium dividers! */
+    }
+    html.dark .border-gray-150 {
+      border-color: #2d3748 !important;
+    }
+    html.dark .border-gray-200 {
+      border-color: #3e4d6b !important;
+    }
+    html.dark .border-\[\#ECECEC\] {
+      border-color: #2a354f !important;
+    }
+    
+    /* Beautiful, deep-contrast multi-tiered typographic scale in dark mode */
+    html.dark .text-gray-950,
+    html.dark .text-gray-900,
+    html.dark .text-gray-800 {
+      color: #ffffff !important; /* Ultra crisp heading text */
+    }
+    html.dark .text-gray-750,
+    html.dark .text-gray-700 {
+      color: #f1f5f9 !important; /* Rich body/label text */
+    }
+    html.dark .text-gray-650,
+    html.dark .text-gray-600,
+    html.dark .text-gray-550 {
+      color: #94a3b8 !important; /* High contrast secondary labels */
+    }
+    html.dark .text-gray-400 {
+      color: #94a3b8 !important; /* Muted but accessible metadata subtext */
+    }
+
+    /* Input items and focus highlights */
+    html.dark input, html.dark textarea {
+      background-color: #161f30 !important;
+      color: #ffffff !important;
+      border-color: #2e3b52 !important;
+    }
+    html.dark input:focus, html.dark textarea:focus {
+      border-color: #10b981 !important; /* Crisp emerald outline during focus */
+      background-color: #1b263b !important;
+    }
+    
+    /* Interactive Toggle Checkboxes */
+    html.dark input[type="checkbox"] {
+      background-color: #1a2333 !important;
+      border-color: #475569 !important;
+      accent-color: #10b981 !important;
+    }
+    
+    /* Theme Badges (Tier members, portals etc.) */
+    html.dark .bg-brand-50 {
+      background-color: rgba(16, 185, 129, 0.12) !important;
+    }
+    html.dark .text-brand-950 {
+      color: #34d399 !important; /* High contrast green font */
+    }
+    html.dark .border-brand-200 {
+      border-color: rgba(16, 185, 129, 0.25) !important;
+    }
+    html.dark .text-brand-900 {
+      color: #4ade80 !important; /* Premium light green edit buttons */
+    }
+    html.dark .border-\[\#11441c\]\/25 {
+      border-color: rgba(74, 222, 128, 0.25) !important;
+    }
+    html.dark .hover\:bg-\[\#11441c\]:hover {
+      background-color: #115b22 !important;
+    }
+    
+    /* Premium style definition for B2B Client Tier Badges in Light Mode */
+    .bg-yellow-50 {
+      background-color: #fefce8 !important; /* Soft premium cream yellow */
+    }
+    .text-yellow-800, .text-yellow-850 {
+      color: #854d0e !important; /* Premium rich gold brown index */
+    }
+    .border-yellow-150 {
+      border-color: #fef08a !important; /* Sharp pale gold border */
+    }
+
+    .bg-amber-50 {
+      background-color: #fffbeb !important;
+    }
+    .text-amber-800, .text-amber-805 {
+      color: #b45309 !important; /* Rich amber orange */
+    }
+    .border-amber-150 {
+      border-color: #fde68a !important;
+    }
+
+    .bg-indigo-50 {
+      background-color: #f5f3ff !important;
+    }
+    .text-indigo-800, .text-indigo-805 {
+      color: #4c1d95 !important; /* Deep indigo text */
+    }
+    .border-indigo-150 {
+      border-color: #ddd6fe !important;
+    }
+
+    .border-gray-150 {
+      border-color: #cbd5e1 !important;
+    }
+    
+    /* Soft Tier Badges (Gold, Silver, Platinum and Gold-Default) in Dark Mode */
+    html.dark .bg-yellow-50 { background-color: rgba(234, 179, 8, 0.12) !important; }
+    html.dark .text-yellow-800, html.dark .text-yellow-850 { color: #fef08a !important; }
+    html.dark .border-yellow-150 { border-color: rgba(234, 179, 8, 0.25) !important; }
+
+    html.dark .bg-amber-50 { background-color: rgba(245, 130, 32, 0.12) !important; }
+    html.dark .text-amber-800, html.dark .text-amber-805 { color: #fed7aa !important; }
+    html.dark .border-amber-150 { border-color: rgba(245, 130, 32, 0.25) !important; }
+
+    html.dark .bg-indigo-50 { background-color: rgba(99, 102, 241, 0.12) !important; }
+    html.dark .text-indigo-800, html.dark .text-indigo-805 { color: #c7d2fe !important; }
+    html.dark .border-indigo-150 { border-color: rgba(99, 102, 241, 0.25) !important; }
+    
+    /* Keep B2B Buttons Crisp */
+    html.dark .bg-\[\#11441c\] {
+      background-color: #136c25 !important;
+    }
+    html.dark .bg-\[\#11441c\]:hover, html.dark .hover\:bg-brand-900:hover {
+      background-color: #168038 !important;
+    }
+
+    html.dark header {
+      background-color: #111827 !important;
+      border-color: #1f2937 !important;
+    }
+    html.dark header .bg-white {
+      background-color: #111827 !important;
+    }
+    html.dark .glass-drawer {
+      background: rgba(17, 24, 39, 0.95) !important;
+    }
+    html.dark .md\:hidden.fixed.bottom-0 {
+      background-color: #111827 !important;
+      border-color: #1f2937 !important;
     }
   </style>
   <script>
@@ -115,16 +273,23 @@
       if (isWebview) {
         document.documentElement.classList.add('is-mobile-app');
       }
+
+      // Pre-initialize Dark Mode to avoid layout flicker
+      try {
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.classList.add('dark');
+        }
+      } catch (e) {
+        // Fallback or Sandbox
+      }
     })();
   </script>
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans min-h-screen flex flex-col antialiased">
 
 
-  <!-- TOP PROMO SCROLLING BAR -->
-  <div id="top-promo-banner" class="bg-[#1e5426] text-wholesale-yellow text-[13px] py-2 px-4 text-center font-normal italic tracking-wider uppercase transition-colors relative z-50">
-    ⚡ Aggarwal Wholesale Store — B2B Confectionery & Kiryana Bulk Supply! • Min. Order: ₹2,000 • FREE Cargo over ₹5,000! ⚡
-  </div>
+
 
   <!-- MAIN HEADER -->
   <header class="bg-white border-b border-gray-100 sticky top-0 z-40 shadow-sm select-none">
@@ -147,7 +312,7 @@
           </div>
 
           <!-- Desktop Navigation Menu: Left-aligned, generous gap-10 -->
-          <nav id="desktop-nav-bar" class="hidden md:flex items-center gap-10 font-sans text-[12px] leading-[14.5px] font-extrabold uppercase tracking-widest text-gray-450">
+          <nav id="desktop-nav-bar" class="hidden md:flex items-center gap-10 font-sans uppercase tracking-widest text-gray-450" style="font-size: 13px; font-weight: normal;">
             <button onclick="switchAppView('home')" id="desk-nav-home" class="hover:text-brand-900 transition flex items-center gap-1.5 cursor-pointer pb-1 border-b-2 border-transparent transition-all duration-200">
               Home
             </button>
@@ -548,8 +713,8 @@
           <button id="detail-qty-plus" class="px-3 py-2 text-brand-800 hover:bg-brand-100 transition text-sm">+</button>
         </div>
 
-        <button id="detail-submit-btn" class="flex-grow bg-brand-800 hover:bg-brand-900 text-white font-extrabold py-3 rounded-xl text-sm shadow-md transition-all flex items-center justify-center gap-2">
-          <span>Apply & Add to Basket</span>
+        <button id="detail-submit-btn" class="flex-grow bg-brand-800 hover:bg-brand-900 text-white font-extrabold py-3 rounded-xl text-sm shadow-md transition-all flex items-center justify-center gap-2 overflow-hidden bg-clip-padding border border-transparent outline-none focus:outline-none">
+          <span>Apply & Add to Cart</span>
         </button>
       </div>
 
@@ -739,7 +904,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, onSnapshot, getDocFromServer } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, initializeFirestore, doc, getDoc, setDoc, updateDoc, collection, onSnapshot, getDocFromServer } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
       projectId: "long-airway-3fbwx",
@@ -753,7 +918,19 @@
     };
 
     const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
+    
+    // Fallback-resilient build with forced long polling parameters (bypasses sandbox/iframe WS blockers)
+    let db;
+    try {
+      db = initializeFirestore(app, {
+        experimentalForceLongPolling: true,
+        useFetchStreams: false
+      }, firebaseConfig.firestoreDatabaseId);
+      console.log("[FIREBASE] Initialized modern Firestore database with forced long-polling configurations.");
+    } catch (e) {
+      console.warn("[FIREBASE] Custom initialization failed, falling back to standard getFirestore:", e);
+      db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
+    }
     const auth = getAuth(app);
 
     // Bind to window for traditional js functions
@@ -805,20 +982,63 @@
     };
 
     // Firebase Auth State Tracker
+    const liveSubs = {
+      orders: null,
+      pointsHistory: null
+    };
+
+    function clearLiveSubscriptions() {
+      if (liveSubs.orders) {
+        try { liveSubs.orders(); } catch (e) {}
+        liveSubs.orders = null;
+      }
+      if (liveSubs.pointsHistory) {
+         try { liveSubs.pointsHistory(); } catch (e) {}
+         liveSubs.pointsHistory = null;
+      }
+    }
+
     onAuthStateChanged(auth, async (user) => {
       window.currentUser = user;
+      clearLiveSubscriptions();
+
       if (user) {
         console.log("[FIREBASE] Authenticated user:", user.email, "uid:", user.uid);
         const userDocRef = doc(db, 'users', user.uid);
         try {
           console.log("[FIREBASE] Fetching user profile document from Firestore...");
           let snap;
+          let isOfflineFallback = false;
           try {
             snap = await getDoc(userDocRef);
             console.log("[FIREBASE] getDoc completed successfully. Document exists:", snap.exists());
           } catch (getErr) {
-            console.error("[FIREBASE] getDoc failed with permission or other error:", getErr);
-            throw getErr;
+            console.warn("[FIREBASE] getDoc failed (unreachable or offline). Operating in local fallback mode:", getErr);
+            isOfflineFallback = true;
+            let cachedProfile = null;
+            try {
+              const localSaved = localStorage.getItem('local_user_profile');
+              if (localSaved) cachedProfile = JSON.parse(localSaved);
+            } catch (e) {}
+            
+            snap = {
+              exists: () => true,
+              data: () => cachedProfile || {
+                userId: user.uid,
+                name: user.displayName || "Aggarwal Wholesale Client",
+                email: user.email || "no-recorded-email@b2b-wholesale.com",
+                phone: "",
+                photoURL: user.photoURL || "",
+                tier: "Bronze",
+                points: 0,
+                totalSpent: 0,
+                savedAddresses: [],
+                businessName: "",
+                deliveryPreferences: "",
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
+              }
+            };
           }
 
           if (!snap.exists()) {
@@ -842,17 +1062,23 @@
               await setDoc(userDocRef, defaultProfile);
               console.log("[FIREBASE] setDoc successfully completed.");
               window.userProfile = defaultProfile;
+              try {
+                localStorage.setItem('local_user_profile', JSON.stringify(defaultProfile));
+              } catch (e) {}
             } catch (setErr) {
               console.error("[FIREBASE] setDoc failed with validation or permission error:", setErr);
               throw setErr;
             }
           } else {
             window.userProfile = snap.data();
-            console.log("[FIREBASE] Loaded existing userProfile:", JSON.stringify(window.userProfile));
+            console.log("[FIREBASE] Loaded userProfile:", JSON.stringify(window.userProfile));
+            try {
+              localStorage.setItem('local_user_profile', JSON.stringify(window.userProfile));
+            } catch (e) {}
           }
 
           // Live order binding
-          onSnapshot(collection(db, "users", user.uid, "orders"), (colSnap) => {
+          liveSubs.orders = onSnapshot(collection(db, "users", user.uid, "orders"), (colSnap) => {
             const orders = [];
             colSnap.forEach(d => orders.push(d.data()));
             orders.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
@@ -868,11 +1094,16 @@
               }
             }
           }, (err) => {
+            // Guard: If we are unauthenticated or users have shifted, suppress permission-revocation console noise
+            if (!auth.currentUser || auth.currentUser.uid !== user.uid) {
+              console.warn("[FIREBASE] Suppressed expected orders listener revocation error on sign-out.");
+              return;
+            }
             window.handleFirestoreError(err, 'get', `users/${user.uid}/orders`);
           });
 
           // Live pointsHistory binding
-          onSnapshot(collection(db, "users", user.uid, "pointsHistory"), (colSnap) => {
+          liveSubs.pointsHistory = onSnapshot(collection(db, "users", user.uid, "pointsHistory"), (colSnap) => {
             const history = [];
             colSnap.forEach(d => history.push(d.data()));
             history.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
@@ -883,6 +1114,11 @@
               tabViewEl.innerHTML = renderMobileProfile();
             }
           }, (err) => {
+            // Guard: If we are unauthenticated or users have shifted, suppress permission-revocation console noise
+            if (!auth.currentUser || auth.currentUser.uid !== user.uid) {
+              console.warn("[FIREBASE] Suppressed expected pointsHistory listener revocation error on sign-out.");
+              return;
+            }
             window.handleFirestoreError(err, 'get', `users/${user.uid}/pointsHistory`);
           });
 
@@ -2343,154 +2579,195 @@
       const isEditing = window.profileEditingState === true;
 
       container.innerHTML = `
-        <div class="max-w-4xl mx-auto px-4 py-6 font-sans">
+        <div class="max-w-[1380px] w-full mx-auto px-6 lg:px-10 py-10 md:py-14 font-sans">
           <!-- Back button / Page title -->
-          <div class="mb-6 select-none flex items-center justify-between border-b border-gray-100 pb-3">
-            <div class="flex items-center gap-3">
-              <button onclick="switchAppView('home')" class="p-2 -ml-2 rounded-xl text-brand-950 hover:bg-gray-100 transition inline-flex items-center justify-center cursor-pointer">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+          <div class="mb-10 select-none flex items-center justify-between border-b border-gray-200 pb-6">
+            <div class="flex items-center gap-4">
+              <button onclick="switchAppView('home')" class="p-3 -ml-2 rounded-2xl text-brand-950 hover:bg-gray-100 transition inline-flex items-center justify-center cursor-pointer border border-transparent hover:border-gray-200" style="background: rgba(17,68,28,0.03);">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                 </svg>
               </button>
-              <h2 class="font-display font-black text-xl text-gray-950 tracking-tight leading-none">My Account Profile</h2>
+              <h2 class="font-display font-black text-2xl md:text-3xl text-gray-950 tracking-tight leading-none">My Account Profile</h2>
             </div>
-            <span class="border border-brand-200 bg-brand-50 text-brand-950 text-[10px] font-black uppercase px-2.5 py-1 rounded-full tracking-wide">B2B Authorized Portal</span>
+            <span class="border border-brand-200 bg-brand-50 text-brand-950 text-xs font-semibold uppercase px-4 py-2 rounded-xl tracking-wide select-none">B2B Authorized Portal</span>
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-10 items-start">
             <!-- Left Sidebar Profile Card -->
-            <div class="flex flex-col gap-5">
-              <div class="bg-white rounded-3xl border border-gray-150 p-6 shadow-3xs flex flex-col items-center text-center">
-                <div class="relative group mb-4">
-                  <img class="w-24 h-24 rounded-full object-cover border-4 border-brand-50 shadow-sm" src="${avatarUrl}" referrerPolicy="no-referrer">
-                  <div class="absolute inset-0 bg-black/40 rounded-full opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white text-[10px] font-bold cursor-pointer">
+            <div class="flex flex-col gap-6 lg:gap-8 lg:col-span-1">
+              <div class="bg-white rounded-3xl border border-gray-150 p-8 md:p-10 shadow-sm flex flex-col items-center text-center">
+                <div class="relative group mb-6">
+                  <img class="w-28 h-28 md:w-32 md:h-32 rounded-full object-cover border-4 border-brand-50 shadow-md group-hover:scale-105 transition duration-300" src="${avatarUrl}" referrerPolicy="no-referrer">
+                  <div class="absolute inset-0 bg-black/40 rounded-full opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white text-xs font-bold cursor-pointer">
                     Verified
                   </div>
                 </div>
-                <h3 class="text-base font-bold text-gray-950 truncate max-w-full">${name}</h3>
-                <p class="text-[11px] text-gray-400 mt-0.5">${email}</p>
-                <div class="inline-flex items-center gap-1 border ${tierBadgeColor} text-[10px] uppercase font-black px-3 py-1 rounded-full mt-3.5 tracking-wider">
+                <h3 class="text-xl md:text-2xl font-black text-gray-950 truncate max-w-full leading-tight mb-1">${name}</h3>
+                <p class="text-xs md:text-sm text-gray-400 font-medium">${email}</p>
+                <div class="inline-flex items-center gap-1.5 border ${tierBadgeColor} text-xs uppercase font-extrabold px-4 py-2 mt-5 rounded-2xl tracking-wider select-none shadow-3xs">
                   ⭐ ${tier} Member
                 </div>
 
                 <!-- Stats component -->
-                <div class="w-full grid grid-cols-2 gap-3 mt-6 pt-6 border-t border-gray-100">
-                  <div class="text-left bg-gray-50 p-3 rounded-2xl border border-gray-100">
-                    <span class="text-[10px] text-gray-400 font-bold uppercase block">Loyalty Balance</span>
-                    <span class="text-base font-black text-[#11441c] block mt-0.5">${points} <span class="text-[10px] font-normal text-gray-400">PTS</span></span>
+                <div class="w-full grid grid-cols-2 gap-4 mt-8 pt-8 border-t border-gray-100 dark:border-gray-800">
+                  <div class="profile-stat-card text-left bg-gray-50/90 dark:bg-[#161e2e] p-5 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-3xs transition-all duration-300">
+                    <span class="text-[10px] md:text-xs text-gray-500 dark:text-gray-300 font-bold uppercase tracking-wider block">Loyalty Balance</span>
+                    <span class="text-base md:text-xl font-black text-[#11441c] dark:text-emerald-400 block mt-2 whitespace-nowrap">${points} <span class="text-[10px] md:text-xs font-bold text-gray-400 dark:text-emerald-500 uppercase tracking-tight ml-0.5">PTS</span></span>
                   </div>
-                  <div class="text-left bg-gray-50 p-3 rounded-2xl border border-gray-100">
-                    <span class="text-[10px] text-gray-400 font-bold uppercase block">Wholesale Spent</span>
-                    <span class="text-base font-black text-gray-800 block mt-0.5">₹${Number(totalSpent).toLocaleString()}</span>
+                  <div class="profile-stat-card text-left bg-gray-50/90 dark:bg-[#161e2e] p-5 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-3xs transition-all duration-300">
+                    <span class="text-[10px] md:text-xs text-gray-500 dark:text-gray-300 font-bold uppercase tracking-wider block">Wholesale Spent</span>
+                    <span class="text-base md:text-xl font-black text-gray-900 dark:text-amber-400 block mt-2 whitespace-nowrap">₹${Number(totalSpent).toLocaleString()}</span>
                   </div>
                 </div>
 
-                <button onclick="switchAppView('rewards')" class="w-full bg-[#11441c] hover:bg-brand-900 text-white font-extrabold text-[10px] py-2.5 rounded-xl uppercase tracking-wider mt-5 transition shadow-3xs hover:shadow-2xs cursor-pointer">
+                <button onclick="switchAppView('rewards')" class="w-full bg-[#11441c] hover:bg-brand-900 text-white font-extrabold text-xs md:text-sm py-3.5 px-6 rounded-2xl uppercase tracking-wider mt-6 transition shadow-3xs hover:shadow-2xs cursor-pointer active:scale-98">
                   Redeem Rewards Vouchers
                 </button>
               </div>
 
               <!-- Quick Navigation list -->
-              <div class="bg-white rounded-3xl border border-gray-150 p-4 shadow-3xs flex flex-col gap-1">
-                <button onclick="switchAppView('orders')" class="w-full flex items-center justify-between p-2.5 rounded-xl text-xs font-bold text-gray-700 hover:bg-gray-50 hover:text-brand-900 text-left transition cursor-pointer">
-                  <span class="flex items-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg> My Bulk Orders</span>
-                  <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
+              <div class="bg-white rounded-3xl border border-gray-150 p-6 shadow-3xs flex flex-col gap-2 font-sans">
+                <button onclick="switchAppView('orders')" class="w-full flex items-center justify-between p-3.5 rounded-2xl text-xs md:text-sm font-bold text-gray-750 hover:bg-gray-50 hover:text-brand-900 text-left transition cursor-pointer">
+                  <span class="flex items-center gap-2.5"><svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg> My Bulk Orders</span>
+                  <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
                 </button>
-                <button onclick="switchAppView('rewards')" class="w-full flex items-center justify-between p-2.5 rounded-xl text-xs font-bold text-gray-700 hover:bg-gray-50 hover:text-brand-900 text-left transition cursor-pointer">
-                  <span class="flex items-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Rewards Program</span>
-                  <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
+                <button onclick="switchAppView('rewards')" class="w-full flex items-center justify-between p-3.5 rounded-2xl text-xs md:text-sm font-bold text-gray-750 hover:bg-gray-50 hover:text-brand-900 text-left transition cursor-pointer">
+                  <span class="flex items-center gap-2.5"><svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Rewards Program</span>
+                  <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
                 </button>
+              </div>
+
+              <!-- Theme & Display Preferences Card -->
+              <div class="bg-white rounded-3xl border border-gray-150 p-6 shadow-3xs flex flex-col gap-4 font-sans">
+                <div class="flex items-center justify-between select-none">
+                  <span class="text-xs md:text-sm font-bold text-gray-750 flex items-center gap-2.5">
+                    <svg class="w-5 h-5 text-brand-900 dark:text-brand-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                    </svg>
+                    Dark Display Theme
+                  </span>
+                  
+                  <!-- Switch Toggle Button -->
+                  <button onclick="window.toggleDarkMode()" id="dark-theme-toggle-switch" class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${document.documentElement.classList.contains('dark') ? 'bg-[#115b22]' : 'bg-gray-200'}" role="switch" aria-checked="${document.documentElement.classList.contains('dark')}">
+                    <span style="background-color: #ffffff !important;" class="pointer-events-none relative inline-block h-5 w-5 transform rounded-full shadow ring-0 transition duration-200 ease-in-out ${document.documentElement.classList.contains('dark') ? 'translate-x-5' : 'translate-x-0'}">
+                      <span class="absolute inset-0 flex h-full w-full items-center justify-center transition-opacity ${document.documentElement.classList.contains('dark') ? 'opacity-0 ease-out duration-100' : 'opacity-100 ease-in duration-200'}" aria-hidden="true">
+                        <!-- Sun Icon for Light mode inside toggle knob -->
+                        <svg class="h-3 w-3 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 14.95a1 1 0 011.414 0l.707.707a1 1 0 01-1.414 1.414l-.707-.707a1 1 0 010-1.414zm0-9.9a1 1 0 010-1.414l.707-.707a1 1 0 011.414 1.414l-.707.707a1 1 0 01-1.414 0zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd" />
+                        </svg>
+                      </span>
+                      <span class="absolute inset-0 flex h-full w-full items-center justify-center transition-opacity ${document.documentElement.classList.contains('dark') ? 'opacity-100 ease-in duration-200' : 'opacity-0 ease-out duration-100'}" aria-hidden="true">
+                        <!-- Moon Icon for Dark mode inside toggle knob -->
+                        <svg class="h-3 w-3 text-brand-900" fill="currentColor" viewBox="0 0 20 20">
+                          <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
+                        </svg>
+                      </span>
+                    </span>
+                  </button>
+                </div>
+                <!-- Mini helper label -->
+                <p class="text-xs text-gray-400 font-medium leading-relaxed">
+                  Toggle Dark Mode for comfortable, late-night confectionery stock reviews and booking dispatch slots.
+                </p>
               </div>
             </div>
 
             <!-- Right Column Settings Form -->
-            <div class="md:col-span-2 flex flex-col gap-6">
+            <div class="lg:col-span-2 flex flex-col gap-6 lg:gap-8">
               <!-- Personal details Card -->
-              <div class="bg-white rounded-3xl border border-gray-150 p-6 shadow-3xs">
-                <div class="flex items-center justify-between border-b border-gray-100 pb-3 mb-5 select-none">
-                  <h4 class="font-display font-bold text-sm text-gray-950 uppercase tracking-tight">Dealer Core Profile Info</h4>
-                  ${!isEditing ? `<button onclick="window.toggleLocalProfileEditing(true)" class="text-xs text-brand-800 hover:text-brand-950 font-bold underline cursor-pointer">Edit Profile</button>` : ''}
+              <div class="bg-white rounded-3xl border border-gray-150 p-8 md:p-10 shadow-sm">
+                <div class="flex items-center justify-between border-b border-gray-100 pb-5 mb-6 select-none font-sans">
+                  <h4 class="font-display font-black text-xs md:text-sm text-gray-950 uppercase tracking-widest">Dealer Core Profile Info</h4>
+                  ${!isEditing ? `
+                    <button onclick="window.toggleLocalProfileEditing(true)" class="text-xs md:text-sm text-brand-900 hover:text-white border border-[#11441c]/25 hover:bg-[#11441c] hover:border-[#11441c] font-black px-4.5 py-2.5 rounded-xl transition-all duration-200 select-none cursor-pointer flex items-center gap-1.5 shadow-3xs active:scale-95">
+                      <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                      </svg>
+                      Edit Profile
+                    </button>
+                  ` : ''}
                 </div>
 
                 ${isEditing ? `
-                  <div class="flex flex-col gap-4">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div class="flex flex-col gap-6 font-sans">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                       <div>
-                        <label class="block text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Company / Shop Name</label>
-                        <input type="text" id="full-profile-name" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold outline-none focus:border-brand-700" value="${name}">
+                        <label class="block text-xs text-gray-400 font-bold uppercase tracking-wider mb-2">Company / Shop Name</label>
+                        <input type="text" id="full-profile-name" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 text-sm font-semibold outline-none focus:border-brand-700 focus:bg-white transition" value="${name}">
                       </div>
                       <div>
-                        <label class="block text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Owner / Full Name</label>
-                        <input type="text" id="full-profile-business-name" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold outline-none focus:border-brand-700 font-sans" value="${businessName}" placeholder="Enter owner name">
+                        <label class="block text-xs text-gray-400 font-bold uppercase tracking-wider mb-2">Owner / Full Name</label>
+                        <input type="text" id="full-profile-business-name" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 text-sm font-semibold outline-none focus:border-brand-700 focus:bg-white font-sans transition" value="${businessName}" placeholder="Enter owner name">
                       </div>
                     </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                       <div>
-                        <label class="block text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">WhatsApp Line</label>
-                        <input type="tel" id="full-profile-phone" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold outline-none focus:border-brand-700 placeholder-gray-400 font-sans" value="${phone}" placeholder="10-digit mobile phone">
+                        <label class="block text-xs text-gray-400 font-bold uppercase tracking-wider mb-2">WhatsApp Line</label>
+                        <input type="tel" id="full-profile-phone" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 text-sm font-semibold outline-none focus:border-brand-700 focus:bg-white placeholder-gray-400 font-sans transition" value="${phone}" placeholder="10-digit mobile phone">
                       </div>
                       <div>
-                        <label class="block text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Contact Email (Sign-In synced)</label>
-                        <input type="email" id="full-profile-email" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold outline-none focus:border-brand-700 font-sans" value="${email}" disabled>
+                        <label class="block text-xs text-gray-400 font-bold uppercase tracking-wider mb-2">Contact Email (Sign-In synced)</label>
+                        <input type="email" id="full-profile-email" class="w-full bg-gray-100 border border-gray-150 rounded-xl px-4 py-3.5 text-sm font-semibold text-gray-500 font-sans cursor-not-allowed" value="${email}" disabled>
                       </div>
                     </div>
                     <div>
-                      <label class="block text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">B2B Delivery Preferences / Forklift Instructions</label>
-                      <textarea id="full-profile-preferences" rows="2" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-2 text-xs font-semibold outline-none focus:border-brand-700 placeholder-gray-400 mt-0.5 leading-relaxed resize-none font-sans" placeholder="E.g., Forklift entry slot #3. Drop sweets pallet by 10 AM. Gate code 9897.">${deliveryPreferences}</textarea>
+                      <label class="block text-xs text-gray-400 font-bold uppercase tracking-wider mb-2">B2B Delivery Preferences / Forklift Instructions</label>
+                      <textarea id="full-profile-preferences" rows="3" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 text-sm font-semibold outline-none focus:border-brand-700 focus:bg-white placeholder-gray-400 mt-0.5 leading-relaxed resize-none font-sans transition" placeholder="E.g., Forklift entry slot #3. Drop sweets pallet by 10 AM. Gate code 9897.">${deliveryPreferences}</textarea>
                     </div>
 
-                    <div class="flex gap-2.5 pt-2">
-                      <button onclick="window.submitFullProfileUpdate()" class="bg-[#11441c] hover:bg-brand-900 text-white font-extrabold text-xs px-5 py-2.5 rounded-xl transition cursor-pointer font-sans">Save Changes</button>
-                      <button onclick="window.toggleLocalProfileEditing(false)" class="bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold text-xs px-4 py-2.5 rounded-xl transition cursor-pointer font-sans">Cancel</button>
+                    <div class="flex gap-3 pt-3">
+                      <button onclick="window.submitFullProfileUpdate()" class="bg-[#11441c] hover:bg-brand-900 text-white font-extrabold text-xs md:text-sm px-6 py-3.5 rounded-xl transition cursor-pointer font-sans shadow-xs hover:shadow-sm active:scale-98">Save Changes</button>
+                      <button onclick="window.toggleLocalProfileEditing(false)" class="bg-gray-100 hover:bg-gray-200 text-gray-650 font-bold text-xs md:text-sm px-5 py-3.5 rounded-xl transition cursor-pointer font-sans active:scale-98">Cancel</button>
                     </div>
                   </div>
                 ` : `
-                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 leading-relaxed">
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-7 md:gap-y-8 select-none leading-relaxed">
                     <div>
-                      <span class="text-[10px] text-gray-400 block font-bold uppercase tracking-wide">Company or Shop Name</span>
-                      <span class="text-xs font-bold text-gray-800 block mt-1">${name}</span>
+                      <span class="text-xs text-gray-400 block font-bold uppercase tracking-wider font-sans">Company or Shop Name</span>
+                      <span class="text-sm md:text-base font-bold text-gray-950 block mt-2">${name}</span>
                     </div>
                     <div>
-                      <span class="text-[10px] text-gray-400 block font-bold uppercase tracking-wide">Authorized Representative / Owner</span>
-                      <span class="text-xs font-bold text-gray-800 block mt-1">${businessName ? businessName : '<span class="text-gray-350 italic">None set</span>'}</span>
+                      <span class="text-xs text-gray-400 block font-bold uppercase tracking-wider font-sans">Authorized Representative / Owner</span>
+                      <span class="text-sm md:text-base font-bold text-gray-950 block mt-2">${businessName ? businessName : '<span class="text-gray-300 italic font-medium">None set</span>'}</span>
                     </div>
                     <div>
-                      <span class="text-[10px] text-gray-400 block font-bold uppercase tracking-wide">Active WhatsApp Mobile</span>
-                      <span class="text-xs font-bold text-gray-800 block mt-1">${phone ? '+91 ' + phone : '<span class="text-gray-350 italic">None registered</span>'}</span>
+                      <span class="text-xs text-gray-400 block font-bold uppercase tracking-wider font-sans">Active WhatsApp Mobile</span>
+                      <span class="text-sm md:text-base font-bold text-gray-950 block mt-2">${phone ? '+91 ' + phone : '<span class="text-gray-300 italic font-medium">None registered</span>'}</span>
                     </div>
                     <div>
-                      <span class="text-[10px] text-gray-400 block font-bold uppercase tracking-wide">Primary Merchant Email</span>
-                      <span class="text-xs font-bold text-gray-800 block mt-1">${email}</span>
+                      <span class="text-xs text-gray-400 block font-bold uppercase tracking-wider font-sans">Primary Merchant Email</span>
+                      <span class="text-sm md:text-base font-bold text-gray-950 block mt-2">${email}</span>
                     </div>
                     <div class="sm:col-span-2">
-                      <span class="text-[10px] text-gray-400 block font-bold uppercase tracking-wide">Special Warehouse Instructions & Preferences</span>
-                      <span class="text-xs font-medium text-gray-600 block mt-1 bg-gray-50 p-3 rounded-2xl border border-gray-105 leading-relaxed">
-                        ${deliveryPreferences ? deliveryPreferences : '<span class="text-gray-350 italic">No custom delivery preferences saved. Click Edit Profile to specify tailgate unloading, gate access codes, or timing locks.</span>'}
-                      </span>
+                      <span class="text-xs text-gray-400 block font-bold uppercase tracking-wider font-sans mb-2">Special Warehouse Instructions & Preferences</span>
+                      <div class="text-sm font-medium text-gray-750 block bg-gray-50/75 p-5 md:p-6 rounded-2xl md:rounded-3xl border border-gray-150/70 leading-relaxed font-sans">
+                        ${deliveryPreferences ? deliveryPreferences : '<span class="text-gray-350 italic font-medium">No custom delivery preferences saved. Click Edit Profile to specify tailgate unloading, gate access codes, or timing locks.</span>'}
+                      </div>
                     </div>
                   </div>
                 `}
               </div>
 
               <!-- Saved addresses Card -->
-              <div class="bg-white rounded-3xl border border-gray-150 p-6 shadow-3xs">
-                <div class="flex items-center justify-between border-b border-gray-100 pb-3 mb-4 select-none">
-                  <h4 class="font-display font-bold text-sm text-gray-950 uppercase tracking-tight">Cargo Destination Address Directory</h4>
-                  <span class="text-[10px] text-gray-400 font-bold uppercase">${savedAddresses.length} / 20 Registered</span>
+              <div class="bg-white rounded-3xl border border-gray-150 p-8 md:p-10 shadow-sm">
+                <div class="flex items-center justify-between border-b border-gray-100 pb-5 mb-6 select-none font-sans">
+                  <h4 class="font-display font-black text-xs md:text-sm text-gray-950 uppercase tracking-widest">Cargo Destination Address Directory</h4>
+                  <span class="text-xs font-bold text-gray-400 tracking-wider">${savedAddresses.length} / 20 Registered</span>
                 </div>
 
                 <!-- Live address listings -->
-                <div class="flex flex-col gap-2 max-h-[250px] overflow-y-auto mb-4">
+                <div class="flex flex-col gap-3 mb-6 max-h-[300px] overflow-y-auto pr-1">
                   ${savedAddresses.length === 0 ? `
-                    <p class="text-xs text-gray-400 italic py-4">No custom delivery addresses or warehouse addresses added yet.</p>
+                    <p class="text-sm text-gray-400 italic py-6 text-center font-medium">No custom delivery addresses or warehouse addresses added yet.</p>
                   ` : savedAddresses.map((addr, idx) => `
-                    <div class="flex items-start justify-between p-3 gap-2 bg-gray-50/50 hover:bg-gray-50 border border-gray-100 rounded-2xl transition">
-                      <div class="flex gap-2 min-w-0">
-                        <span class="flex items-center justify-center w-5 h-5 rounded-full bg-brand-50 text-[10px] font-bold text-brand-800 shrink-0 mt-0.5">${idx+1}</span>
-                        <p class="text-xs text-gray-700 font-bold leading-relaxed break-words min-w-0">${addr}</p>
+                    <div class="flex items-start justify-between p-4.5 gap-4 bg-gray-50/50 hover:bg-gray-50/85 border border-gray-150/50 hover:border-gray-200 rounded-2xl transition duration-150">
+                      <div class="flex gap-3 min-w-0">
+                        <span class="flex items-center justify-center w-6.5 h-6.5 rounded-full bg-brand-50 text-xs font-extrabold text-brand-850 shrink-0 mt-0.5">${idx+1}</span>
+                        <p class="text-sm text-gray-800 font-bold leading-relaxed break-words min-w-0">${addr}</p>
                       </div>
-                      <button onclick="window.deleteFullProfileAddress(\`${addr.replace(/'/g, "\\'")}\`)" class="p-1 text-gray-350 hover:text-red-600 transition shrink-0 cursor-pointer select-none" title="Delete address">
-                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <button onclick="window.deleteFullProfileAddress(\`${addr.replace(/'/g, "\\'")}\`)" class="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50/50 rounded-lg transition shrink-0 cursor-pointer select-none" title="Delete address">
+                        <svg class="w-4.5 h-4.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
                           <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-4v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                         </svg>
                       </button>
@@ -2499,37 +2776,37 @@
                 </div>
 
                 <!-- Add Address inline form -->
-                <div class="flex gap-2.5">
-                  <input type="text" id="full-profile-new-address" class="flex-grow bg-gray-50 border border-gray-200 focus:bg-white focus:border-brand-700 rounded-xl px-3.5 py-2.5 text-xs font-semibold outline-none" placeholder="Enter warehouse/destination address (street, city, state, zip)... font-sans">
-                  <button onclick="window.submitFullProfileAddAddress()" class="bg-[#11441c] hover:bg-brand-900 text-white font-extrabold text-xs px-5 py-2.5 rounded-xl transition cursor-pointer shrink-0 font-sans">Add Address</button>
+                <div class="flex flex-col sm:flex-row gap-3">
+                  <input type="text" id="full-profile-new-address" class="flex-grow bg-gray-50 border border-gray-200 focus:bg-white focus:border-brand-700 rounded-xl px-4.5 py-3.5 text-sm font-semibold outline-none transition-all placeholder-gray-400 font-sans" placeholder="Enter warehouse/destination address (street, city, state, zip)...">
+                  <button onclick="window.submitFullProfileAddAddress()" class="bg-[#11441c] hover:bg-brand-900 text-white font-extrabold text-xs md:text-sm px-6 py-3.5 rounded-xl transition cursor-pointer shrink-0 font-sans shadow-xs active:scale-98 animate-none">Add Address</button>
                 </div>
               </div>
 
               <!-- General System Settings Card -->
-              <div class="bg-white rounded-3xl border border-gray-150 p-6 shadow-3xs">
-                <div class="border-b border-gray-100 pb-3 mb-4 select-none">
-                  <h4 class="font-display font-bold text-sm text-gray-950 uppercase tracking-tight">Account Settings & Cargo Notifications</h4>
+              <div class="bg-white rounded-3xl border border-gray-150 p-8 md:p-10 shadow-sm">
+                <div class="border-b border-gray-100 pb-5 mb-6 select-none font-sans">
+                  <h4 class="font-display font-black text-xs md:text-sm text-gray-950 uppercase tracking-widest">Account Settings & Cargo Notifications</h4>
                 </div>
-                <div class="flex flex-col gap-4 select-none">
-                  <label class="flex items-center justify-between cursor-pointer">
-                    <div>
-                      <span class="text-xs font-extrabold text-gray-800 block">WhatsApp Dispatches Alerts</span>
-                      <span class="text-[10px] text-gray-400 block mt-0.5">Push tracking details on cargo loaders via WhatsApp</span>
+                <div class="flex flex-col gap-6 select-none">
+                  <label class="flex items-center justify-between cursor-pointer group">
+                    <div class="pr-4">
+                      <span class="text-sm font-bold text-gray-800 block group-hover:text-brand-950 transition">WhatsApp Dispatches Alerts</span>
+                      <span class="text-xs text-gray-400 block mt-1.5 leading-normal">Push tracking details on cargo loaders via WhatsApp</span>
                     </div>
-                    <input type="checkbox" checked class="w-4.5 h-4.5 accent-brand-800 rounded">
+                    <input type="checkbox" checked class="w-5.5 h-5.5 accent-[#11441c] rounded border-gray-300">
                   </label>
-                  <label class="flex items-center justify-between cursor-pointer border-t border-gray-50 pt-3">
-                    <div>
-                      <span class="text-xs font-extrabold text-gray-800 block">Weekly Wholesale Rate Sheet</span>
-                      <span class="text-[10px] text-gray-400 block mt-0.5">Subscribe to weekly sweet confectionery bulk rate change logs</span>
+                  <label class="flex items-center justify-between cursor-pointer border-t border-gray-100 pt-5 group">
+                    <div class="pr-4">
+                      <span class="text-sm font-bold text-gray-800 block group-hover:text-brand-950 transition">Weekly Wholesale Rate Sheet</span>
+                      <span class="text-xs text-gray-400 block mt-1.5 leading-normal">Subscribe to weekly sweet confectionery bulk rate change logs</span>
                     </div>
-                    <input type="checkbox" checked class="w-4.5 h-4.5 accent-brand-800 rounded">
+                    <input type="checkbox" checked class="w-5.5 h-5.5 accent-[#11441c] rounded border-gray-300">
                   </label>
                 </div>
 
-                <div class="flex items-center justify-between border-t border-gray-100 pt-5 mt-5">
-                  <span class="text-[10px] text-gray-400 font-medium">B2B Core System v1.5 • Active Live Secure Token</span>
-                  <button onclick="window.triggerLogoutAuth()" class="bg-red-50 hover:bg-red-100 text-red-650 hover:text-red-700 text-xs font-extrabold px-5 py-2.5 rounded-xl transition cursor-pointer select-none font-sans">
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-gray-100 pt-6 mt-8 font-sans">
+                  <span class="text-xs font-semibold text-gray-400">B2B Core System v2.0 • Active Live Secure Token</span>
+                  <button id="profile-logout-button-clickable" onclick="window.triggerLogoutAuth()" class="w-full sm:w-auto bg-red-50 hover:bg-red-100 text-red-600 dark:bg-[#251212] dark:hover:bg-[#381a1a] dark:text-red-300 dark:hover:text-red-100 border border-transparent dark:border-red-900/40 text-xs md:text-sm font-black px-6 py-3.5 rounded-xl transition cursor-pointer select-none font-sans active:scale-98">
                     Logout of Account
                   </button>
                 </div>
@@ -2543,6 +2820,19 @@
     window.toggleLocalProfileEditing = function(state) {
       window.profileEditingState = !!state;
       window.renderProfileView();
+    };
+
+    window.toggleDarkMode = function() {
+      const isDark = document.documentElement.classList.toggle('dark');
+      try {
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      } catch (e) {
+        console.warn("[THEME] localStorage inaccessible", e);
+      }
+      // Re-render the active layout views if they are open
+      if (typeof window.renderProfileView === 'function') {
+        window.renderProfileView();
+      }
     };
 
     window.submitFullProfileUpdate = async function() {
@@ -2584,75 +2874,77 @@
       if (!container) return;
 
       container.innerHTML = `
-        <div class="max-w-4xl mx-auto px-4 py-8 md:py-12 font-sans animate-fade-in">
-          <div class="relative rounded-3xl overflow-hidden bg-brand-900 text-white p-8 md:p-12 shadow-xl mb-8 border border-white/10">
+        <div class="max-w-4xl md:max-w-6xl lg:max-w-7xl xl:max-w-[1380px] w-full mx-auto px-4 md:px-8 xl:px-10 py-8 md:py-16 font-sans animate-fade-in">
+          <div class="relative rounded-3xl overflow-hidden bg-brand-900 text-white p-6 md:p-12 lg:p-16 shadow-xl mb-8 md:mb-10 border border-white/10 flex flex-col justify-center min-h-[220px] md:min-h-[310px] lg:min-h-[330px]">
             <div class="absolute inset-0 z-0 bg-cover bg-center opacity-25" style="background-image: url('https://images.unsplash.com/photo-1604719312566-8912e9227c6a?auto=format&fit=crop&q=80&w=1200');"></div>
             <div class="absolute inset-0 bg-gradient-to-t from-brand-950 via-brand-900/90 to-transparent z-10"></div>
             
-            <div class="relative z-20">
-              <span class="text-xs font-bold tracking-widest bg-yellow-400 text-brand-950 px-2.5 py-1 rounded uppercase mb-4 inline-block">Established Since 1994</span>
-              <h1 class="text-3xl md:text-5xl font-black tracking-tight leading-tight mb-4 font-display">Aggarwal Wholesale Store</h1>
-              <p class="text-sm md:text-lg text-brand-100 max-w-2xl leading-relaxed">
+            <div class="relative z-20 flex flex-col justify-center">
+              <div class="mb-3 md:mb-4">
+                <span class="text-xs md:text-sm font-bold tracking-widest bg-yellow-400 text-brand-950 px-3 py-1.5 rounded-lg uppercase inline-block font-sans">Established Since 1994</span>
+              </div>
+              <h1 class="text-3xl md:text-[48px] lg:text-[56px] xl:text-[60px] font-normal tracking-tight leading-none mb-4 md:mb-5 font-display" style="font-weight: normal;">Aggarwal Wholesale Store</h1>
+              <p class="text-sm md:text-[20px] lg:text-[22px] xl:text-[24px] text-brand-100 max-w-4xl leading-relaxed" style="line-height: 26.5px;">
                 Chamba's premier B2B supplier of confectionaries, drinks, premium sweets, and everyday family-store requirements. Serving over 15,000+ Kiryana stores and distribution routes with maximum trade margins.
               </p>
             </div>
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-            <div class="bg-white p-6 rounded-2xl border border-gray-150 shadow-3xs flex flex-col gap-3">
-              <div class="w-12 h-12 bg-brand-50 rounded-xl flex items-center justify-center text-brand-800">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 lg:gap-10 mb-10 md:mb-14">
+            <div class="bg-white p-6 md:p-8 lg:p-10 rounded-2xl border border-gray-150 shadow-3xs flex flex-col gap-4 md:gap-5">
+              <div class="w-12 h-12 md:w-16 md:h-16 bg-brand-50 rounded-xl flex items-center justify-center text-brand-800 shrink-0">
+                <svg class="w-6 h-6 md:w-8 md:h-8" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
                 </svg>
               </div>
-              <h3 class="font-bold text-gray-900 text-base">Direct Factory Supply</h3>
-              <p class="text-xs text-gray-500 leading-relaxed">
+              <h3 class="font-bold text-gray-900 text-base md:text-[22px] lg:text-[24px] xl:text-[26px] leading-tight font-sans" style="font-family: Inter, sans-serif;">Direct Factory Supply</h3>
+              <p class="text-xs md:text-[15px] lg:text-[16px] xl:text-[18px] text-gray-555 dark:text-gray-400 leading-relaxed font-sans" style="line-height: 26.25px;">
                 By purchasing direct from leading factories and confectionery hubs, we eliminate agents to pass 100% additional trade margins straight to you.
               </p>
             </div>
 
-            <div class="bg-white p-6 rounded-2xl border border-gray-150 shadow-3xs flex flex-col gap-3">
-              <div class="w-12 h-12 bg-brand-50 rounded-xl flex items-center justify-center text-brand-800">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <div class="bg-white p-6 md:p-8 lg:p-10 rounded-2xl border border-gray-150 shadow-3xs flex flex-col gap-4 md:gap-5" style="font-size: 16px; height: 349.75px;">
+              <div class="w-12 h-12 md:w-16 md:h-16 bg-brand-50 rounded-xl flex items-center justify-center text-brand-800 shrink-0">
+                <svg class="w-6 h-6 md:w-8 md:h-8" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5a3 3 0 10-3 3h3zm0-3a1 1 0 011 1v1H9V3a1 1 0 011-1h2z"></path>
                 </svg>
               </div>
-              <h3 class="font-bold text-gray-900 text-base">B2B Loyalty Points</h3>
-              <p class="text-xs text-gray-500 leading-relaxed">
+              <h3 class="font-bold text-gray-900 text-base md:text-[22px] lg:text-[24px] xl:text-[26px] leading-tight font-sans" style="font-family: Inter, sans-serif;">B2B Loyalty Points</h3>
+              <p class="text-xs md:text-[15px] lg:text-[16px] xl:text-[18px] text-gray-550 dark:text-gray-400 leading-relaxed font-sans" style="line-height: 26.25px;">
                 Every commercial order places direct rewards points into your client profile. Redeem points directly for cashback coupons or premium stock upgrades.
               </p>
             </div>
 
-            <div class="bg-white p-6 rounded-2xl border border-gray-150 shadow-3xs flex flex-col gap-3">
-              <div class="w-12 h-12 bg-brand-50 rounded-xl flex items-center justify-center text-brand-800">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <div class="bg-white p-6 md:p-8 lg:p-10 rounded-2xl border border-gray-150 shadow-3xs flex flex-col gap-4 md:gap-5">
+              <div class="w-12 h-12 md:w-16 md:h-16 bg-brand-50 rounded-xl flex items-center justify-center text-brand-800 shrink-0">
+                <svg class="w-6 h-6 md:w-8 md:h-8" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                 </svg>
               </div>
-              <h3 class="font-bold text-gray-900 text-base">Fast Cargo Dispatch</h3>
-              <p class="text-xs text-gray-500 leading-relaxed">
+              <h3 class="font-bold text-gray-900 text-base md:text-[22px] lg:text-[24px] xl:text-[26px] leading-tight font-sans" style="font-family: Inter, sans-serif;">Fast Cargo Dispatch</h3>
+              <p class="text-xs md:text-[15px] lg:text-[16px] xl:text-[18px] text-gray-550 dark:text-gray-400 leading-relaxed font-sans" style="line-height: 26.25px;">
                 Dedicated shipping routes covering Chamba and regions of Himachal Pradesh. Standard routes are dispatched within 24 hours of confirmation.
               </p>
             </div>
           </div>
 
-          <div class="bg-white rounded-3xl p-8 border border-gray-150 shadow-3xs">
-            <h2 class="font-display font-black text-2xl text-gray-950 tracking-tight mb-4">Our B2B Commitment</h2>
-            <div class="prose prose-sm text-gray-600 space-y-4 font-sans">
-              <p class="text-xs leading-relaxed">
+          <div class="bg-white rounded-3xl p-8 md:p-12 lg:p-16 border border-gray-150 shadow-3xs">
+            <h2 class="font-display font-normal text-2xl md:text-3xl lg:text-[36px] text-gray-950 tracking-tight mb-6 md:mb-8" style="font-weight: normal;">Our B2B Commitment</h2>
+            <div class="prose prose-sm text-gray-650 space-y-5 md:space-y-6 lg:space-y-8 font-sans" style="line-height: 21px; height: 195.5px; width: 1138px; max-width: 100%;">
+              <p class="text-xs md:text-[15px] lg:text-[16px] xl:text-[18px] leading-relaxed" style="line-height: 26.25px;">
                 At Aggarwal Wholesale Store, we build more than supplier connections; we foster lasting business growth. Our digital B2B portal empowers micro-entrepreneurs, local retailers, and retail networks to plan inventory with high visibility, upfront pricing, precise item specs, and direct cashback.
               </p>
-              <p class="text-xs leading-relaxed">
+              <p class="text-xs md:text-[15px] lg:text-[16px] xl:text-[18px] leading-relaxed" style="line-height: 26.25px;">
                 We believe in simplifying the supply chain. With our strict quality checks, curated catalog of confectionery, chocolate drops, standard candies, chips, bakery inputs, and beverages, you can buy with total assurance and build a better brand for your storefront.
               </p>
             </div>
             
-            <div class="mt-8 pt-6 border-t border-gray-100 flex flex-wrap gap-4 items-center justify-between">
+            <div class="mt-8 md:mt-12 lg:mt-16 pt-6 md:pt-8 border-t border-gray-100 flex flex-wrap gap-6 items-center justify-between">
               <div>
-                <p class="text-[10px] uppercase font-extrabold text-gray-400 tracking-wider">Direct Support Helpline</p>
-                <p class="text-base font-black text-[#11441c] font-display">+91 (189) 244-0199</p>
+                <p class="text-[10px] md:text-xs lg:text-[14px] uppercase font-extrabold text-gray-400 tracking-wider">Direct Support Helpline</p>
+                <p class="text-base md:text-xl lg:text-[28px] font-black text-[#11441c] dark:text-emerald-400 font-display mt-1">+91 (189) 244-0199</p>
               </div>
-              <button onclick="switchAppView('home')" class="bg-[#11441c] hover:bg-brand-900 text-white font-extrabold text-xs px-6 py-3 rounded-xl transition cursor-pointer font-sans shadow-3xs">
+              <button onclick="switchAppView('home')" class="bg-[#11441c] hover:bg-brand-900 text-white font-extrabold text-xs md:text-sm lg:text-base px-6 py-3.5 md:px-8 md:py-4.5 rounded-xl transition cursor-pointer font-sans shadow-3xs">
                 Browse Bulk Catalog
               </button>
             </div>
@@ -3410,7 +3702,7 @@
           <span class="inline-block text-[8px] md:text-[9px] font-extrabold tracking-widest bg-yellow-400 text-brand-950 px-2.5 py-1 rounded uppercase mb-3">
             DIRECT DISTRIBUTOR PRICES
           </span>
-          <h2 class="font-display font-black text-2xl md:text-5xl tracking-tight leading-none mb-2 md:mb-3">
+          <h2 class="font-display text-2xl md:text-5xl tracking-tight leading-none mb-2 md:mb-3" style="font-weight: normal;">
             Aggarwal Wholesale Store
           </h2>
           <p class="text-[11px] md:text-xl text-wholesale-yellow tracking-wide font-extrabold uppercase mb-2">
@@ -3527,7 +3819,7 @@
       const qty = cartItem ? cartItem.qty : 0;
 
       const card = document.createElement('div');
-      card.className = "bg-white border border-[#ECECEC] rounded-[18px] p-3 flex flex-col justify-between shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 group cursor-pointer overflow-hidden relative w-full h-[375px] md:h-[385px] select-none";
+      card.className = "bg-white border border-[#ECECEC] rounded-[18px] p-3 flex flex-col justify-between shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 group cursor-pointer overflow-hidden relative w-full h-full select-none";
       
       card.onclick = (e) => {
         // Guard to prevent triggering product detail when user clicks on quantity selectors
@@ -3544,11 +3836,11 @@
       let actionControlHTML = '';
       if (qty === 0) {
         actionControlHTML = `
-          <button onclick="commitCartIncrement(${product.id}, 1)" class="w-full h-9 bg-brand-900 hover:bg-brand-850 text-white font-semibold text-xs rounded-xl flex items-center justify-center gap-1 shadow-sm active:translate-y-0.5 transition-all">
+          <button onclick="commitCartIncrement(${product.id}, 1)" class="w-full h-9 bg-brand-900 hover:bg-brand-850 text-white font-semibold text-xs rounded-xl flex items-center justify-center gap-1 shadow-sm active:translate-y-0.5 transition-all overflow-hidden bg-clip-padding border border-transparent outline-none focus:outline-none">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"></path>
             </svg>
-            <span>Add Carton</span>
+            <span>Add to Cart</span>
           </button>
         `;
       } else {
@@ -3582,19 +3874,11 @@
         badgeName = "High Margin";
         badgeStyle = "bg-emerald-600 text-white";
       } else if (badgeId === 4) {
-        badgeName = "Buy 5+ Save 3%";
+        badgeName = "Top Choice";
         badgeStyle = "bg-orange-600 text-white";
       } else {
         badgeName = "Frequently Ordered";
         badgeStyle = "bg-teal-600 text-white";
-      }
-
-      // Bulk volume discount nudge targets for upselling
-      let dynamicDiscountLabel = "";
-      if (product.id % 2 === 0) {
-        dynamicDiscountLabel = "Buy 10+ ctn: Save 5%";
-      } else {
-        dynamicDiscountLabel = "Buy 50+ ctn: Save 10%";
       }
 
       card.innerHTML = `
@@ -3605,7 +3889,7 @@
           </span>
           <img class="w-full h-full object-contain aspect-square group-hover:scale-105 transition-transform duration-500 block mx-auto pt-2 pb-1" 
                src="${cardImgSrc}" 
-               loading="eager" 
+               loading="lazy" 
                alt="${product.name}"
                onerror="imageOnError(this)">
         </div>
@@ -3620,27 +3904,24 @@
               <span>Pack: ${product.packSize} units/ctn</span>
               ${weightTag ? `<span class="text-gray-400">• (${weightTag})</span>` : ''}
             </div>
-
-            <!-- Dynamic Quantity Volume Discount Badge Indicator -->
-            <div class="text-[9px] text-[#047857] font-extrabold mt-1.5 bg-emerald-50 border border-emerald-100 px-1.5 py-0.5 rounded-md w-fit select-none flex items-center gap-0.5 leading-none h-4.5 shrink-0">
-              🎨 ${dynamicDiscountLabel}
-            </div>
           </div>
 
-          <div class="mt-2 flex items-baseline justify-between select-none h-8 shrink-0">
-            <div class="flex flex-col">
-              <span class="text-[8px] md:text-[9px] font-bold text-gray-400 uppercase tracking-wider leading-none">Box Price</span>
-              <span class="text-xs md:text-[15px] font-bold text-gray-900 mt-0.5 leading-[1.1]">₹${product.price}</span>
+          <div class="mt-3">
+            <div class="flex items-baseline justify-between select-none h-8 mb-2 shrink-0">
+              <div class="flex flex-col">
+                <span class="text-[8px] md:text-[9px] font-bold text-gray-400 uppercase tracking-wider leading-none">Box Price</span>
+                <span class="text-xs md:text-[15px] font-bold text-gray-900 mt-0.5 leading-[1.1]">₹${product.price}</span>
+              </div>
+              <div class="text-right flex flex-col items-end">
+                <span class="text-[8px] md:text-[9px] font-bold text-gray-400 uppercase tracking-wider leading-none">Min. Order</span>
+                <span class="font-bold text-emerald-600 text-[9px] md:text-[10px] mt-0.5 bg-emerald-50 px-1.5 py-0.5 rounded leading-none">${product.moq} ctn</span>
+              </div>
             </div>
-            <div class="text-right flex flex-col items-end">
-              <span class="text-[8px] md:text-[9px] font-bold text-gray-400 uppercase tracking-wider leading-none">Min. Order</span>
-              <span class="font-bold text-emerald-600 text-[9px] md:text-[10px] mt-0.5 bg-emerald-50 px-1.5 py-0.5 rounded leading-none">${product.moq} ctn</span>
+
+            <div class="relative z-10 w-full h-9 flex items-center justify-center shrink-0">
+              ${actionControlHTML}
             </div>
           </div>
-        </div>
-
-        <div class="mt-2.5 relative z-10 w-full h-9 flex items-center justify-center shrink-0">
-          ${actionControlHTML}
         </div>
       `;
       return card;
@@ -4851,7 +5132,7 @@
               </div>
             </div>
             
-            <button onclick="commitAddFbtBundle(${product.id}, ${companionProduct.id})" class="w-full h-8.5 bg-[#11441c] hover:bg-[#155a24] text-white font-extrabold text-[10px] rounded-lg shadow-sm transition-all text-center flex items-center justify-center gap-1 cursor-pointer select-none">
+            <button onclick="commitAddFbtBundle(${product.id}, ${companionProduct.id})" class="w-full h-8.5 bg-[#11441c] hover:bg-[#155a24] text-white font-extrabold text-[10px] rounded-lg shadow-sm transition-all text-center flex items-center justify-center gap-1 cursor-pointer select-none overflow-hidden bg-clip-padding border border-transparent outline-none focus:outline-none">
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"></path>
               </svg>
@@ -5865,11 +6146,11 @@
                 <span class="text-[9px] font-bold text-emerald-700 bg-emerald-50 px-1 rounded">MOQ ${prod.moq} ctn</span>
               </div>
             </div>
-            <button onclick="commitCartIncrement(${prod.id}, 1)" class="mt-2.5 w-full h-7 bg-[#11441c] hover:bg-[#155a24] active:scale-95 text-white font-extrabold text-[9px] uppercase tracking-wider rounded-lg transition-all flex items-center justify-center gap-1 cursor-pointer">
+            <button onclick="commitCartIncrement(${prod.id}, 1)" class="mt-2.5 w-full h-7 bg-[#11441c] hover:bg-[#155a24] active:scale-95 text-white font-extrabold text-[9px] uppercase tracking-wider rounded-lg transition-all flex items-center justify-center gap-1 cursor-pointer overflow-hidden bg-clip-padding border border-transparent outline-none focus:outline-none">
               <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"></path>
               </svg>
-              <span>Add Carton</span>
+              <span>Add to Cart</span>
             </button>
           </div>
         `;
