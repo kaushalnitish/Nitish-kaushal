@@ -906,16 +906,46 @@
     import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { getFirestore, initializeFirestore, doc, getDoc, setDoc, updateDoc, collection, onSnapshot, getDocFromServer } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    const firebaseConfig = {
-      projectId: "long-airway-3fbwx",
-      appId: "1:198405259037:web:d1dd0ed54e5cfa049b2bf4",
-      apiKey: "AIzaSyD9hsNFSD9eH2js_XYdF_Ii8_MJHI1KyrQ",
-      authDomain: "long-airway-3fbwx.firebaseapp.com",
-      firestoreDatabaseId: "ai-studio-8f383a35-5bb8-4e74-88b0-633825811b2d",
-      storageBucket: "long-airway-3fbwx.firebasestorage.app",
-      messagingSenderId: "198405259037",
-      measurementId: ""
-    };
+    // Fetch dynamic config if available, fallback to Vite environment variables, then fallback to Sandbox defaults
+    async function getFirebaseConfig() {
+      // Default sandbox fallback config
+      const defaults = {
+        projectId: "long-airway-3fbwx",
+        appId: "1:198405259037:web:d1dd0ed54e5cfa049b2bf4",
+        apiKey: "AIzaSyD9hsNFSD9eH2js_XYdF_Ii8_MJHI1KyrQ",
+        authDomain: "long-airway-3fbwx.firebaseapp.com",
+        firestoreDatabaseId: "ai-studio-8f383a35-5bb8-4e74-88b0-633825811b2d",
+        storageBucket: "long-airway-3fbwx.firebasestorage.app",
+        messagingSenderId: "198405259037",
+        measurementId: ""
+      };
+
+      // Vite env variables override
+      const envConfig = {
+        projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || defaults.projectId,
+        appId: import.meta.env.VITE_FIREBASE_APP_ID || defaults.appId,
+        apiKey: import.meta.env.VITE_FIREBASE_API_KEY || defaults.apiKey,
+        authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || defaults.authDomain,
+        firestoreDatabaseId: import.meta.env.VITE_FIREBASE_FIRESTORE_DATABASE_ID || defaults.firestoreDatabaseId,
+        storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || defaults.storageBucket,
+        messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || defaults.messagingSenderId,
+        measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID || defaults.measurementId
+      };
+
+      try {
+        const response = await fetch('/firebase-applet-config.json');
+        if (response.ok) {
+          const fileConfig = await response.json();
+          console.log("[FIREBASE] Loaded configuration from static firebase-applet-config.json");
+          return { ...envConfig, ...fileConfig };
+        }
+      } catch (e) {
+        console.log("[FIREBASE] Using Environment/Default configuration:", e.message);
+      }
+      return envConfig;
+    }
+
+    const firebaseConfig = await getFirebaseConfig();
 
     const app = initializeApp(firebaseConfig);
     
