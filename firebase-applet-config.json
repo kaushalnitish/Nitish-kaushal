@@ -1,10 +1,10 @@
 {
-  "projectId": "long-airway-3fbwx",
-  "appId": "1:198405259037:web:d1dd0ed54e5cfa049b2bf4",
-  "apiKey": "AIzaSyD9hsNFSD9eH2js_XYdF_Ii8_MJHI1KyrQ",
-  "authDomain": "long-airway-3fbwx.firebaseapp.com",
-  "firestoreDatabaseId": "ai-studio-8f383a35-5bb8-4e74-88b0-633825811b2d",
-  "storageBucket": "long-airway-3fbwx.firebasestorage.app",
-  "messagingSenderId": "198405259037",
-  "measurementId": ""
+  "projectId": "aggarwal-wholestore",
+  "appId": "1:870828082835:web:8f645eddb9b868d883ef66",
+  "apiKey": "AIzaSyDvFNMvwocWeltuWRyY9_9QosxgmFNExUs",
+  "authDomain": "aggarwal-wholestore.firebaseapp.com",
+  "firestoreDatabaseId": "(default)",
+  "storageBucket": "aggarwal-wholestore.firebasestorage.app",
+  "messagingSenderId": "870828082835",
+  "measurementId": "G-Z9XG1VK8VS"
 }

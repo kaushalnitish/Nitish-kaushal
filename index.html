@@ -13,6 +13,29 @@
   <!-- Tailwind CSS via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
+    // Global circular structure resilient JSON.stringify patch to protect against unhandled browser exceptions in Firestore/Auth or sandbox environments
+    (function() {
+      const originalStringify = JSON.stringify;
+      JSON.stringify = function(value, replacer, space) {
+        const seen = new WeakSet();
+        function safeReplacer(key, val) {
+          if (typeof val === 'object' && val !== null) {
+            if (seen.has(val)) {
+              return '[Circular]';
+            }
+            seen.add(val);
+          }
+          if (typeof replacer === 'function') {
+            return replacer(key, val);
+          } else if (Array.isArray(replacer)) {
+            return replacer.includes(key) ? val : undefined;
+          }
+          return val;
+        }
+        return originalStringify(value, safeReplacer, space);
+      };
+    })();
+
     tailwind.config = {
       darkMode: 'class',
       theme: {
@@ -23,22 +46,34 @@
           },
           colors: {
             brand: {
-              // Clean grocery green theme tones
-              950: '#111827', // Crisp slate black
-              900: '#115b22', // Deep forest green
-              850: '#136c25', // Forest green
-              800: '#15803d', // Solid grocery green
-              700: '#166534', // Muted green
-              600: '#16a34a', // Bright green
-              100: '#d1e7dd', // Soft green accent
-              50: '#f0fdf4',  // Light green backing
+              // Bespoke premium green boutique color coordinates
+              950: '#1B4A25', // Deep woodland accent shading
+              900: '#55B96A', // Primary Green
+              850: '#6CBE7E', // Solid Medium Green
+              800: '#8CCD92', // Secondary Green
+              700: '#8CCD92', // Secondary Green
+              600: '#E9DFC9', // Accent Beige
+              100: '#E9DFC9', // Accent Beige
+              50: '#FFFDF8',  // Card background element
             },
             wholesale: {
-              // Bright promotional amber and orange (from KiranaMarket screenshots)
-              yellow: '#f58220', // Vibrant cart orange
-              gold: '#ea580c',   // Darker orange
-              light: '#ffedd5',  // Toast cream
-              muted: '#fff7ed',  // Off white orange
+              yellow: '#C89B66',
+              gold: '#A3753E',
+              light: '#E9DFC9', // Accent Beige
+              muted: '#FFFDF8', // Card background / premium off-white
+            },
+            gray: {
+              50: '#FAF8F2',   // Background
+              100: '#F5F1E8',  // Surface
+              150: '#E7E1D5',  // Border
+              200: '#E7E1D5',  // Border
+              300: '#E9DFC9',  // Accent Beige
+              400: '#A1957E',  // Muted organic slate
+              500: '#666666',  // Text Secondary
+              600: '#666666',  // Text Secondary
+              700: '#2B2B2B',  // Text Primary
+              800: '#2B2B2B',  // Text Primary
+              900: '#2B2B2B',  // Text Primary
             }
           }
         }
@@ -47,7 +82,119 @@
   </script>
   
   <style>
+    /* Precision Color Overrides for Premium requested Theme Coherence */
+    html:not(.dark) body {
+      background-color: #FAF8F2 !important;
+      color: #2B2B2B !important;
+    }
+    html:not(.dark) .bg-white {
+      background-color: #FFFDF8 !important; /* Premium Card Background */
+    }
+    html:not(.dark) .bg-gray-50 {
+      background-color: #FAF8F2 !important; /* Background */
+    }
+    html:not(.dark) .bg-gray-50\/50,
+    html:not(.dark) .bg-gray-50\/75 {
+      background-color: #F5F1E8 !important; /* Surface */
+    }
+    html:not(.dark) .bg-gray-100 {
+      background-color: #F5F1E8 !important; /* Surface */
+    }
+    html:not(.dark) .bg-\[\#FAF8F5\] {
+      background-color: #FFFDF8 !important; /* Card background mapping */
+    }
+    html:not(.dark) .bg-\[\#FAF8F2\] {
+      background-color: #FAF8F2 !important; /* Background mapping */
+    }
+    html:not(.dark) .text-gray-950,
+    html:not(.dark) .text-gray-900,
+    html:not(.dark) .text-gray-800,
+    html:not(.dark) .text-gray-750,
+    html:not(.dark) .text-gray-700 {
+      color: #2B2B2B !important; /* Text Primary */
+    }
+    html:not(.dark) .text-gray-650,
+    html:not(.dark) .text-gray-600,
+    html:not(.dark) .text-gray-550,
+    html:not(.dark) .text-gray-500 {
+      color: #666666 !important; /* Text Secondary */
+    }
+    html:not(.dark) .border-gray-50,
+    html:not(.dark) .border-gray-100,
+    html:not(.dark) .border-gray-150,
+    html:not(.dark) .border-gray-200 {
+      border-color: #E7E1D5 !important; /* Precision Border */
+    }
+    html:not(.dark) .border-brand-900 {
+      border-color: #55B96A !important;
+    }
+
+    /* Automatic color-migration rules mapping legacy colors to our NEW custom color palette */
+    .bg-\[\#11441c\], .hover\:bg-\[\#11441c\]:hover {
+      background-color: #55B96A !important;
+    }
+    .text-\[\#11441c\], .hover\:text-\[\#11441c\]:hover {
+      color: #55B96A !important;
+    }
+    .border-\[\#11441c\] {
+      border-color: #55B96A/20 !important;
+    }
+    .accent-\[\#11441c\] {
+      accent-color: #55B96A !important;
+    }
+    .from-\[\#11441c\] {
+      --tw-gradient-from: #55B96A !important;
+      --tw-gradient-to: #8CCD92 !important;
+      --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+    }
+    .bg-brand-900, .hover\:bg-brand-900:hover {
+      background-color: #55B96A !important;
+    }
+    .text-brand-900, .hover\:text-brand-900:hover {
+      color: #55B96A !important;
+    }
+    .border-brand-900 {
+      border-color: #55B96A !important;
+    }
+    .bg-brand-950 {
+      background-color: #1B4A25 !important;
+    }
+    .text-brand-950 {
+      color: #1B4A25 !important;
+    }
+
     /* Premium visual styling rules */
+    .global-container {
+      width: 100%;
+      margin-left: auto;
+      margin-right: auto;
+      padding-left: 16px;
+      padding-right: 16px;
+    }
+    
+    @media (min-width: 768px) {
+      .global-container {
+        padding-left: 20px;
+        padding-right: 20px;
+      }
+    }
+    
+    @media (min-width: 1024px) {
+      .global-container {
+        max-width: 1400px;
+        padding-left: 24px;
+        padding-right: 24px;
+      }
+    }
+    
+    @media (min-width: 1280px) {
+      .global-container {
+        max-width: 1500px;
+        padding-left: 32px;
+        padding-right: 32px;
+      }
+    }
+
     .no-scrollbar::-webkit-scrollbar {
       display: none;
     }
@@ -293,7 +440,7 @@
 
   <!-- MAIN HEADER -->
   <header class="bg-white border-b border-gray-100 sticky top-0 z-40 shadow-sm select-none">
-    <div class="max-w-6xl mx-auto px-4 py-3 md:py-4 flex flex-col gap-2.5 md:gap-3">
+    <div class="global-container py-3 md:py-4 flex flex-col gap-2.5 md:gap-3">
       
       <!-- Combined Navigation & Actions Row -->
       <div class="flex items-center justify-between py-1 border-b border-gray-50/70 pb-3 md:pb-4">
@@ -301,7 +448,7 @@
         <!-- Left Side: Mobile Logo (mobile only) & Custom Nav Links Group (desktop only) -->
         <div class="flex items-center">
           <!-- Mobile logo, hidden/removed desktop logo as requested -->
-          <div onclick="switchAppView('home')" class="md:hidden flex items-center gap-2 group cursor-pointer">
+          <div onclick="window.navigateToHome()" class="md:hidden flex items-center gap-2 group cursor-pointer">
             <div class="w-8 h-8 rounded-xl bg-brand-50 flex items-center justify-center border border-brand-100 relative shadow-xs transition-transform duration-300 group-hover:scale-105">
               <svg class="w-4 h-4 text-brand-800" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                 <circle cx="9" cy="21" r="1.5" fill="currentColor"></circle>
@@ -313,7 +460,7 @@
 
           <!-- Desktop Navigation Menu: Left-aligned, generous gap-10 -->
           <nav id="desktop-nav-bar" class="hidden md:flex items-center gap-10 font-sans uppercase tracking-widest text-gray-450" style="font-size: 13px; font-weight: normal;">
-            <button onclick="switchAppView('home')" id="desk-nav-home" class="hover:text-brand-900 transition flex items-center gap-1.5 cursor-pointer pb-1 border-b-2 border-transparent transition-all duration-200">
+            <button onclick="window.navigateToHome()" id="desk-nav-home" class="hover:text-brand-900 transition flex items-center gap-1.5 cursor-pointer pb-1 border-b-2 border-transparent transition-all duration-200">
               Home
             </button>
             <button onclick="switchAppView('about')" id="desk-nav-about" class="hover:text-brand-900 transition flex items-center gap-1.5 cursor-pointer pb-1 border-b-2 border-transparent transition-all duration-200">
@@ -376,7 +523,7 @@
   </header>
 
   <!-- CONTENT CONTAINER -->
-  <main class="flex-grow max-w-6xl mx-auto px-0 md:px-4 pt-4 pb-[130px] md:pb-6 w-full flex flex-col gap-4 md:gap-6">
+  <main class="flex-grow global-container pt-4 pb-[130px] md:pb-6 flex flex-col gap-4 md:gap-6">
 
     <!-- PROMOTIONAL HUGE OFFERS CARDS (JioMart Style Slide-banners) -->
     <section id="banner-section" class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -384,20 +531,20 @@
     </section>
     
     <!-- CATEGORIES COMPONENT -->
-    <section id="home-categories-section" class="mx-3 md:mx-0">
+    <section id="home-categories-section" class="">
       <div class="flex items-center justify-between mb-2">
         <h3 class="text-xs font-bold uppercase tracking-widest text-brand-950 font-display">Specialized Categories</h3>
         <span class="text-xs text-indigo-900 font-semibold bg-brand-50 px-2.5 py-1 rounded-full border border-brand-100" id="items-view-count">Showing 12 items</span>
       </div>
       
-      <!-- Compact Category Badges/Chips Category List Carousel -->
-      <div id="categories-carousel" class="flex gap-2.5 overflow-x-auto no-scrollbar py-1">
+      <!-- Premium Category Circle List Carousel Container -->
+      <div id="categories-carousel" class="flex gap-4 sm:gap-5 md:gap-5.5 overflow-x-auto no-scrollbar py-3.5 px-1.5 scroll-smooth select-none">
         <!-- Injected dynamically from CONFIG -->
       </div>
     </section>
 
     <!-- MAIN PRODUCT SPECIFICATIONS GRID -->
-    <section class="mb-4 md:mb-14 px-3.5 md:px-0" id="catalog-section-container">
+    <section class="mb-4 md:mb-14" id="catalog-section-container">
       <div id="products-catalog-grid" class="flex flex-col gap-4 md:gap-8">
         <!-- Dynamic Product cards or structured sections -->
       </div>
@@ -456,7 +603,7 @@
 
   <!-- STORE DETAILS FOOTER BLOCK -->
   <footer class="bg-white border-t border-gray-100 py-10 mt-auto">
-    <div id="footer-trust-badges" class="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-6 text-center md:text-left mb-6">
+    <div id="footer-trust-badges" class="global-container grid grid-cols-1 md:grid-cols-3 gap-6 text-center md:text-left mb-6">
       <div class="flex flex-col items-center md:items-start gap-2">
         <div class="w-10 h-10 rounded-full bg-brand-50 flex items-center justify-center text-brand-700 mb-1">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -486,7 +633,7 @@
       </div>
     </div>
     
-    <div class="max-w-6xl mx-auto px-4 pt-6 border-t border-gray-100 text-center text-xs text-gray-400">
+    <div class="global-container pt-6 border-t border-gray-100 text-center text-xs text-gray-400">
       <p id="footer-copyright">© 2026 Aggarwal Wholesale Store. All rights reserved.</p>
       <p class="mt-1">Vibe & visual theme styled securely mimicking premium grocery catalog flows.</p>
     </div>
@@ -625,7 +772,14 @@
       
       <!-- Modal Header -->
       <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-brand-50/50">
-        <h4 class="font-display font-bold text-lg text-brand-950">Wholesale Product Details</h4>
+        <div class="flex items-center gap-2">
+          <button onclick="window.navigateBack()" class="p-2 -ml-2 rounded-xl text-brand-950 hover:bg-gray-100 transition inline-flex items-center justify-center cursor-pointer border border-transparent hover:border-gray-150" aria-label="Go Back">
+            <svg class="w-4 h-4 text-brand-950" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+            </svg>
+          </button>
+          <h4 class="font-display font-bold text-sm sm:text-base text-brand-950">Wholesale Product Details</h4>
+        </div>
         <button onclick="toggleDetailsModal(false)" class="p-2 -mr-2 rounded-xl text-gray-400 hover:text-gray-600 hover:bg-gray-100/50 transition">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -641,6 +795,9 @@
         </div>
 
         <div>
+          <!-- Clickable breadcrumbs for product details page -->
+          <div id="detail-breadcrumb-container" class="mb-3 select-none"></div>
+          
           <span id="detail-category" class="text-[10px] font-bold uppercase tracking-wider text-brand-700 bg-brand-50 px-2 py-0.5 rounded-md">Category</span>
           <h2 id="detail-title" class="font-display font-extrabold text-xl text-brand-950 tracking-tight mt-1 leading-tight">Product Name</h2>
           <div class="text-xl font-extrabold text-brand-880 font-display mt-2" id="detail-price">₹175</div>
@@ -910,14 +1067,14 @@
     async function getFirebaseConfig() {
       // Default sandbox fallback config
       const defaults = {
-        projectId: "long-airway-3fbwx",
-        appId: "1:198405259037:web:d1dd0ed54e5cfa049b2bf4",
-        apiKey: "AIzaSyD9hsNFSD9eH2js_XYdF_Ii8_MJHI1KyrQ",
-        authDomain: "long-airway-3fbwx.firebaseapp.com",
-        firestoreDatabaseId: "ai-studio-8f383a35-5bb8-4e74-88b0-633825811b2d",
-        storageBucket: "long-airway-3fbwx.firebasestorage.app",
-        messagingSenderId: "198405259037",
-        measurementId: ""
+        projectId: "aggarwal-wholestore",
+        appId: "1:870828082835:web:8f645eddb9b868d883ef66",
+        apiKey: "AIzaSyDvFNMvwocWeltuWRyY9_9QosxgmFNExUs",
+        authDomain: "aggarwal-wholestore.firebaseapp.com",
+        firestoreDatabaseId: "(default)",
+        storageBucket: "aggarwal-wholestore.firebasestorage.app",
+        messagingSenderId: "870828082835",
+        measurementId: "G-Z9XG1VK8VS"
       };
 
       // Vite env variables override
@@ -1247,7 +1404,7 @@
         
         badgeEl.innerHTML = `
           <button onclick="switchAppView('profile')" class="relative flex items-center justify-center w-9 h-9 rounded-full border border-gray-200 bg-white hover:border-[#11441c] hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer shadow-3xs outline-none" title="View Profile">
-            <img class="w-7.5 h-7.5 rounded-full object-cover" src="${avatarUrl}" referrerPolicy="no-referrer">
+            <img class="w-7.5 h-7.5 rounded-full object-cover" src="${avatarUrl}" referrerPolicy="no-referrer" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=100';">
           </button>
         `;
         badgeEl.classList.remove('hidden');
@@ -1737,6 +1894,81 @@
     let checkoutOpenState = false;
     let currentAppView = "home";
 
+    // NAV NAVIGATION PROTOCOLS
+    window.navigateToHome = function() {
+      console.log("[DEBUG] Explicit navigation to Home '/'");
+      
+      // Close details modal
+      toggleDetailsModal(false);
+      
+      currentCategory = "All";
+      lookupKeywords = "";
+      const searchInput = document.getElementById('catalog-search');
+      if (searchInput) searchInput.value = "";
+      const clearBtn = document.getElementById('clear-search');
+      if (clearBtn) clearBtn.classList.add('hidden');
+      
+      switchAppView('home', true);
+      renderCarouselCategories();
+      renderCatalogGrid();
+    };
+
+    window.navigateBack = function() {
+      console.log("[DEBUG] Explicit back transition requested");
+      
+      const modalShell = document.getElementById('details-modal-shell');
+      const isProductDetailOpen = modalShell && !modalShell.classList.contains('hidden') && !modalShell.classList.contains('pointer-events-none');
+      
+      // Close product details modal or go back from modal view
+      if (isProductDetailOpen) {
+        if (history.state && history.state.view === 'product') {
+          try {
+            history.back();
+          } catch(e) {
+            toggleDetailsModal(false);
+          }
+        } else {
+          toggleDetailsModal(false);
+        }
+        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+        return;
+      }
+      
+      // If we are in other standalone views (cart, about, orders, profile...) go back
+      if (currentAppView !== 'home') {
+        try {
+          if (history.state && history.state.view && history.state.view !== 'home') {
+            history.back();
+          } else {
+            window.navigateToHome();
+          }
+        } catch (e) {
+          window.navigateToHome();
+        }
+        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+        return;
+      }
+      
+      // If we are in home view but filtered/searched, revert filters or back history
+      if (currentCategory !== "All" || lookupKeywords.length > 0) {
+        try {
+          if (history.state && history.state.view === 'home' && (history.state.category !== 'All' || history.state.search)) {
+            history.back();
+          } else {
+            resetFiltersAndCatalog();
+          }
+        } catch (e) {
+          resetFiltersAndCatalog();
+        }
+        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+        return;
+      }
+      
+      // Ultimate absolute fallback
+      window.navigateToHome();
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    };
+
     // B2B SAVED ORDERS UTILITIES
     function getSavedOrders() {
       const stored = safeLocalStorage.getItem('ab_b2b_orders');
@@ -1987,7 +2219,17 @@
       });
 
       if (tab === 'home') {
-        switchAppView('home', false);
+        // Reset category and search state to return home cleanly
+        currentCategory = "All";
+        lookupKeywords = "";
+        const searchInput = document.getElementById('catalog-search');
+        if (searchInput) searchInput.value = "";
+        const clearBtn = document.getElementById('clear-search');
+        if (clearBtn) clearBtn.classList.add('hidden');
+        renderCarouselCategories();
+        renderCatalogGrid();
+
+        switchAppView('home', true);
         if (tabViewEl) {
           tabViewEl.classList.add('hidden');
           tabViewEl.innerHTML = '';
@@ -2374,7 +2616,7 @@
           <!-- Premium User Identity card -->
           <div class="bg-brand-900 text-white rounded-2xl p-5 shadow-sm flex items-center gap-4 relative overflow-hidden font-sans">
             <div class="absolute right-0 top-0 translate-x-1/4 -translate-y-1/4 w-32 h-32 bg-white/5 rounded-full"></div>
-            <img class="w-12 h-12 rounded-xl object-cover shrink-0 border border-white/20" src="${avatarUrl}" referrerPolicy="no-referrer">
+            <img class="w-12 h-12 rounded-xl object-cover shrink-0 border border-white/20" src="${avatarUrl}" referrerPolicy="no-referrer" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=100';">
             <div class="min-w-0 flex-grow">
               <h3 class="text-sm font-extrabold text-white tracking-tight leading-none mb-1.5 truncate font-sans">${name}</h3>
               <p class="text-[10px] text-brand-100 font-semibold font-sans">B2B Core Client: #CLI-${window.currentUser.uid.substring(0, 6).toUpperCase()}</p>
@@ -2609,18 +2851,25 @@
       const isEditing = window.profileEditingState === true;
 
       container.innerHTML = `
-        <div class="max-w-[1380px] w-full mx-auto px-6 lg:px-10 py-10 md:py-14 font-sans">
-          <!-- Back button / Page title -->
-          <div class="mb-10 select-none flex items-center justify-between border-b border-gray-200 pb-6">
-            <div class="flex items-center gap-4">
-              <button onclick="switchAppView('home')" class="p-3 -ml-2 rounded-2xl text-brand-950 hover:bg-gray-100 transition inline-flex items-center justify-center cursor-pointer border border-transparent hover:border-gray-200" style="background: rgba(17,68,28,0.03);">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                </svg>
-              </button>
-              <h2 class="font-display font-black text-2xl md:text-3xl text-gray-950 tracking-tight leading-none">My Account Profile</h2>
+        <div class="global-container py-6 md:py-8 font-sans animate-fade-in">
+          <!-- Back button / Breadcrumbs Header -->
+          <div class="mb-6 select-none">
+            <nav class="flex text-[10px] uppercase tracking-wider text-gray-400 mb-1.5 font-bold">
+              <span class="hover:text-[#11441c] cursor-pointer transition" onclick="window.navigateToHome()">Home</span>
+              <span class="mx-2">/</span>
+              <span class="text-[#11441c]">My Profile</span>
+            </nav>
+            <div class="flex items-center justify-between border-b border-gray-200 pb-4">
+              <div class="flex items-center gap-3">
+                <button onclick="window.navigateBack()" class="p-2 -ml-2 rounded-xl text-brand-950 hover:bg-gray-100 transition inline-flex items-center justify-center cursor-pointer" aria-label="Go Back">
+                  <svg class="w-5 h-5 text-brand-950" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                  </svg>
+                </button>
+                <h2 class="font-display font-black text-xl md:text-2xl text-gray-950 tracking-tight leading-none">My Account Profile</h2>
+              </div>
+              <span class="border border-brand-200 bg-brand-50 text-brand-950 text-[10px] md:text-xs font-semibold uppercase px-3 py-1.5 rounded-xl tracking-wide select-none">B2B Authorized Portal</span>
             </div>
-            <span class="border border-brand-200 bg-brand-50 text-brand-950 text-xs font-semibold uppercase px-4 py-2 rounded-xl tracking-wide select-none">B2B Authorized Portal</span>
           </div>
 
           <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-10 items-start">
@@ -2628,7 +2877,7 @@
             <div class="flex flex-col gap-6 lg:gap-8 lg:col-span-1">
               <div class="bg-white rounded-3xl border border-gray-150 p-8 md:p-10 shadow-sm flex flex-col items-center text-center">
                 <div class="relative group mb-6">
-                  <img class="w-28 h-28 md:w-32 md:h-32 rounded-full object-cover border-4 border-brand-50 shadow-md group-hover:scale-105 transition duration-300" src="${avatarUrl}" referrerPolicy="no-referrer">
+                  <img class="w-28 h-28 md:w-32 md:h-32 rounded-full object-cover border-4 border-brand-50 shadow-md group-hover:scale-105 transition duration-300" src="${avatarUrl}" referrerPolicy="no-referrer" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=150';">
                   <div class="absolute inset-0 bg-black/40 rounded-full opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white text-xs font-bold cursor-pointer">
                     Verified
                   </div>
@@ -2641,17 +2890,17 @@
 
                 <!-- Stats component -->
                 <div class="w-full grid grid-cols-2 gap-4 mt-8 pt-8 border-t border-gray-100 dark:border-gray-800">
-                  <div class="profile-stat-card text-left bg-gray-50/90 dark:bg-[#161e2e] p-5 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-3xs transition-all duration-300">
-                    <span class="text-[10px] md:text-xs text-gray-500 dark:text-gray-300 font-bold uppercase tracking-wider block">Loyalty Balance</span>
-                    <span class="text-base md:text-xl font-black text-[#11441c] dark:text-emerald-400 block mt-2 whitespace-nowrap">${points} <span class="text-[10px] md:text-xs font-bold text-gray-400 dark:text-emerald-500 uppercase tracking-tight ml-0.5">PTS</span></span>
+                  <div class="profile-stat-card text-left bg-[#FAF8F5] dark:bg-[#161e2e] p-5 rounded-2xl border border-gray-150 dark:border-slate-800 shadow-3xs transition-all duration-300">
+                    <span class="text-[10px] md:text-xs text-[#726955] dark:text-gray-300 font-bold uppercase tracking-wider block">Loyalty Balance</span>
+                    <span class="text-base md:text-xl font-black text-[#5C6B53] dark:text-emerald-400 block mt-2 whitespace-nowrap">${points} <span class="text-[10px] md:text-xs font-bold text-gray-400 dark:text-emerald-500 uppercase tracking-tight ml-0.5">PTS</span></span>
                   </div>
-                  <div class="profile-stat-card text-left bg-gray-50/90 dark:bg-[#161e2e] p-5 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-3xs transition-all duration-300">
-                    <span class="text-[10px] md:text-xs text-gray-500 dark:text-gray-300 font-bold uppercase tracking-wider block">Wholesale Spent</span>
+                  <div class="profile-stat-card text-left bg-[#FAF8F5] dark:bg-[#161e2e] p-5 rounded-2xl border border-gray-150 dark:border-slate-800 shadow-3xs transition-all duration-300">
+                    <span class="text-[10px] md:text-xs text-[#726955] dark:text-gray-300 font-bold uppercase tracking-wider block">Wholesale Spent</span>
                     <span class="text-base md:text-xl font-black text-gray-900 dark:text-amber-400 block mt-2 whitespace-nowrap">₹${Number(totalSpent).toLocaleString()}</span>
                   </div>
                 </div>
 
-                <button onclick="switchAppView('rewards')" class="w-full bg-[#11441c] hover:bg-brand-900 text-white font-extrabold text-xs md:text-sm py-3.5 px-6 rounded-2xl uppercase tracking-wider mt-6 transition shadow-3xs hover:shadow-2xs cursor-pointer active:scale-98">
+                <button onclick="switchAppView('rewards')" class="w-full bg-brand-900 hover:bg-brand-850 text-white font-extrabold text-xs md:text-sm py-3.5 px-6 rounded-2xl uppercase tracking-wider mt-6 transition shadow-3xs hover:shadow-2xs cursor-pointer active:scale-98">
                   Redeem Rewards Vouchers
                 </button>
               </div>
@@ -2904,9 +3153,26 @@
       if (!container) return;
 
       container.innerHTML = `
-        <div class="max-w-4xl md:max-w-6xl lg:max-w-7xl xl:max-w-[1380px] w-full mx-auto px-4 md:px-8 xl:px-10 py-8 md:py-16 font-sans animate-fade-in">
+        <div class="global-container py-4 md:py-8 font-sans animate-fade-in">
+          <!-- Back button / Breadcrumbs Header -->
+          <div class="mb-6 select-none">
+            <nav class="flex text-[10px] uppercase tracking-wider text-gray-400 mb-1.5 font-bold">
+              <span class="hover:text-[#11441c] cursor-pointer transition" onclick="window.navigateToHome()">Home</span>
+              <span class="mx-2">/</span>
+              <span class="text-[#11441c]">About Us</span>
+            </nav>
+            <div class="flex items-center gap-3">
+              <button onclick="window.navigateBack()" class="p-2 -ml-2 rounded-xl text-brand-950 hover:bg-gray-100 transition inline-flex items-center justify-center cursor-pointer" aria-label="Go Back">
+                <svg class="w-5 h-5 text-brand-950" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                </svg>
+              </button>
+              <h2 class="font-display font-black text-xl md:text-2xl text-gray-950 tracking-tight leading-none">About Our B2B Store</h2>
+            </div>
+          </div>
+
           <div class="relative rounded-3xl overflow-hidden bg-brand-900 text-white p-6 md:p-12 lg:p-16 shadow-xl mb-8 md:mb-10 border border-white/10 flex flex-col justify-center min-h-[220px] md:min-h-[310px] lg:min-h-[330px]">
-            <div class="absolute inset-0 z-0 bg-cover bg-center opacity-25" style="background-image: url('https://images.unsplash.com/photo-1604719312566-8912e9227c6a?auto=format&fit=crop&q=80&w=1200');"></div>
+            <img class="absolute inset-0 w-full h-full object-cover z-0 opacity-25" src="https://images.unsplash.com/photo-1604719312566-8912e9227c6a?auto=format&fit=crop&q=80&w=1200" alt="B2B Supply Outlet" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=1200';">
             <div class="absolute inset-0 bg-gradient-to-t from-brand-950 via-brand-900/90 to-transparent z-10"></div>
             
             <div class="relative z-20 flex flex-col justify-center">
@@ -3041,18 +3307,25 @@
 
       // Render the loyalty card, meter and ledger
       container.innerHTML = `
-        <div class="max-w-4xl mx-auto px-4 py-6 font-sans">
-          <!-- Back button / Page title -->
-          <div class="mb-6 select-none flex items-center justify-between border-b border-gray-100 pb-3">
-            <div class="flex items-center gap-3">
-              <button onclick="switchAppView('home')" class="p-2 -ml-2 rounded-xl text-brand-950 hover:bg-gray-100 transition inline-flex items-center justify-center cursor-pointer">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                </svg>
-              </button>
-              <h2 class="font-display font-black text-xl text-gray-950 tracking-tight leading-none">Wholesale Rewards Club</h2>
+        <div class="global-container py-6 font-sans">
+          <!-- Back button / Breadcrumbs Header -->
+          <div class="mb-6 select-none">
+            <nav class="flex text-[10px] uppercase tracking-wider text-gray-400 mb-1.5 font-bold">
+              <span class="hover:text-[#11441c] cursor-pointer transition" onclick="window.navigateToHome()">Home</span>
+              <span class="mx-2">/</span>
+              <span class="text-[#11441c]">Rewards Club</span>
+            </nav>
+            <div class="flex items-center justify-between border-b border-gray-100 pb-3">
+              <div class="flex items-center gap-3">
+                <button onclick="window.navigateBack()" class="p-2 -ml-2 rounded-xl text-brand-950 hover:bg-gray-100 transition inline-flex items-center justify-center cursor-pointer" aria-label="Go Back">
+                  <svg class="w-5 h-5 text-brand-950" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                  </svg>
+                </button>
+                <h2 class="font-display font-black text-xl text-gray-950 tracking-tight leading-none">Wholesale Rewards Club</h2>
+              </div>
+              <span class="bg-[#11441c] text-white text-[9px] font-extrabold uppercase px-2.5 py-1 rounded-full tracking-wide">Loyalty Partner</span>
             </div>
-            <span class="bg-[#11441c] text-white text-[9px] font-extrabold uppercase px-2.5 py-1 rounded-full tracking-wide">Loyalty Partner</span>
           </div>
 
           <!-- Hero Balance Card -->
@@ -3269,18 +3542,25 @@
       });
 
       container.innerHTML = `
-        <div class="max-w-4xl mx-auto px-4 py-6 font-sans">
-          <!-- Back button / Page title -->
-          <div class="mb-6 select-none flex items-center justify-between border-b border-gray-100 pb-3">
-            <div class="flex items-center gap-3">
-              <button onclick="switchAppView('home')" class="p-2 -ml-2 rounded-xl text-brand-950 hover:bg-gray-100 transition inline-flex items-center justify-center cursor-pointer">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                </svg>
-              </button>
-              <h2 class="font-display font-black text-xl text-gray-950 tracking-tight leading-none">B2B Order Histories</h2>
+        <div class="global-container py-6 font-sans">
+          <!-- Back button / Breadcrumbs Header -->
+          <div class="mb-6 select-none">
+            <nav class="flex text-[10px] uppercase tracking-wider text-gray-400 mb-1.5 font-bold">
+              <span class="hover:text-[#11441c] cursor-pointer transition" onclick="window.navigateToHome()">Home</span>
+              <span class="mx-2">/</span>
+              <span class="text-[#11441c]">Order Histories</span>
+            </nav>
+            <div class="flex items-center justify-between border-b border-gray-100 pb-3">
+              <div class="flex items-center gap-3">
+                <button onclick="window.navigateBack()" class="p-2 -ml-2 rounded-xl text-brand-950 hover:bg-gray-100 transition inline-flex items-center justify-center cursor-pointer" aria-label="Go Back">
+                  <svg class="w-5 h-5 text-brand-950" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                  </svg>
+                </button>
+                <h2 class="font-display font-black text-xl text-gray-950 tracking-tight leading-none">B2B Order Histories</h2>
+              </div>
+              <span class="border border-gray-200 bg-gray-50 text-gray-700 text-[10px] font-bold px-2.5 py-1 rounded-full font-sans"> Ledger Sync Online </span>
             </div>
-            <span class="border border-gray-200 bg-gray-50 text-gray-700 text-[10px] font-bold px-2.5 py-1 rounded-full font-sans"> Ledger Sync Online </span>
           </div>
 
           <!-- Active Orders Section -->
@@ -3352,18 +3632,22 @@
 
           <!-- Items Row -->
           <div class="flex flex-col gap-3.5 mb-5 max-h-[220px] overflow-y-auto">
-            ${ord.items ? ord.items.map(it => `
-              <div class="flex items-center gap-3.5 leading-tight font-sans">
-                <div class="w-9 h-9 rounded-lg bg-gray-50 border border-gray-100 shrink-0 flex items-center justify-center p-0.5">
-                  <img class="w-full h-full object-contain" src="${it.image || 'https://images.unsplash.com/photo-1581798459219-318e76aecc7b?w=200'}" onerror="this.src='https://images.unsplash.com/photo-1581798459219-318e76aecc7b?w=200'">
+            ${ord.items ? ord.items.map(it => {
+              const matchingProd = CONFIG.products.find(p => p.id === it.id || p.name === it.name);
+              const resolvedSrc = matchingProd ? getPackshotImage(matchingProd) : (it.image || 'https://images.unsplash.com/photo-1581798459219-318e76aecc7b?w=200');
+              return `
+                <div class="flex items-center gap-3.5 leading-tight font-sans">
+                  <div class="w-9 h-9 rounded-lg bg-gray-50 border border-gray-100 shrink-0 flex items-center justify-center p-0.5">
+                    <img class="w-full h-full object-contain" src="${resolvedSrc}" alt="${it.name}" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1581798459219-318e76aecc7b?w=200';">
+                  </div>
+                  <div class="min-w-0 flex-grow pr-2">
+                    <span class="text-xs font-bold text-gray-800 block truncate" title="${it.name}">${it.name}</span>
+                    <span class="text-[10px] text-gray-400 font-bold block mt-0.5">₹${it.price} • ${it.qty} Wholesale Packs</span>
+                  </div>
+                  <span class="text-xs font-black text-gray-900 shrink-0">₹${it.price * it.qty}</span>
                 </div>
-                <div class="min-w-0 flex-grow pr-2">
-                  <span class="text-xs font-bold text-gray-800 block truncate" title="${it.name}">${it.name}</span>
-                  <span class="text-[10px] text-gray-400 font-bold block mt-0.5">₹${it.price} • ${it.qty} Wholesale Packs</span>
-                </div>
-                <span class="text-xs font-black text-gray-900 shrink-0">₹${it.price * it.qty}</span>
-              </div>
-            `).join('') : ''}
+              `;
+            }).join('') : ''}
           </div>
 
           <!-- Summary and Reorder bottom row -->
@@ -3560,7 +3844,7 @@
             <!-- Identity block with gold theme -->
             <div class="bg-[#11441c] text-white rounded-2xl p-4.5 flex items-center gap-3.5 relative overflow-hidden shadow-3xs">
               <div class="absolute right-0 top-0 translate-x-1/4 -translate-y-1/4 w-20 h-20 bg-white/5 rounded-full"></div>
-              <img class="w-11 h-11 rounded-xl object-cover shrink-0 border border-white/20" src="${avatarUrl}" referrerPolicy="no-referrer">
+              <img class="w-11 h-11 rounded-xl object-cover shrink-0 border border-white/20" src="${avatarUrl}" referrerPolicy="no-referrer" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=100';">
               <div class="min-w-0 flex-grow text-left">
                 <h4 class="text-xs font-black text-wholesale-yellow tracking-tight leading-none mb-1.5 uppercase">${tier} Tier Client</h4>
                 <p class="text-[10px] text-brand-100 font-semibold leading-none truncate">Core Code: #B2B-CLI-${window.currentUser.uid.substring(0, 5).toUpperCase()}</p>
@@ -3649,10 +3933,48 @@
       }
 
       window.addEventListener('popstate', (event) => {
-        if (event.state && event.state.view) {
-          switchAppView(event.state.view, false);
+        console.log("[DEBUG] Popstate event triggered:", event.state);
+        if (event.state) {
+          const s = event.state;
+          if (s.view === 'product') {
+            if (s.productId) {
+              showProductDetails(s.productId, false);
+            }
+          } else {
+            // Close product details modal if open
+            toggleDetailsModal(false);
+            
+            if (s.view === 'home') {
+              currentCategory = s.category || "All";
+              lookupKeywords = s.search || "";
+              const searchInput = document.getElementById('catalog-search');
+              if (searchInput) {
+                searchInput.value = lookupKeywords;
+              }
+              const clearBtn = document.getElementById('clear-search');
+              if (clearBtn) {
+                if (lookupKeywords.length > 0) clearBtn.classList.remove('hidden');
+                else clearBtn.classList.add('hidden');
+              }
+              switchAppView('home', false);
+              renderCarouselCategories();
+              renderCatalogGrid();
+            } else {
+              switchAppView(s.view, false);
+            }
+          }
         } else {
+          // Default fallback
+          toggleDetailsModal(false);
+          currentCategory = "All";
+          lookupKeywords = "";
+          const searchInput = document.getElementById('catalog-search');
+          if (searchInput) searchInput.value = "";
+          const clearBtn = document.getElementById('clear-search');
+          if (clearBtn) clearBtn.classList.add('hidden');
           switchAppView('home', false);
+          renderCarouselCategories();
+          renderCatalogGrid();
         }
       });
 
@@ -3719,51 +4041,61 @@
     // RENDERS LARGE PREMIUM PROMOTION CARDS DYNAMICALLY
     function renderOfferBannersUI() {
       const container = document.getElementById('banner-section');
-      container.className = "w-full rounded-2xl overflow-hidden shadow-sm relative border border-gray-100 min-h-[140px] md:min-h-[220px] flex items-center mb-2 bg-brand-900 bg-gradient-to-br from-brand-950 to-brand-900";
+      container.className = "w-full rounded-[28px] overflow-hidden shadow-xs relative border border-gray-150 min-h-[220px] md:min-h-[380px] flex items-center mb-6 bg-gray-50 bg-gradient-to-r from-gray-100 to-gray-50/50";
       
-      // We will render a highly aesthetic, premium, full-width wholesale banner matching KiranaMarket style
+      // We render a premium, full-width wholesale lifestyle banner with human photography
       container.innerHTML = `
-        <!-- Background Image with a clean overlay for readability -->
-        <div class="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat" style="background-image: url('https://images.unsplash.com/photo-1604719312566-8912e9227c6a?auto=format&fit=crop&q=80&w=1200');"></div>
-        <div class="absolute inset-0 bg-gradient-to-r from-brand-950/95 via-brand-900/80 to-transparent z-10"></div>
+        <!-- Background Image with soft elegant warm gradient overlay -->
+        <img class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 hover:scale-[1.01]" src="https://images.unsplash.com/photo-1578916171728-46686eac8d58?auto=format&fit=crop&q=80&w=1200" alt="Aggarwal Wholesale Store" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=1200';">
+        <div class="absolute inset-0 bg-gradient-to-r from-[#112E17]/95 via-[#1B4A25]/80 to-transparent z-10"></div>
         
         <!-- Content overlaid securely over background -->
-        <div class="relative z-20 px-6 py-8 md:px-12 md:py-12 max-w-2xl text-white">
-          <span class="inline-block text-[8px] md:text-[9px] font-extrabold tracking-widest bg-yellow-400 text-brand-950 px-2.5 py-1 rounded uppercase mb-3">
-            DIRECT DISTRIBUTOR PRICES
+        <div class="relative z-20 px-6 py-10 md:px-14 md:py-16 max-w-2xl text-white">
+          <span class="inline-block text-[9px] md:text-[10px] font-extrabold tracking-widest bg-brand-100 text-brand-950 px-3 py-1 rounded-md uppercase mb-4 shadow-3xs">
+            ✨ DIRECT DISTRIBUTOR PRICES
           </span>
-          <h2 class="font-display text-2xl md:text-5xl tracking-tight leading-none mb-2 md:mb-3" style="font-weight: normal;">
-            Aggarwal Wholesale Store
+          <h2 class="font-display font-black text-2xl md:text-5xl tracking-tight leading-tight mb-3 md:mb-4">
+            Wholesale Prices.<br/>Reliable Supply.<br/>Local Trust.
           </h2>
-          <p class="text-[11px] md:text-xl text-wholesale-yellow tracking-wide font-extrabold uppercase mb-2">
-            Premium Quality Wholesale Prices
+          <p class="text-xs md:text-sm text-brand-100 leading-relaxed font-semibold opacity-95 max-w-md mb-6 md:mb-8">
+            Aggarwal Wholesale is Chamba's leading B2B marketplace. We empower local retailers with direct-from-source prices, guaranteed daily stock delivery, and friendly support.
           </p>
-          <p class="text-[9px] md:text-xs text-brand-100 leading-[15px] not-italic no-underline font-medium opacity-90 max-w-md">
-            Chamba's trusted source for daily essentials, top-tier confectionery, and branded household goods. Direct delivery routes with highest retailer margins.
-          </p>
+          <button onclick="window.scrollToSection('catalog-section-container')" class="inline-flex items-center gap-2 bg-brand-950 hover:bg-brand-900 border border-brand-800 text-brand-50 hover:text-white font-extrabold text-[10px] md:text-xs px-5 py-3.5 rounded-xl transition duration-200 cursor-pointer shadow-md select-none transform hover:-translate-y-0.5 active:translate-y-0">
+            <span>Browse Products</span>
+            <svg class="w-3.5 h-3.5 text-brand-100" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"></path>
+            </svg>
+          </button>
         </div>
       `;
     }
 
-    // DYNAMIC RE-INDEX AND DISPLAY FOR CAROUSEL LABELS AS CIRCLE IMAGES WITH BOTTOM TITLES
+    // Scroll auxiliary helper
+    window.scrollToSection = function(id) {
+      const el = document.getElementById(id);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    };
+
+    // DYNAMIC RE-INDEX AND DISPLAY FOR CAROUSEL LABELS AS CURATED PREMIUM LIFESTYLE CIRCLES (110px)
     function renderCarouselCategories() {
       const container = document.getElementById('categories-carousel');
       container.innerHTML = "";
 
       const distinctCategories = ["All", ...CONFIG.categories];
 
-      // Beautiful curated category image mappings matching KiranaMarket style
-      const CATEGORY_IMAGES = {
-        "All": "https://images.unsplash.com/photo-1542838132-92c53300491e?w=150&auto=format&fit=crop&q=80",
-        "Chocolates": "https://images.unsplash.com/photo-1548907040-4d42b52125f0?w=150&auto=format&fit=crop&q=80",
-        "Biscuits": "https://images.unsplash.com/photo-1558961309-db0340360a39?w=150&auto=format&fit=crop&q=80",
-        "Candies": "https://images.unsplash.com/photo-1581798459219-318e76aecc7b?w=150&auto=format&fit=crop&q=80",
-        "Chips & Namkeen": "https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=150&auto=format&fit=crop&q=80",
-        "Noodles": "https://images.unsplash.com/photo-1612927601601-6638404737ce?w=150&auto=format&fit=crop&q=80",
-        "Cold Drinks": "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=150&auto=format&fit=crop&q=80",
-        "Bakery Products": "https://images.unsplash.com/photo-1601598853637-dd2514d2524d?w=150&auto=format&fit=crop&q=80",
-        "Dry Fruits": "https://images.unsplash.com/photo-1543157148-f68f2ea22a3b?w=150&auto=format&fit=crop&q=80",
-        "Stationery": "https://images.unsplash.com/photo-1513258496099-48168024aec0?w=150&auto=format&fit=crop&q=80"
+      const CATEGORY_STYLES = {
+        "All": { icon: "🏪", image: "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=200" },
+        "Chocolates": { icon: "🍫", image: "https://images.unsplash.com/photo-1549007994-cb92ca8a4a77?auto=format&fit=crop&q=80&w=200" },
+        "Biscuits": { icon: "🍪", image: "https://images.unsplash.com/photo-1558961309-db0340360a39?auto=format&fit=crop&q=80&w=200" },
+        "Candies": { icon: "🍬", image: "https://images.unsplash.com/photo-1581798459219-318e76aecc7b?auto=format&fit=crop&q=80&w=200" },
+        "Chips & Namkeen": { icon: "🍟", image: "https://images.unsplash.com/photo-1566478989037-eec170784d0b?auto=format&fit=crop&q=80&w=200" },
+        "Noodles": { icon: "🍜", image: "https://images.unsplash.com/photo-1612927601601-6638404737ce?auto=format&fit=crop&q=80&w=200" },
+        "Cold Drinks": { icon: "🥤", image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&q=80&w=200" },
+        "Bakery Products": { icon: "🍞", image: "https://images.unsplash.com/photo-1608220179552-764627ef4424?auto=format&fit=crop&q=80&w=200" },
+        "Dry Fruits": { icon: "🥜", image: "https://images.unsplash.com/photo-1596547609652-9cf5d8d76921?auto=format&fit=crop&q=80&w=200" },
+        "Stationery": { icon: "✏️", image: "https://images.unsplash.com/photo-1513258496099-48168024aec0?auto=format&fit=crop&q=80&w=200" }
       };
 
       distinctCategories.forEach(cat => {
@@ -3775,46 +4107,73 @@
         }
 
         const isCurrent = currentCategory === cat;
+        const style = CATEGORY_STYLES[cat] || CATEGORY_STYLES["All"];
         
-        // Circular button container exactly like KiranaMarket homepage circles
         const wrapper = document.createElement('div');
-        wrapper.className = "flex flex-col items-center shrink-0 group cursor-pointer text-center py-1";
+        wrapper.className = `flex flex-col items-center cursor-pointer select-none shrink-0 text-center transition-all duration-300 group ${
+          isCurrent ? 'scale-105 filter drop-shadow-xs' : 'hover:scale-102'
+        }`;
         wrapper.onclick = () => filterCategory(cat);
 
-        const imgUrl = CATEGORY_IMAGES[cat] || "https://images.unsplash.com/photo-1542838132-92c53300491e?w=150";
-
+        // Circular Thumbnail component (110px x 110px) with custom soft green ring on active
         wrapper.innerHTML = `
-          <!-- Circular Thumbnail with thick rings on active category -->
-          <div class="w-16 h-16 sm:w-[84px] sm:h-[84px] rounded-full border overflow-hidden flex items-center justify-center p-0.5 bg-white transition-all duration-300 relative ${
-            isCurrent 
-              ? 'border-brand-900 shadow ring-2 ring-brand-100 scale-105' 
-              : 'border-gray-200 group-hover:border-brand-850 group-hover:shadow-sm'
-          }">
-            <img src="${imgUrl}" alt="${cat}" class="w-full h-full object-cover rounded-full" onerror="this.src='https://images.unsplash.com/photo-1542838132-92c53300491e?w=150'">
+          <div class="relative w-[110px] h-[110px] select-none">
+            <div class="w-full h-full rounded-full overflow-hidden border-2 relative transition-all duration-300 ${
+              isCurrent 
+                ? 'border-[#5C6B53] shadow-md scale-100' 
+                : 'border-gray-150 hover:border-[#5C6B53]/50 shadow-3xs'
+            }">
+              <!-- Photography content -->
+              <img src="${style.image}" 
+                   class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 select-none block" 
+                   alt="${cat}" 
+                   referrerpolicy="no-referrer"
+                   onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=200';">
+              <!-- Darkening overlay matching the premium showcase tone -->
+              <div class="absolute inset-0 bg-black/15 transition-opacity group-hover:bg-black/10"></div>
+              
+              <!-- Glass-morphic Badge Overlay in Bottom-Right for clarity -->
+              <div class="absolute bottom-1 right-1 w-[26px] h-[26px] rounded-full bg-white/85 backdrop-blur-xs flex items-center justify-center border border-white/50 shadow-3xs transition-transform duration-300 group-hover:scale-110">
+                <span class="text-xs leading-none select-none pb-0.5">${style.icon}</span>
+              </div>
+            </div>
           </div>
-          
-          <!-- Category text label formatted under circle -->
-          <span class="text-[10px] sm:text-[11px] font-black mt-2 text-gray-700 leading-tight tracking-tight transition duration-200 ${
-            isCurrent ? 'text-brand-900' : 'group-hover:text-brand-800'
-          }">
-            ${cat}
-          </span>
-          <span class="text-[8px] font-bold bg-gray-100 text-gray-500 scale-90 px-1 py-0.2 rounded-full mt-0.5">
-            ${itemsCount}
-          </span>
+          <!-- Label spacing: 8px -->
+          <div class="flex flex-col items-center mt-2" style="margin-top: 8px;">
+            <span class="text-[11px] md:text-xs font-black tracking-wide font-display transition-colors max-w-[124px] truncate ${
+              isCurrent ? 'text-[#5C6B53]' : 'text-gray-901 group-hover:text-[#5C6B53]'
+            }">
+              ${cat}
+            </span>
+            <!-- Product count: 4px below label -->
+            <span class="text-[9.5px] font-bold text-[#726955] uppercase tracking-widest leading-none" style="margin-top: 4px;">
+              ${itemsCount} Items
+            </span>
+          </div>
         `;
         container.appendChild(wrapper);
       });
-
     }
 
-    function filterCategory(catName) {
+    function filterCategory(catName, pushToHistory = true) {
       currentCategory = catName;
+      if (currentAppView !== 'home') {
+        switchAppView('home', false);
+      }
+      if (pushToHistory) {
+        try {
+          history.pushState({ view: 'home', category: catName, search: lookupKeywords }, '', '');
+        } catch (e) {
+          console.warn("[DEBUG] filterCategory pushState error:", e);
+        }
+      }
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
       renderCarouselCategories();
       renderCatalogGrid();
     }
 
     // KEYWORD DRAGGERS FOR FILTRATIONS
+    let searchHistoryTimeout = null;
     function handleSearch() {
       lookupKeywords = document.getElementById('catalog-search').value.trim().toLowerCase();
       
@@ -3825,20 +4184,45 @@
         clearBtn.classList.add('hidden');
       }
       renderCatalogGrid();
+
+      // Debounce pushState to avoid inflating history stack on every keystroke
+      if (searchHistoryTimeout) clearTimeout(searchHistoryTimeout);
+      searchHistoryTimeout = setTimeout(() => {
+        try {
+          if (!history.state || history.state.search !== lookupKeywords || history.state.view !== 'home') {
+            history.pushState({ view: 'home', category: currentCategory, search: lookupKeywords }, '', '');
+          }
+        } catch (e) {
+          console.warn("[DEBUG] handleSearch pushState error:", e);
+        }
+      }, 600);
     }
 
     function clearSearch() {
       document.getElementById('catalog-search').value = "";
       lookupKeywords = "";
       document.getElementById('clear-search').classList.add('hidden');
+      try {
+        history.pushState({ view: 'home', category: currentCategory, search: "" }, '', '');
+      } catch (e) {
+        console.warn("[DEBUG] clearSearch pushState error:", e);
+      }
       renderCatalogGrid();
     }
+
 
     function resetFiltersAndCatalog() {
       currentCategory = "All";
       lookupKeywords = "";
-      document.getElementById('catalog-search').value = "";
-      document.getElementById('clear-search').classList.add('hidden');
+      const searchBox = document.getElementById('catalog-search');
+      if (searchBox) searchBox.value = "";
+      const clearBtn = document.getElementById('clear-search');
+      if (clearBtn) clearBtn.classList.add('hidden');
+      try {
+        history.pushState({ view: 'home', category: 'All', search: '' }, '', '');
+      } catch (e) {
+        console.warn("[DEBUG] resetFiltersAndCatalog pushState error:", e);
+      }
       renderCarouselCategories();
       renderCatalogGrid();
     }
@@ -3849,7 +4233,7 @@
       const qty = cartItem ? cartItem.qty : 0;
 
       const card = document.createElement('div');
-      card.className = "bg-white border border-[#ECECEC] rounded-[18px] p-3 flex flex-col justify-between shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 group cursor-pointer overflow-hidden relative w-full h-full select-none";
+      card.className = "bg-white border border-gray-150 rounded-[24px] p-3.5 flex flex-col justify-between shadow-3xs hover:shadow-xs hover:-translate-y-1 transition-all duration-300 group cursor-pointer overflow-hidden relative w-full h-full select-none";
       
       card.onclick = (e) => {
         // Guard to prevent triggering product detail when user clicks on quantity selectors
@@ -3866,8 +4250,8 @@
       let actionControlHTML = '';
       if (qty === 0) {
         actionControlHTML = `
-          <button onclick="commitCartIncrement(${product.id}, 1)" class="w-full h-9 bg-brand-900 hover:bg-brand-850 text-white font-semibold text-xs rounded-xl flex items-center justify-center gap-1 shadow-sm active:translate-y-0.5 transition-all overflow-hidden bg-clip-padding border border-transparent outline-none focus:outline-none">
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+          <button onclick="commitCartIncrement(${product.id}, 1)" class="w-full h-10 bg-brand-900 hover:bg-brand-850 text-white font-extrabold text-xs rounded-xl flex items-center justify-center gap-1 shadow-3xs active:translate-y-0.5 transition-all overflow-hidden border border-brand-800/20 outline-none focus:outline-none">
+            <svg class="w-3.5 h-3.5 text-brand-100" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"></path>
             </svg>
             <span>Add to Cart</span>
@@ -3875,10 +4259,10 @@
         `;
       } else {
         actionControlHTML = `
-          <div class="w-full h-9 bg-brand-50 rounded-xl flex items-center justify-between border border-brand-200 overflow-hidden font-semibold text-xs text-brand-900 select-none">
-            <button onclick="commitCartIncrement(${product.id}, -1)" class="h-full px-2.5 text-brand-800 hover:bg-brand-100 active:bg-brand-200 transition-colors text-sm font-bold select-none">-</button>
-            <span class="select-none text-brand-950 font-bold text-xs">${qty} ctn</span>
-            <button onclick="commitCartIncrement(${product.id}, 1)" class="h-full px-2.5 text-brand-800 hover:bg-brand-100 active:bg-brand-200 transition-colors text-sm font-bold select-none">+</button>
+          <div class="w-full h-10 bg-[#E3EAE0] rounded-xl flex items-center justify-between border border-brand-700/20 overflow-hidden font-extrabold text-xs text-brand-900 select-none">
+            <button onclick="commitCartIncrement(${product.id}, -1)" class="h-full px-3 text-[#2C3527] hover:bg-brand-100/50 active:bg-brand-100 transition-colors text-sm font-black select-none">-</button>
+            <span class="select-none text-brand-950 font-black text-xs">${qty} ctn</span>
+            <button onclick="commitCartIncrement(${product.id}, 1)" class="h-full px-3 text-[#2C3527] hover:bg-brand-100/50 active:bg-brand-100 transition-colors text-sm font-black select-none">+</button>
           </div>
         `;
       }
@@ -3886,35 +4270,35 @@
       // Determine product image src or fallback via high-fidelity packshot resolver
       const cardImgSrc = getPackshotImage(product);
 
-      // Deterministically resolve high-conversion signals requested by user
+      // Deterministically resolve high-conversion signals in beautiful matte-pastel palettes
       let badgeName = "";
       let badgeStyle = "";
       
       const badgeId = product.id % 6;
       if (badgeId === 0) {
         badgeName = "Best Seller";
-        badgeStyle = "bg-amber-600 text-white";
+        badgeStyle = "bg-[#F4EFE6] text-[#A3753E] border border-[#E2D9C6]/50";
       } else if (badgeId === 1) {
         badgeName = "Fast Moving";
-        badgeStyle = "bg-blue-600 text-white";
+        badgeStyle = "bg-[#E3EAE0] text-[#5C6B53] border border-brand-700/10";
       } else if (badgeId === 2) {
-        badgeName = "Retailer Favourite";
-        badgeStyle = "bg-purple-600 text-white";
+        badgeName = "Retailer favorite";
+        badgeStyle = "bg-[#FDF1F3] text-[#7D3241] border border-[#FAE1E5]/40";
       } else if (badgeId === 3) {
         badgeName = "High Margin";
-        badgeStyle = "bg-emerald-600 text-white";
+        badgeStyle = "bg-[#EDFAF3] text-[#2B6D41] border border-[#DAF4E3]/40";
       } else if (badgeId === 4) {
         badgeName = "Top Choice";
-        badgeStyle = "bg-orange-600 text-white";
+        badgeStyle = "bg-[#F9ECE0] text-[#834F21] border border-[#F2DEC9]/40";
       } else {
         badgeName = "Frequently Ordered";
-        badgeStyle = "bg-teal-600 text-white";
+        badgeStyle = "bg-[#EEF6FA] text-[#2D6680] border border-[#DCEDF5]/40";
       }
 
       card.innerHTML = `
-        <div class="relative w-full aspect-square bg-white rounded-xl overflow-hidden flex items-center justify-center p-2 border border-blue-50/40 select-none mx-auto shrink-0 mb-2">
+        <div class="relative w-full aspect-square bg-[#FAF8F5] rounded-[20px] overflow-hidden flex items-center justify-center p-3 border border-gray-100 select-none mx-auto shrink-0 mb-3">
           <!-- Absolute High-Converting Badge Sticker -->
-          <span class="absolute top-1.5 left-1.5 z-10 text-[8.5px] font-black uppercase tracking-wider px-2 py-0.5 rounded-md ${badgeStyle} shadow-3xs leading-none">
+          <span class="absolute top-2 left-2 z-10 text-[8px] font-extrabold uppercase tracking-widest px-2 py-0.5 rounded-md ${badgeStyle} shadow-3xs leading-none">
             ${badgeName}
           </span>
           <img class="w-full h-full object-contain aspect-square group-hover:scale-105 transition-transform duration-500 block mx-auto pt-2 pb-1" 
@@ -3925,30 +4309,30 @@
         </div>
 
         <div class="flex flex-col flex-grow min-h-0 justify-between">
-          <div>
-            <h4 class="text-xs md:text-sm font-semibold text-gray-900 leading-tight line-clamp-2 h-10 group-hover:text-brand-800 transition duration-200" title="${product.name}">
-              ${product.name.split(' (')[0]}
+          <div class="text-left">
+            <h4 class="text-xs md:text-sm font-black text-gray-901 leading-tight line-clamp-2 h-9 group-hover:text-brand-900 transition duration-200" title="${product.name}">
+              ${product.name.split(' (')[0].split(' - ')[0]}
             </h4>
             
-            <div class="text-[10px] md:text-[11px] text-gray-500 mt-1 flex items-center gap-1 font-medium leading-none truncate whitespace-nowrap h-4">
+            <div class="text-[9px] md:text-[10px] text-gray-400 mt-1.5 flex items-center gap-1 font-bold leading-none truncate whitespace-nowrap h-4 uppercase tracking-wider">
               <span>Pack: ${product.packSize} units/ctn</span>
-              ${weightTag ? `<span class="text-gray-400">• (${weightTag})</span>` : ''}
+              ${weightTag ? `<span class="text-gray-300">• (${weightTag})</span>` : ''}
             </div>
           </div>
 
-          <div class="mt-3">
+          <div class="mt-4">
             <div class="flex items-baseline justify-between select-none h-8 mb-2 shrink-0">
-              <div class="flex flex-col">
-                <span class="text-[8px] md:text-[9px] font-bold text-gray-400 uppercase tracking-wider leading-none">Box Price</span>
-                <span class="text-xs md:text-[15px] font-bold text-gray-900 mt-0.5 leading-[1.1]">₹${product.price}</span>
+              <div class="flex flex-col text-left">
+                <span class="text-[8px] font-bold text-gray-400 uppercase tracking-widest leading-none">Box Price</span>
+                <span class="text-xs md:text-sm font-black text-gray-950 mt-0.5 leading-[1.1] font-display">₹${product.price}</span>
               </div>
               <div class="text-right flex flex-col items-end">
-                <span class="text-[8px] md:text-[9px] font-bold text-gray-400 uppercase tracking-wider leading-none">Min. Order</span>
-                <span class="font-bold text-emerald-600 text-[9px] md:text-[10px] mt-0.5 bg-emerald-50 px-1.5 py-0.5 rounded leading-none">${product.moq} ctn</span>
+                <span class="text-[8px] font-bold text-gray-400 uppercase tracking-widest leading-none">Min. Order</span>
+                <span class="font-black text-[#5C6B53] text-[8px] md:text-[9px] mt-0.5 bg-[#E3EAE0] px-2 py-0.5 rounded-md leading-none border border-brand-700/10">${product.moq} ctn</span>
               </div>
             </div>
 
-            <div class="relative z-10 w-full h-9 flex items-center justify-center shrink-0">
+            <div class="relative z-10 w-full h-10 flex items-center justify-center shrink-0">
               ${actionControlHTML}
             </div>
           </div>
@@ -3956,6 +4340,55 @@
       `;
       return card;
     }
+
+    // Dynamic bundle inclusion for one-click Kirana pack purchasing
+    window.addRetailerBundle = function(itemIds, qty) {
+      itemIds.forEach(productId => {
+        const product = CONFIG.products.find(p => p.id === productId);
+        if (!product) return;
+        const cartItemIndex = cart.findIndex(obj => obj.id === productId);
+        if (cartItemIndex > -1) {
+          cart[cartItemIndex].qty += qty;
+        } else {
+          cart.push({
+            id: product.id,
+            name: product.name,
+            price: product.price,
+            category: product.category,
+            image: product.image,
+            qty: qty,
+            notes: ''
+          });
+        }
+      });
+      saveCartState();
+      refreshCartSystemCounters();
+      renderCatalogGrid();
+      renderCartDrawerItemsList();
+      showBusinessToast(`Successfully loaded bulk pack bundle into B2B basket!`);
+    };
+
+    // Brand filtering system with smooth navigation auto scrolling
+    window.filterByBrandKeywords = function(brandName, pushToHistory = true) {
+      document.getElementById('catalog-search').value = brandName;
+      lookupKeywords = brandName.toLowerCase();
+      if (currentAppView !== 'home') {
+        switchAppView('home', false);
+      }
+      if (pushToHistory) {
+        try {
+          history.pushState({ view: 'home', category: currentCategory, search: lookupKeywords }, '', '');
+        } catch (e) {
+          console.warn("[DEBUG] filterByBrandKeywords pushState error:", e);
+        }
+      }
+      renderCatalogGrid();
+      
+      const searchRow = document.getElementById('header-search-row');
+      if (searchRow) {
+        searchRow.scrollIntoView({ behavior: 'smooth' });
+      }
+    };
 
     // MAIN PRODUCT RENDERS CATALOG SYSTEM WITH ADD-TO-CART INCREMENTORS
     function renderCatalogGrid() {
@@ -4004,63 +4437,336 @@
 
       // IF IN ALL CATEGORY WITH NO ACTIVE FILTER: SHOW BEAUTIFUL HOMEPAGE SECTIONS MATCHING KIRANAMARKET STYLE
       if (currentCategory === "All" && lookupKeywords.length === 0) {
-        // Section 1: Morning Essentials (Steal Deals Under Rs 99 unit price)
-        const stealDeals = items.filter(p => p.pricePerUnit < 90);
-        // Section 2: Best Sellers
-        const bestSellers = items.filter(p => [1, 2, 5, 10, 11, 22].includes(p.id));
-        // Section 3: Remainder categories
-        const restOfItems = items.filter(p => !bestSellers.some(b => b.id === p.id) && !stealDeals.some(s => s.id === p.id));
+        const hpContainer = document.createElement('div');
+        hpContainer.className = "flex flex-col gap-4 sm:gap-5 w-full font-sans select-none animate-fade-in";
 
-        const renderSection = (title, subtitle, emoji, list) => {
-          if (list.length === 0) return;
-          const secWrapper = document.createElement('div');
-          secWrapper.className = "flex flex-col mb-4";
-          secWrapper.innerHTML = `
-            <div class="flex items-center gap-2 mb-4 border-b border-gray-100 pb-2.5">
-              <span class="text-xl sm:text-2xl">${emoji}</span>
-              <div>
-                <h3 class="font-display font-black text-sm sm:text-base text-gray-900 tracking-tight">${title}</h3>
-                <p class="text-[10px] sm:text-xs text-gray-400 font-semibold">${subtitle}</p>
+        // Brands Strip Row (Item B)
+        const brandStripHTML = `
+          <div class="bg-white border border-gray-150 rounded-2xl p-2 md:p-2.5 shadow-3xs flex flex-col md:flex-row items-center justify-between gap-2">
+            <span class="text-[9px] md:text-xs font-black uppercase tracking-widest text-[#11441c] shrink-0">Official Brands Sourced Direct:</span>
+            <div class="flex items-center justify-center flex-wrap gap-1.5 md:gap-3 overflow-x-auto no-scrollbar py-0.5">
+              <button onclick="window.filterByBrandKeywords('Cadbury')" class="flex items-center gap-1 px-2.5 py-1 rounded-xl border border-gray-150 hover:border-brand-700 bg-white hover:bg-brand-50 text-[10px] sm:text-[11px] font-bold text-gray-850 transition active:scale-95 cursor-pointer">
+                🍫 <span>Cadbury</span>
+              </button>
+              <button onclick="window.filterByBrandKeywords('Nestle')" class="flex items-center gap-1 px-2.5 py-1 rounded-xl border border-gray-150 hover:border-brand-700 bg-white hover:bg-brand-50 text-[10px] sm:text-[11px] font-bold text-gray-850 transition active:scale-95 cursor-pointer">
+                🥣 <span>Nestle</span>
+              </button>
+              <button onclick="window.filterByBrandKeywords('Britannia')" class="flex items-center gap-1 px-2.5 py-1 rounded-xl border border-gray-150 hover:border-brand-700 bg-white hover:bg-brand-50 text-[10px] sm:text-[11px] font-bold text-gray-850 transition active:scale-95 cursor-pointer">
+                🍪 <span>Britannia</span>
+              </button>
+              <button onclick="window.filterByBrandKeywords('Parle')" class="flex items-center gap-1 px-2.5 py-1 rounded-xl border border-gray-150 hover:border-brand-700 bg-white hover:bg-brand-50 text-[10px] sm:text-[11px] font-bold text-gray-850 transition active:scale-95 cursor-pointer">
+                🌾 <span>Parle</span>
+              </button>
+              <button onclick="window.filterByBrandKeywords('Coca')" class="flex items-center gap-1 px-2.5 py-1 rounded-xl border border-gray-150 hover:border-brand-700 bg-white hover:bg-brand-50 text-[10px] sm:text-[11px] font-bold text-gray-850 transition active:scale-95 cursor-pointer">
+                🥤 <span>Coca Cola</span>
+              </button>
+              <button onclick="window.filterByBrandKeywords('Lay')" class="flex items-center gap-1 px-2.5 py-1 rounded-xl border border-gray-150 hover:border-brand-700 bg-white hover:bg-brand-50 text-[10px] sm:text-[11px] font-bold text-gray-850 transition active:scale-95 cursor-pointer">
+                🍟 <span>Lays</span>
+              </button>
+            </div>
+          </div>
+        `;
+
+        // SECTION 3: Large horizontal Promotional Cards with beautiful premium photography
+        const promoCollectionsHTML = `
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5 my-2">
+            <!-- Card 1: Fast Moving Stock -->
+            <div onclick="filterCategory('Chips & Namkeen')" class="relative rounded-[24px] overflow-hidden min-h-[140px] flex items-center p-5 group border border-gray-150 shadow-3xs cursor-pointer">
+              <img class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 z-0" src="https://images.unsplash.com/photo-1599490659223-937224168867?auto=format&fit=crop&q=80&w=600" alt="Chips & Namkeen" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=600';">
+              <div class="absolute inset-0 bg-gradient-to-r from-[#112E17]/95 via-[#1B4A25]/70 to-transparent z-1 bg-brand-900/40"></div>
+              <div class="relative z-10 text-white flex flex-col justify-center h-full max-w-[85%] text-left">
+                <span class="text-[8px] font-extrabold uppercase tracking-widest text-[#FAF8F2] bg-brand-900 px-2.5 py-1 rounded-md w-max mb-2">⚡ HIGH SPEED SELLERS</span>
+                <h4 class="text-sm md:text-base font-black uppercase tracking-tight text-white leading-tight font-display">Fast Moving Stock</h4>
+                <p class="text-[10px] text-brand-100 mt-1 leading-normal">Satisfy intense snacking demands from local school children and commuters.</p>
+                <div class="mt-3 bg-brand-50 text-brand-950 font-black text-[9px] uppercase tracking-wider py-1.5 px-3 rounded-xl shadow-3xs group-hover:bg-brand-100 transition-all w-max select-none font-sans">Refill Fast</div>
               </div>
             </div>
-          `;
-          const secGrid = document.createElement('div');
-          secGrid.className = "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6 w-full";
-          list.forEach(item => {
-            secGrid.appendChild(generateProductCardNode(item));
-          });
-          secWrapper.appendChild(secGrid);
-          grid.appendChild(secWrapper);
-        };
 
-        renderSection("Morning Essentials 🌅", "Steal Deals – Under ₹99 per unit", "🌅", stealDeals.slice(0, 8));
-        renderSection("Our Best Sellers ⭐", "Popular fast-moving B2B confection & chips lines", "⭐", bestSellers);
-        renderSection("Remaining Wholesale Catalog 📦", "Full premium confectionery & general groceries range", "📦", restOfItems);
+            <!-- Card 2: High Margin Picks -->
+            <div onclick="filterCategory('Chocolates')" class="relative rounded-[24px] overflow-hidden min-h-[140px] flex items-center p-5 group border border-gray-150 shadow-3xs cursor-pointer">
+              <img class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 z-0" src="https://images.unsplash.com/photo-1548907040-4d42b52125f0?auto=format&fit=crop&q=80&w=600" alt="Chocolates" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=600';">
+              <div class="absolute inset-0 bg-gradient-to-r from-[#112E17]/95 via-[#1B4A25]/70 to-transparent z-1 bg-brand-900/40"></div>
+              <div class="relative z-10 text-white flex flex-col justify-center h-full max-w-[85%] text-left">
+                <span class="text-[8px] font-extrabold uppercase tracking-widest text-brand-950 bg-[#C89B66] px-2.5 py-1 rounded-md w-max mb-2">💎 MAXIMUM REVENUE</span>
+                <h4 class="text-sm md:text-base font-black uppercase tracking-tight text-white leading-tight font-display">High Margin Picks</h4>
+                <p class="text-[10px] text-brand-100 mt-1 leading-normal">Multiply your store profits with hot gourmet chocolates & gift canisters.</p>
+                <div class="mt-3 bg-brand-50 text-[#1B4A25] font-black text-[9px] uppercase tracking-wider py-1.5 px-3 rounded-xl shadow-3xs group-hover:bg-brand-100 transition-all w-max select-none font-sans">View Margins</div>
+              </div>
+            </div>
+
+            <!-- Card 3: Daily Essentials -->
+            <div onclick="filterCategory('Noodles')" class="relative rounded-[24px] overflow-hidden min-h-[140px] flex items-center p-5 group border border-gray-150 shadow-3xs cursor-pointer">
+              <img class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 z-0" src="https://images.unsplash.com/photo-1583258292688-d0213df4a3a8?auto=format&fit=crop&q=80&w=600" alt="Noodles" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=600';">
+              <div class="absolute inset-0 bg-gradient-to-r from-[#112E17]/95 via-[#1B4A25]/70 to-transparent z-1 bg-brand-900/40"></div>
+              <div class="relative z-10 text-white flex flex-col justify-center h-full max-w-[85%] text-left">
+                <span class="text-[8px] font-extrabold uppercase tracking-widest text-[#FAF8F2] bg-brand-850 px-2.5 py-1 rounded-md w-max mb-2">🏠 EVERYDAY RUNNERS</span>
+                <h4 class="text-sm md:text-base font-black uppercase tracking-tight text-white leading-tight font-display">Daily Essentials</h4>
+                <p class="text-[10px] text-brand-100 mt-1 leading-normal">Keep shelf stocks perfectly consistent on breakfast instant noodles & beverages.</p>
+                <div class="mt-3 bg-brand-50 text-[#1B4A25] font-black text-[9px] uppercase tracking-wider py-1.5 px-3 rounded-xl shadow-3xs group-hover:bg-brand-100 transition-all w-max select-none font-sans">Order Baseline</div>
+              </div>
+            </div>
+          </div>
+        `;
+
+        // SECTION 5: Retailer Success Story Banner with human connection
+        const retailerSuccessBannerHTML = `
+          <div class="bg-[#FAF8F5] border border-gray-150 rounded-[28px] overflow-hidden grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-0 shadow-3xs p-4 sm:p-6 md:p-0 my-3">
+            <div class="relative min-h-[180px] md:min-h-[280px] rounded-2xl md:rounded-none overflow-hidden select-none">
+              <img class="absolute inset-0 w-full h-full object-cover z-0" src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&q=80&w=800" alt="Chamba Store Success" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=800';">
+              <div class="absolute inset-0 bg-gradient-to-r from-brand-950/20 via-transparent to-transparent z-1"></div>
+            </div>
+            
+            <div class="flex flex-col justify-center p-6 md:p-12 text-left">
+              <span class="text-[9px] md:text-[10px] font-black tracking-widest text-[#5C6B53] bg-[#E3EAE0] px-2.5 py-1 rounded w-max mb-3.5 uppercase">
+                COMMITTED TO CHAMBA DISTRICT
+              </span>
+              <h3 class="font-display font-black text-xl md:text-3xl text-gray-901 tracking-tight leading-none mb-3">
+                Helping Chamba Retailers Grow Since 2026
+              </h3>
+              <p class="text-xs text-[#726955] leading-relaxed font-semibold mb-5">
+                We believe that local family stores are the beating heart of Himachal Pradesh's economy. By providing reliable supplies, premium brand assortments, and true wholesale pricing, we help independent Kirana owners maximize their daily profits.
+              </p>
+              <div class="flex items-center gap-6 select-none shadow-3xs bg-white p-4 rounded-2xl border border-gray-150 w-max">
+                <div>
+                  <span class="block font-display font-black text-xl text-[#5C6B53]">450+</span>
+                  <span class="text-[9px] font-bold text-gray-400 uppercase tracking-wider">Local Merchants</span>
+                </div>
+                <div class="h-8 w-px bg-gray-150"></div>
+                <div>
+                  <span class="block font-display font-black text-xl text-[#5C6B53]">24 Hour</span>
+                  <span class="text-[9px] font-bold text-gray-400 uppercase tracking-wider">Restock Logistics</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+
+        // SECTION 6: Top Categories Visual Showcase
+        const topCategoriesShowcaseHTML = `
+          <div class="flex flex-col gap-3 my-2 text-left">
+            <div class="flex items-center gap-2 border-b border-gray-150 pb-1.5">
+              <span class="text-sm">🌟</span>
+              <h3 class="font-display font-black text-[10px] sm:text-xs text-brand-950 uppercase tracking-widest">Featured Wholesale Showcase</h3>
+            </div>
+            <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3.5 w-full select-none">
+              <!-- Showcase Card 1: Chocolates -->
+              <div onclick="filterCategory('Chocolates')" class="group relative rounded-2xl overflow-hidden aspect-[4/5] p-4 flex flex-col justify-end cursor-pointer border border-gray-150 shadow-3xs">
+                <img class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 z-0" src="https://images.unsplash.com/photo-1549007994-cb92ca8a4a77?auto=format&fit=crop&q=80&w=400" alt="Chocolates" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=400';">
+                <div class="absolute inset-0 bg-gradient-to-t from-[#121610]/95 via-[#242A1E]/35 to-transparent z-1"></div>
+                <div class="relative z-10 text-white font-sans">
+                  <span class="text-[14px]">🍫</span>
+                  <h4 class="text-xs font-black leading-tight uppercase tracking-wider mt-1 text-white group-hover:text-brand-100 transition font-display">Chocolates</h4>
+                  <p class="text-[9px] text-gray-300 font-semibold mt-0.5">High profit chocolate</p>
+                </div>
+              </div>
+              
+              <!-- Showcase Card 2: Biscuits -->
+              <div onclick="filterCategory('Biscuits')" class="group relative rounded-2xl overflow-hidden aspect-[4/5] p-4 flex flex-col justify-end cursor-pointer border border-gray-150 shadow-3xs">
+                <img class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 z-0" src="https://images.unsplash.com/photo-1558961309-db0340360a39?auto=format&fit=crop&q=80&w=400" alt="Biscuits" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=400';">
+                <div class="absolute inset-0 bg-gradient-to-t from-[#121610]/95 via-[#242A1E]/35 to-transparent z-1"></div>
+                <div class="relative z-10 text-white font-sans">
+                  <span class="text-[14px]">🍪</span>
+                  <h4 class="text-xs font-black leading-tight uppercase tracking-wider mt-1 text-white group-hover:text-brand-100 transition font-display">Biscuits</h4>
+                  <p class="text-[9px] text-gray-300 font-semibold mt-0.5">Teatime sellers</p>
+                </div>
+              </div>
+
+              <!-- Showcase Card 3: Candies -->
+              <div onclick="filterCategory('Candies')" class="group relative rounded-2xl overflow-hidden aspect-[4/5] p-4 flex flex-col justify-end cursor-pointer border border-gray-150 shadow-3xs">
+                <img class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 z-0" src="https://images.unsplash.com/photo-1581798459219-318e76aecc7b?auto=format&fit=crop&q=80&w=400" alt="Candies" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=400';">
+                <div class="absolute inset-0 bg-gradient-to-t from-[#121610]/95 via-[#242A1E]/35 to-transparent z-1"></div>
+                <div class="relative z-10 text-white font-sans">
+                  <span class="text-[14px]">🍬</span>
+                  <h4 class="text-xs font-black leading-tight uppercase tracking-wider mt-1 text-white group-hover:text-brand-100 transition font-display">Candies</h4>
+                  <p class="text-[9px] text-gray-300 font-semibold mt-0.5">Sweet wholesale</p>
+                </div>
+              </div>
+
+              <!-- Showcase Card 4: Chips -->
+              <div onclick="filterCategory('Chips & Namkeen')" class="group relative rounded-2xl overflow-hidden aspect-[4/5] p-4 flex flex-col justify-end cursor-pointer border border-gray-150 shadow-3xs">
+                <img class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 z-0" src="https://images.unsplash.com/photo-1566478989037-eec170784d0b?auto=format&fit=crop&q=80&w=400" alt="Chips" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=400';">
+                <div class="absolute inset-0 bg-gradient-to-t from-[#121610]/95 via-[#242A1E]/35 to-transparent z-1"></div>
+                <div class="relative z-10 text-white font-sans">
+                  <span class="text-[14px]">🍟</span>
+                  <h4 class="text-xs font-black leading-tight uppercase tracking-wider mt-1 text-white group-hover:text-brand-100 transition font-display">Chips</h4>
+                  <p class="text-[9px] text-gray-300 font-semibold mt-0.5">Crispy savouries</p>
+                </div>
+              </div>
+
+              <!-- Showcase Card 5: Dry Fruits -->
+              <div onclick="filterCategory('Dry Fruits')" class="group relative rounded-2xl overflow-hidden aspect-[4/5] p-4 flex flex-col justify-end cursor-pointer border border-gray-150 shadow-3xs">
+                <img class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 z-0" src="https://images.unsplash.com/photo-1596547609652-9cf5d8d76921?auto=format&fit=crop&q=80&w=400" alt="Dry Fruits" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=400';">
+                <div class="absolute inset-0 bg-gradient-to-t from-[#121610]/95 via-[#242A1E]/35 to-transparent z-1"></div>
+                <div class="relative z-10 text-white font-sans">
+                  <span class="text-[14px]">🥜</span>
+                  <h4 class="text-xs font-black leading-tight uppercase tracking-wider mt-1 text-white group-hover:text-brand-100 transition font-display">Dry Fruits</h4>
+                  <p class="text-[9px] text-gray-300 font-semibold mt-0.5">Premium quality</p>
+                </div>
+              </div>
+
+              <!-- Showcase Card 6: Cold Drinks -->
+              <div onclick="filterCategory('Cold Drinks')" class="group relative rounded-2xl overflow-hidden aspect-[4/5] p-4 flex flex-col justify-end cursor-pointer border border-gray-150 shadow-3xs">
+                <img class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 z-0" src="https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&q=80&w=400" alt="Cold Drinks" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=400';">
+                <div class="absolute inset-0 bg-gradient-to-t from-[#121610]/95 via-[#242A1E]/35 to-transparent z-1"></div>
+                <div class="relative z-10 text-white font-sans">
+                  <span class="text-[14px]">🥤</span>
+                  <h4 class="text-xs font-black leading-tight uppercase tracking-wider mt-1 text-white group-hover:text-brand-100 transition font-display">Cold Drinks</h4>
+                  <p class="text-[9px] text-gray-300 font-semibold mt-0.5">Chilled favorites</p>
+                </div>
+              </div>
+
+              <!-- Showcase Card 7: Stationery -->
+              <div onclick="filterCategory('Stationery')" class="group relative rounded-2xl overflow-hidden aspect-[4/5] p-4 flex flex-col justify-end cursor-pointer border border-gray-150 shadow-3xs">
+                <img class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 z-0" src="https://images.unsplash.com/photo-1513258496099-48168024aec0?auto=format&fit=crop&q=80&w=400" alt="Stationery" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=400';">
+                <div class="absolute inset-0 bg-gradient-to-t from-[#121610]/95 via-[#242A1E]/35 to-transparent z-1"></div>
+                <div class="relative z-10 text-white font-sans">
+                  <span class="text-[14px]">✏️</span>
+                  <h4 class="text-xs font-black leading-tight uppercase tracking-wider mt-1 text-white group-hover:text-brand-100 transition font-display">Stationery</h4>
+                  <p class="text-[9px] text-gray-300 font-semibold mt-0.5">Offices & schools</p>
+                </div>
+              </div>
+
+              <!-- Showcase Card 8: Bakery Products -->
+              <div onclick="filterCategory('Bakery Products')" class="group relative rounded-2xl overflow-hidden aspect-[4/5] p-4 flex flex-col justify-end cursor-pointer border border-gray-150 shadow-3xs">
+                <img class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 z-0" src="https://images.unsplash.com/photo-1608220179552-764627ef4424?auto=format&fit=crop&q=80&w=400" alt="Bakery" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=400';">
+                <div class="absolute inset-0 bg-gradient-to-t from-[#121610]/95 via-[#242A1E]/35 to-transparent z-1"></div>
+                <div class="relative z-10 text-white font-sans">
+                  <span class="text-[14px]">🍞</span>
+                  <h4 class="text-xs font-black leading-tight uppercase tracking-wider mt-1 text-white group-hover:text-[#FFFDF8] transition font-display">Bakery</h4>
+                  <p class="text-[9px] text-gray-300 font-semibold mt-0.5">Fresh baked goods</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+
+        // SECTION 7: Why Retailers Choose Us with 5 benefits
+        const whyChooseUsHTML = `
+          <div class="bg-[#FAF8F5] border border-gray-150 rounded-[24px] p-6 shadow-3xs my-3 text-left">
+            <h4 class="text-[11px] md:text-xs font-black text-brand-950 uppercase tracking-widest text-center mb-5 font-display">Why Chamba Valley Retailers Choose Us</h4>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+              <div class="flex flex-col items-center justify-center p-4 border border-gray-150 rounded-2xl bg-white hover:border-[#5C6B53] transition-all duration-300">
+                <span class="text-2xl mb-2">🏷️</span>
+                <h5 class="font-extrabold text-[11px] text-gray-950 uppercase tracking-wider leading-none">Distributor Pricing</h5>
+                <p class="text-[10px] text-gray-400 mt-1.5 leading-normal text-center">Direct contracts ensure maximum margins for you</p>
+              </div>
+              <div class="flex flex-col items-center justify-center p-4 border border-gray-150 rounded-2xl bg-white hover:border-[#5C6B53] transition-all duration-300">
+                <span class="text-2xl mb-2">⚡</span>
+                <h5 class="font-extrabold text-[11px] text-gray-950 uppercase tracking-wider leading-none">Fast Delivery</h5>
+                <p class="text-[10px] text-gray-400 mt-1.5 leading-normal text-center">Reaching your storefront in 24 hours guaranteed</p>
+              </div>
+              <div class="flex flex-col items-center justify-center p-4 border border-gray-150 rounded-2xl bg-white hover:border-[#5C6B53] transition-all duration-300">
+                <span class="text-2xl mb-2">📦</span>
+                <h5 class="font-extrabold text-[11px] text-gray-950 uppercase tracking-wider leading-none">Bulk Availability</h5>
+                <p class="text-[10px] text-gray-400 mt-1.5 leading-normal text-center">Guaranteed warehouse stockpiles, never run dry</p>
+              </div>
+              <div class="flex flex-col items-center justify-center p-4 border border-gray-150 rounded-2xl bg-white hover:border-[#5C6B53] transition-all duration-300">
+                <span class="text-2xl mb-2">💬</span>
+                <h5 class="font-extrabold text-[11px] text-gray-950 uppercase tracking-wider leading-none">Whatsapp Ordering</h5>
+                <p class="text-[10px] text-gray-400 mt-1.5 leading-normal text-center">Fast, secure checkout via instant booking chat</p>
+              </div>
+              <div class="flex flex-col items-center justify-center p-4 border border-gray-150 rounded-2xl bg-white hover:border-[#5C6B53] transition-all duration-300">
+                <span class="text-2xl mb-2">🙏</span>
+                <h5 class="font-extrabold text-[11px] text-gray-950 uppercase tracking-wider leading-none">Local Support</h5>
+                <p class="text-[10px] text-gray-400 mt-1.5 leading-normal text-center">Friendly assistance from your neighbors in HP</p>
+              </div>
+            </div>
+          </div>
+        `;
+
+        hpContainer.innerHTML = `
+          <!-- BRAND STRIP -->
+          ${brandStripHTML}
+
+          <!-- BEST SELLING PRODUCTS SECTION (Section 4) -->
+          <div class="flex flex-col gap-2 text-left">
+            <div class="flex items-center gap-2 border-b border-gray-150 pb-1.5">
+              <span class="text-sm">⭐</span>
+              <h3 class="font-display font-black text-[10px] sm:text-xs text-brand-950 uppercase tracking-widest">Best Selling Products</h3>
+            </div>
+            <div id="best-sellers-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4.5 w-full"></div>
+          </div>
+
+          <!-- RETAILER SUCCESS BANNER (Section 5) -->
+          ${retailerSuccessBannerHTML}
+
+          <!-- PROMOTIONAL COLLECTION CARDS (Section 3) -->
+          ${promoCollectionsHTML}
+
+          <!-- TOP CATEGORIES SHOWCASE (Section 6) -->
+          ${topCategoriesShowcaseHTML}
+
+          <!-- MORE PRODUCTS SECTION -->
+          <div class="flex flex-col gap-2 text-left">
+            <div class="flex items-center gap-2 border-b border-gray-150 pb-1.5">
+              <span class="text-sm">📦</span>
+              <h3 class="font-display font-black text-[10px] sm:text-xs text-brand-950 uppercase tracking-widest">More Products</h3>
+            </div>
+            <div id="more-products-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4.5 w-full"></div>
+          </div>
+
+          <!-- WHY CHOOSE US (Section 7) -->
+          ${whyChooseUsHTML}
+        `;
+
+        grid.appendChild(hpContainer);
+
+        // Dynamically populate best selling products (selected fast moving items index)
+        const bestSellersIds = [1, 2, 4, 5, 10, 11];
+        const bestSellersGrid = hpContainer.querySelector('#best-sellers-grid');
+        items.filter(p => bestSellersIds.includes(p.id)).forEach(product => {
+          if (bestSellersGrid) bestSellersGrid.appendChild(generateProductCardNode(product));
+        });
+
+        // Dynamically populate matching other products
+        const moreProductsGrid = hpContainer.querySelector('#more-products-grid');
+        items.filter(p => !bestSellersIds.includes(p.id)).forEach(product => {
+          if (moreProductsGrid) moreProductsGrid.appendChild(generateProductCardNode(product));
+        });
 
       } else {
         // SINGLE UNIFIED CLASSIC GRID WHEN SEARCHING OR FILTERING
         const singleWrapper = document.createElement('div');
-        singleWrapper.className = "flex flex-col w-full";
+        singleWrapper.className = "flex flex-col w-full animate-fade-in";
         
         let sectionTitle = `${currentCategory} Selection`;
         let sectionSubtitle = "Curated premium B2B assortment";
+        let pathLeaf = currentCategory;
+        
         if (lookupKeywords.length > 0) {
           sectionTitle = `Search Results`;
           sectionSubtitle = `Products matching keyword: "${lookupKeywords}"`;
+          pathLeaf = `Search: "${lookupKeywords}"`;
         }
 
         singleWrapper.innerHTML = `
-          <div class="flex items-center gap-2 mb-4 border-b border-gray-100 pb-2.5">
-            <span class="text-xl sm:text-2xl">🔍</span>
-            <div>
-              <h3 class="font-display font-black text-sm sm:text-base text-gray-900 tracking-tight">${sectionTitle}</h3>
-              <p class="text-[10px] sm:text-xs text-gray-400 font-semibold">${sectionSubtitle}</p>
+          <!-- Universal Back Navigation & Clickable Breadcrumbs -->
+          <div class="flex flex-col gap-2 mb-4 select-none">
+            <nav class="flex items-center gap-1.5 text-[10px] uppercase tracking-wider text-gray-400 font-bold-custom" style="font-weight: 700;">
+              <span class="hover:text-[#11441c] cursor-pointer transition" onclick="window.navigateToHome()">Home</span>
+              <span class="text-gray-300">&gt;</span>
+              <span class="text-brand-950 font-black truncate max-w-[200px]">${pathLeaf}</span>
+            </nav>
+            
+            <div class="flex items-center justify-between border-b border-gray-100 pb-3">
+              <div class="flex items-center gap-3">
+                <button onclick="window.navigateBack()" class="p-2 -ml-2 rounded-xl text-brand-950 hover:bg-gray-100 transition inline-flex items-center justify-center cursor-pointer border border-gray-150 bg-white hover:border-brand-700 hover:shadow-3xs" aria-label="Go Back">
+                  <svg class="w-4 h-4 text-brand-950" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                  </svg>
+                </button>
+                <div>
+                  <h3 class="font-display font-black text-base md:text-xl text-gray-900 tracking-tight leading-none">${sectionTitle}</h3>
+                  <p class="text-[10px] sm:text-xs text-gray-400 font-semibold mt-1">${sectionSubtitle}</p>
+                </div>
+              </div>
+              <span onclick="window.navigateToHome()" class="text-[10px] text-brand-800 font-extrabold bg-brand-50 px-2.5 py-1 rounded-md uppercase tracking-wider cursor-pointer hover:bg-brand-100 transition">Wholesale Hub</span>
             </div>
           </div>
         `;
 
         const subGrid = document.createElement('div');
-        subGrid.className = "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6 w-full";
+        subGrid.className = "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-6 w-full";
         items.forEach(product => {
           subGrid.appendChild(generateProductCardNode(product));
         });
@@ -5063,11 +5769,19 @@
     // PRODUCT DETAILS MODAL SERVICES
     let activeDetailProductId = null;
 
-    function showProductDetails(productId) {
+    function showProductDetails(productId, pushToHistory = true) {
       const product = CONFIG.products.find(p => p.id === productId);
       if (!product) return;
 
       activeDetailProductId = productId;
+
+      if (pushToHistory) {
+        try {
+          history.pushState({ view: 'product', productId: productId }, '', '');
+        } catch (e) {
+          console.warn("[DEBUG] showProductDetails pushState error:", e);
+        }
+      }
       
       const cartItem = cart.find(obj => obj.id === productId);
       const qty = cartItem ? cartItem.qty : 0;
@@ -5080,6 +5794,19 @@
       document.getElementById('detail-img').onerror = function() {
         imageOnError(this);
       };
+      
+      const breadcrumbsEl = document.getElementById('detail-breadcrumb-container');
+      if (breadcrumbsEl) {
+        breadcrumbsEl.innerHTML = `
+          <nav class="flex items-center gap-1.5 text-[10px] uppercase tracking-wider text-gray-400 font-bold mb-3 select-none">
+            <span class="hover:text-brand-900 cursor-pointer transition" onclick="window.navigateToHome();">Home</span>
+            <span class="text-gray-300">&gt;</span>
+            <span class="hover:text-brand-900 cursor-pointer transition text-brand-700 bg-brand-50/50 px-1.5 py-0.5 rounded" onclick="filterCategory('${product.category}'); window.navigateBack();">${product.category}</span>
+            <span class="text-gray-300">&gt;</span>
+            <span class="text-gray-700 truncate max-w-[150px] inline-block align-bottom">${product.name.split(' (')[0]}</span>
+          </nav>
+        `;
+      }
       
       document.getElementById('detail-category').innerText = product.category;
       document.getElementById('detail-title').innerText = product.name;
@@ -5148,7 +5875,7 @@
             <div class="flex items-center gap-3">
               <div class="flex -space-x-3 select-none shrink-0">
                 <div class="relative w-9 h-9 rounded-xl bg-white border border-gray-150 p-1 flex items-center justify-center overflow-hidden shadow-3xs z-10">
-                  <img class="w-full h-full object-contain" src="${detailImgSrc}" alt="">
+                  <img class="w-full h-full object-contain" src="${detailImgSrc}" alt="" onerror="imageOnError(this)">
                 </div>
                 <div class="relative w-9 h-9 rounded-xl bg-white border border-gray-150 p-1 flex items-center justify-center overflow-hidden shadow-3xs">
                   <img class="w-full h-full object-contain" src="${packshotCompanion}" alt="" onerror="imageOnError(this)">
@@ -5470,6 +6197,7 @@
         body.classList.add('opacity-100', 'scale-100');
         body.classList.remove('opacity-0', 'scale-95');
       } else {
+        activeDetailProductId = null;
         container.classList.add('pointer-events-none');
         backdrop.classList.remove('opacity-100');
         backdrop.classList.add('pointer-events-none');
@@ -5919,7 +6647,11 @@
       if (pushToHistory) {
         try {
           if (!history.state || history.state.view !== view) {
-            history.pushState({ view: view }, '', '');
+            if (view === 'home') {
+              history.pushState({ view: 'home', category: currentCategory, search: lookupKeywords }, '', '');
+            } else {
+              history.pushState({ view: view }, '', '');
+            }
           }
         } catch (e) {
           console.warn("[DEBUG] Navigation history API error:", e);
@@ -5950,7 +6682,7 @@
         if (topPromoBanner) topPromoBanner.classList.add('hidden');
       }
       
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
 
       // Ensure standard overlays and mobile drawers are closed
       toggleCartDrawer(false);
@@ -6119,8 +6851,8 @@
 
       if (cart.length === 0) {
         container.innerHTML = `
-          <div class="max-w-4xl mx-auto px-4 py-6 font-sans">
-            <div class="mb-6 select-none flex items-center gap-3 border-b border-gray-100 pb-3">
+          <div class="global-container py-6 font-sans">
+            <div class="mb-6 select-none flex items-center gap-3 border-b border-gray-100 pb-3 font-sans">
               <button onclick="if(history.state && history.state.view) { history.back(); } else { switchAppView('home'); }" class="p-2 -ml-2 rounded-xl text-brand-950 hover:bg-gray-100 transition inline-flex items-center justify-center cursor-pointer" aria-label="Go Back">
                 <svg class="w-5 h-5 text-brand-950" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
@@ -6344,9 +7076,9 @@
       });
 
       container.innerHTML = `
-        <div class="max-w-6xl mx-auto px-4 py-2 md:py-4 font-sans w-full overflow-x-hidden">
+        <div class="global-container py-2 md:py-4 font-sans w-full overflow-x-hidden">
           
-          <div class="mb-4 select-none flex items-center gap-3">
+          <div class="mb-4 select-none flex items-center gap-3 font-sans">
             <button onclick="if(history.state && history.state.view) { history.back(); } else { switchAppView('home'); }" class="p-2 -ml-2 rounded-xl text-brand-950 hover:bg-gray-105 transition inline-flex items-center justify-center cursor-pointer" aria-label="Go Back">
               <svg class="w-5 h-5 text-brand-950" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
@@ -6483,7 +7215,7 @@
 
       if (cart.length === 0) {
         container.innerHTML = `
-          <div class="max-w-4xl mx-auto px-4 py-16 text-center select-none font-sans mt-8">
+          <div class="global-container py-16 text-center select-none font-sans mt-8">
             <h2 class="font-display font-black text-2xl text-gray-900 tracking-tight">Your Wholesale Basket is Empty</h2>
             <button onclick="switchAppView('home')" class="mt-5 bg-brand-900 hover:bg-brand-800 text-white font-extrabold text-xs px-6 py-3 rounded-xl transition shadow-xs uppercase">
               Return to Catalog
@@ -6552,9 +7284,9 @@
       const defAddress = window.userProfile && window.userProfile.savedAddresses && window.userProfile.savedAddresses.length > 0 ? (window.userProfile.savedAddresses[0] || '') : '';
 
       container.innerHTML = `
-        <div class="max-w-6xl mx-auto px-4 py-2 md:py-4 font-sans leading-relaxed animate-fade-in">
+        <div class="global-container py-2 md:py-4 font-sans leading-relaxed animate-fade-in">
           
-          <div class="mb-4 select-none">
+          <div class="mb-4 select-none font-sans">
             <nav class="flex text-[10px] uppercase tracking-wider text-gray-400 mb-1.5 font-bold">
               <span class="hover:text-brand-900 cursor-pointer transition" onclick="switchAppView('home')">Home</span>
               <span class="mx-2">/</span>
